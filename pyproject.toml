@@ -1,0 +1,14 @@
+[project]
+name = "example_package_YOUR_USERNAME_HERE"
+version = "2024.45.1"
+authors = [
+  { name="Drew Wingfield", email="andrewcodesit@gmail.com" },
+]
+description = "TODO: this needs  to be changed"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
