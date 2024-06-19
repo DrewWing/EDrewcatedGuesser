@@ -1,5 +1,6 @@
 
 service-account-key-ftc-api-for-sheets-19d729dc80e8.json
+secrets.txt
 
 all-matches.csv
 errors.log
@@ -11,29 +12,12 @@ team-list-filtered.csv
 
 settings.config
 
-secrets.txt
-
-
 joblibcache/
 
-__pycache__/*
-debug/*
-eventdata/*
+__pycache__/
+debug/
+eventdata/
 
-opr/__pycache__/
-opr/all-events/
-opr/all-teams/
-opr/teamstats/
+opr/
 
-opr/match-scores.json
-opr/needed-events-raw.json
-opr/needed-event-ids.txt
-opr/match-scores.txt
-opr/all-matches-per-team.txt
-oppr/all-teamids-involved.txt
-
-opr/opr-event-result-sorted.csv
-opr/opr-global-result-sorted.csv
-opr/opr-recent-result-sorted.csv
-opr/opr-result-result-sorted.csv
-
+Archive2/
