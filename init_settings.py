@@ -13,7 +13,8 @@
 # https://docs.python.org/3/library/argparse.html
 
 import argparse
-import pathlib
+#import pathlib
+import os
 
 desc = "A program that writes certain variables to a machine-readable file for other scripts in Drew Wingfield's FTCAPI program."
 
@@ -26,8 +27,8 @@ parser.add_argument("-FieldMode", help="During an event, set to true (default Tr
 
 args = parser.parse_args()
 
-path_to_ftcapi = str(pathlib.Path().resolve())
-
+#path_to_ftcapi = str(pathlib.Path().resolve())
+path_to_ftcapi = str(os.path.dirname(os.path.realpath(__file__)))
 
 if args.showsettings or args.DebugLevel > 0:
     print("init_settings.py")
@@ -43,8 +44,8 @@ if args.showsettings or args.DebugLevel > 0:
 lines = [
     "# THIS FILE IS OVERWRITTEN EACH TIME THE SCRIPT RUNS!",
     "# DO NOT EDIT THIS, IT WILL NOT MATTER!",
-    "# To edit settings, call the ftcapiv4.sh or ftcapiv4.ps1 with different arguments,"
-    "# or edit those respective files."
+    "# To edit settings, call the ftcapiv4.sh or ftcapiv4.ps1 with different arguments,",
+    "# or edit those respective files.",
     f"# This file is written by {path_to_ftcapi}\\init_settings.py",
     f"event_code={args.EventCode}",
     f"path_to_ftcapi={path_to_ftcapi}",
@@ -53,7 +54,13 @@ lines = [
     ""
 ]
 
-with open(path_to_ftcapi+"\\settings.config", 'w+') as thefile:
+settings_path = str(
+    path_to_ftcapi + 
+    ("\\" if "\\" in path_to_ftcapi else "/") + # Accomodate forwardslash paths and backslash paths
+    "settings.config"
+)
+
+with open(settings_path, 'w+') as thefile:
     thefile.truncate()
     for line in lines:
         thefile.write(line)

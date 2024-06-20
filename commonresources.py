@@ -25,7 +25,7 @@ from python_settings import PythonSettings
 global_settings = PythonSettings()
 
 
-PATH_TO_FTCAPI = global_settings.path_to_ftcapi+'\\' # Should have trailing slash!
+PATH_TO_FTCAPI = global_settings.path_to_ftcapi+('\\' if '\\' in global_settings.path_to_ftcapi else '/') # Should have trailing slash!
 PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+"joblibcache"
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 70 # 35 seemed to have weird problems (TODO: bug that needs fixing)

@@ -3,8 +3,8 @@ if __name__ == "__main__":
     print("python_settings.py should not be called as main!")
 
 
-import pathlib
-
+#import pathlib
+import os
 
 def get_var_value(line: str):
     return line[line.index("=")+1:-1]
@@ -17,8 +17,15 @@ class PythonSettings():
         self.event_code = None
         self.field_mode = None
 
+        dir_path = str(os.path.dirname(os.path.realpath(__file__)))
+        settings_path = str(
+            dir_path + 
+            ("\\" if "\\" in dir_path else "/") + # Accomodate forwardslash paths and backslash paths
+            "settings.config"
+        )
+        
         # gather the settings from the settings.config file
-        with open(str(pathlib.Path().resolve())+"\\settings.config","r") as thefile:
+        with open(settings_path,"r") as thefile:
             for line in thefile.readlines():
                 if "path_to_ftcapi" in line:
                     self.path_to_ftcapi = get_var_value(line)

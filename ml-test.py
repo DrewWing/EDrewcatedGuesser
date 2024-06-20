@@ -6,22 +6,24 @@
 #region Imports
 print(' ml-test.py')
 print(' (c) 2024 Drew Wingfield, All Rights Reserved')
-print(' Also see the README.md file.')
+print(' Also see the README.md file. and LICENSE.txt')
 print(' This script either loads or trains a few machine learning algorithms based on machinefile.csv')
 print(' prepare-machinelearning.py should already be run to create that file.')
+print(' YOU SHOULD NOT DO THIS DURING AN EVENT! You either have the wrong script or are too late.')
+print(' Try looking at ftcapiv4.sh or ftcapiv4.ps1 instead.')
 print(' If training the data (not loading the models), this script could take a LONG time.')
 print(' Last time I ran it it took 8 hours on a beefy computer. You have been warned.')
+
 
 print('Importing modules...')
 print('  - Builtins')
 import pickle
 import time
-import gc
 
 starttime = time.time()
 
 print('  - commonresources.py')
-from commonresources import PATH_TO_FTCAPI, PATH_TO_JOBLIB_CACHE, CRAPPY_LAPTOP, LATEST_VERSION, green_check, red_x, info_i, seconds_to_time
+from commonresources import PATH_TO_FTCAPI, PATH_TO_JOBLIB_CACHE, LATEST_VERSION, green_check, red_x, info_i, seconds_to_time
 print('                 Using version '+str(LATEST_VERSION))
 
 print('  - External modules:')
@@ -69,12 +71,10 @@ assert CACHE_SIZE <= 2000 # NOTE There's a bug with scikit that prevents values 
 print(info_i()+f' Memory per thread: {CACHE_SIZE} MB')
 
 
-NUMBER_OF_CORES = 12
+NUMBER_OF_CORES = 14
 
-LOAD_MODEL     = True
+LOAD_MODEL     = False
 OUR_TEAM_ONLY  = False
-
-assert (CRAPPY_LAPTOP == False or LOAD_MODEL == True)
 
 
 if OUR_TEAM_ONLY:
@@ -280,6 +280,37 @@ param_grid_svc = [
     },
 ]
 
+
+# Params for training 2024-06-20
+# [i]gsNeigh
+
+# [i]Model stats:
+# [i]     Best score:  0.6615666498416521
+# [i]     Best params: {'kneighborsclassifier__algorithm': 'auto', 'kneighborsclassifier__leaf_size': 10, 'kneighborsclassifier__metric': 'minkowski', 'kneighborsclassifier__n_neighbors': 600, 'kneighborsclassifier__p': 1, 'kneighborsclassifier__weights': 'distance'}
+# [i]     Best estimator: Pipeline(steps=[('standardscaler', StandardScaler()),
+#                 ('kneighborsclassifier',
+#                  KNeighborsClassifier(leaf_size=10, n_neighbors=600, p=1,
+#                                       weights='distance'))])
+# [i]     Test Accuracy: 0.655
+# [i]     Best index: 5
+
+# [i]gsSVC
+
+# [i]Model stats:
+# [i]     Best score:  0.6792087072955717
+# [i]     Best params: {'svc__C': 10, 'svc__cache_size': 2000, 'svc__gamma': 0.001, 'svc__kernel': 'rbf'}
+# [i]     Best estimator: Pipeline(steps=[('standardscaler', StandardScaler()),
+#                 ('svc', SVC(C=10, cache_size=2000, gamma=0.001))])
+# [i]     Test Accuracy: 0.672
+# [i]     Best index: 60
+# [i] That took 4 hours, 14 minutes, and 38.675 seconds total so far
+# [✓] ml-test.py done.
+
+
+
+
+
+
 # Params for training 2024-04-13
 # [i] Fitting KNeighborsClassifier...
 # [✓] gsNeigh successfully fit!
@@ -354,8 +385,6 @@ parameters_KNN = {
 """
 # create gridsearchcv
 gsSVC = GridSearchCV(estimator=pipelineSVC, param_grid=param_grid_svc, scoring='accuracy', cv=10, refit=True, n_jobs=NUMBER_OF_CORES, error_score='raise')
-#gsSVC_recent = GridSearchCV(estimator=pipelineSVC, param_grid=param_grid_svc, scoring='accuracy', cv=10, refit=True, n_jobs=-1, error_score='raise')
-
 gsNeigh = GridSearchCV(estimator=pipelineNeigh, param_grid=param_grid_neigh, scoring='accuracy', cv=10, refit=True, n_jobs=NUMBER_OF_CORES, error_score='raise')
 
 
@@ -391,15 +420,17 @@ else:
 
     # Save the scaling variables for later prediction.
     #std = np.sqrt(pipelineNeigh[0].var_)
-    np.save(PATH_TO_FTCAPI+'gsNeigh_std.npy',np.std(X_cat_train))
-    print(green_check()+' gsNeigh standard scale saved as '+PATH_TO_FTCAPI+'gsNeigh_std.npy')
+    #np.save(PATH_TO_FTCAPI+'gsNeigh_std.npy',np.std(X_cat_train))
+    #print(green_check()+' gsNeigh standard scale saved as '+PATH_TO_FTCAPI+'gsNeigh_std.npy')
 
-    np.save(PATH_TO_FTCAPI+'gsNeigh_mean.npy', np.mean(X_cat_train))
-    print(green_check()+' gsNeigh scale mean saved as '+PATH_TO_FTCAPI+'gsNeigh_mean.pkl')
+    #np.save(PATH_TO_FTCAPI+'gsNeigh_mean.npy', np.mean(X_cat_train))
+    #print(green_check()+' gsNeigh scale mean saved as '+PATH_TO_FTCAPI+'gsNeigh_mean.pkl')
     print(info_i()+' gsNeigh:')
     describe_model(gsNeigh, X_cat_test, Y_cat_test)
     print(info_i()+f' That took {seconds_to_time((time.time()-starttime))} total so far')
 
+    
+    print()
     #print(neigh.predict([[1.1]]))[0]
     #print(neigh.predict_proba([[0.9]]))
 
@@ -417,11 +448,11 @@ else:
 
     # Save the scaling variables for later prediction.
     #std = np.sqrt(pipelineSVC[0].var_)
-    np.save(PATH_TO_FTCAPI+'gsSVC_std.npy',np.std(X_cat_train))
-    print(green_check()+' gsSVC standard scale saved as '+PATH_TO_FTCAPI+'gsSVC_std.npy')
+    #np.save(PATH_TO_FTCAPI+'gsSVC_std.npy',np.std(X_cat_train))
+    #print(green_check()+' gsSVC standard scale saved as '+PATH_TO_FTCAPI+'gsSVC_std.npy')
 
-    np.save(PATH_TO_FTCAPI+'gsSVC_mean.npy', np.mean(X_cat_train))
-    print(green_check()+' gsSVC scale mean saved as '+PATH_TO_FTCAPI+'gsSVC_mean.pkl')
+    #np.save(PATH_TO_FTCAPI+'gsSVC_mean.npy', np.mean(X_cat_train))
+    #print(green_check()+' gsSVC scale mean saved as '+PATH_TO_FTCAPI+'gsSVC_mean.pkl')
 
     print('\n'+info_i()+'gsSVC')
     describe_model(gsSVC, X_cat_test, Y_cat_test)

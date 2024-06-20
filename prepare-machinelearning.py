@@ -10,11 +10,24 @@ if __name__ == "__main__":
     print('   [prepare-machinelearning.py] This script was called as __main__')
     print('         Importing...')
 
-from commonresources import PATH_TO_FTCAPI, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, CRAPPY_LAPTOP, get_json, red_x, green_check, info_i, byte_to_gb, seconds_to_time
+from commonresources import PATH_TO_FTCAPI, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, get_json, red_x, green_check, info_i, byte_to_gb, seconds_to_time
 
 
 from python_settings import PythonSettings
 settings = PythonSettings()
+
+if settings.debug_level>0:
+    print(red_x()+" !! settings.debug_level is greater than zero !!")
+    print(info_i()+" This will likely cause tens of thousands of extra print statements from OPRv4.py and jsonparse.py")
+    print(info_i()+" The reccomondation is to set it to zero in settings.config (this script will still output progress statements)")
+    print(info_i()+" If you really want to continue, type YES. Otherwise, the program will exit.")
+    usrinput = input("  Continue? >")
+    if usrinput.lower() in ['yes','y']:
+        pass
+
+    else:
+        exit()
+
 
 from OPRv4 import loadMatches, filterMatchesByTeams, filter_dataframe_by_time, build_m, build_scores, calculate_opr
 import jsonparse  # For OPR calculation preparation
@@ -105,7 +118,7 @@ for index, match in all_matches_to_train_on.iterrows():
     #    exit()
     #endregion debug code
 
-    print(info_i()+f' Preparing match {index}/{total_shape[0]} ({ round(100*(index/total_shape[0]), 2) }%) - approx. {seconds_to_time(time_left, roundto=0)} left                      ', end=('\n' if settings.debug_level>0 else '\r'))
+    print(info_i()+f' Preparing match {index}/{total_shape[0]} ({ round(100*(index/total_shape[0]), 2) }%) - approx. {seconds_to_time(time_left, roundto=0)} left                      ', end=('\n' if settings.debug_level>1 else '\r'))
 
     date_of_match = match['actualStartTime']
 
@@ -177,11 +190,7 @@ for index, match in all_matches_to_train_on.iterrows():
         print('    |  - Margins - ' + str(Margins.nbytes) + 'b  - ' + str(sys.getsizeof(Margins)))
 
     
-    # collect garbage to save RAM
-    #gc.collect() #removed to reduce cycle times
-    
     if (settings.debug_level>3):
-        print(info_i()+'  Garbage collected')
         print(info_i()+'  Now using calculate_opr() to calculate OPRs, AUTOs, and CCWMs...')
     
     # This is the real RAM-intense operation...
@@ -189,7 +198,7 @@ for index, match in all_matches_to_train_on.iterrows():
     if (DO_JOBLIB_MEMORY and settings.debug_level>2):
         print(info_i()+' calculate_opr.check_call_in_cache (will func use joblib cache?) = '+str(calculate_opr.check_call_in_cache(M, Scores, Autos, Margins)))
 
-    OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins, force_garbage_off=True)
+    OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins)
 
 
     if (settings.debug_level>3):
@@ -388,7 +397,7 @@ if settings.debug_level>0:
 
 training_data_matches.to_csv(PATH_TO_FTCAPI+'machinefile.csv', index=False)
 
-print(green_check()+' Saved.')
+print(green_check()+' Saved to machinefile.csv.')
 #endregion Saving
 
 
