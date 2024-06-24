@@ -25,14 +25,14 @@ import sys
 
 # Internal Imports
 import jsonparse
-from commonresources import PATH_TO_FTCAPI, CRAPPY_LAPTOP, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENTCODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
-from commonresources import log_error, green_check, info_i, red_x, byte_to_gb, Colors, seconds_to_time
+from commonresources import PATH_TO_FTCAPI, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENTCODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
+from commonresources import log_error, green_check, info_i, red_x, byte_to_gb, seconds_to_time
 from python_settings import PythonSettings
 
 settings = PythonSettings()
 
 
-if (settings.debug_level > 0):
+if (settings.debug_level > 1):
     print(green_check()+' [OPRv4.py] Internal and builtin imports complete')
     print(info_i()+'    Now importing external imports (pandas, numpy, joblib)')
 
@@ -43,13 +43,14 @@ try:
     import joblib
 
 except ImportError as e:
-    log_error('[OPRv4.py][imports] Error with importing Pandas, Numpy, or Joblib. Are you using the correct venv of sklearn-venv? Full error message: '+str(e))
-    print("\n\n\nImportError with Pandas! Are you using the correct venv with pandas installed?\n\n")
+    log_error('[OPRv4.py][imports] Error with importing Pandas, Numpy, or Joblib. Are you using the correct virtual environment? Full error message: '+str(e))
+    print(red_x()+" [OPRv4][imports] ImportError with Pandas! Are you using the correct virtual environment?\n\n")
     raise e
 #endregion imports
 
 starttime = time.time()
 
+#region joblib
 # Set up joblib's cache memory location
 try:
     if DO_JOBLIB_MEMORY:
@@ -72,11 +73,11 @@ except Exception as e:
     log_error( '                              You are recieving this because you probably forgot to plug in the external hard drive!')
     log_error( '                              To disable this error, set DO_JOBLIB_CACHE to False in commonresources.py')
     
-    print(red_x()+ ' Joblib memory creation had a FIleNotFoundError. Some info:')
+    print(red_x()+ ' [OPRv4][setup] Joblib memory creation had a FIleNotFoundError. Some info:')
     print(red_x()+f'                 PATH_TO_JOBLIB_CACHE={PATH_TO_JOBLIB_CACHE}')
-    print(red_x()+ ' You are recieving this because you probably forgot to plug in the external hard drive.\n')
+    print(red_x()+ '   The most likely cause for this is if you put your joblib cache somewhere other than the working directory.\n')
     raise e
-
+#endregion joblib
 
 
 if settings.debug_level>0:
@@ -90,13 +91,12 @@ if __name__ == "__main__" and settings.debug_level>0:
 
 #region functions
 #region utils
-def convertToList(statMatrix):
+def convertToList(statMatrix) -> list:
     """ Converts any stat represented by a matrix into a list, used later for sorting."""
     return statMatrix.tolist()
 
 
-
-def loadTeamNumbers():
+def loadTeamNumbers() -> list:
     """
     Loads teams from a csv file team-list-filtered.csv (created in jsonparse.py)
     """
@@ -142,11 +142,12 @@ def loadMatches(filter_by_teams: list = []):
 
 
 
-def filter_dataframe_by_time(df: pd.DataFrame, days_before_now=None, start_date=None, end_date=None, days_before_end_date=None):
+def filter_dataframe_by_time(df: pd.DataFrame, days_before_now=None, start_date=None, end_date=None, days_before_end_date=None) -> pd.DataFrame:
     """
-    profided dataframe must have datetime column labeled as actualStartTime
+    Filters dataframe by time. Profided dataframe must have datetime column labeled as actualStartTime.
     days_before_now should be an integer
     start_date and end_date should be a string in format of yyyy-mm-dd
+    Returns a filtered pandas dataframe.
     """
     if days_before_now != None:
         df = df[df.actualStartTime > pd.Timestamp.today() - pd.Timedelta(str(days_before_now)+'D')]
@@ -175,43 +176,39 @@ def build_m(load_m: bool, matches, teams=loadTeamNumbers()) -> numpy.matrix:
     Reuturns a matrix of type numpy.matrix M
     """
     if settings.debug_level>0:
-        print(info_i()+" Building Matrix M for teams in alliances.")
+        print(info_i()+" [OPRv4] Building Matrix M for teams in alliances.")
     
     if settings.debug_level>1:
-        print(info_i()+'  Arguments to build_m:')
-        print(info_i()+'    load_m:'+str(load_m))
-        print(info_i()+'    matches:\n'+str(matches))
-        print(info_i()+'    settings.debug_level:'+str(settings.debug_level))
-        print(info_i()+'    teams:'+str(teams))
+        print(info_i()+' [OPRv4][build_m] Arguments to build_m:')
+        print(info_i()+'     load_m:'+str(load_m))
+        print(info_i()+'     matches:\n'+str(matches))
+        print(info_i()+'     settings.debug_level:'+str(settings.debug_level))
+        print(info_i()+'     teams:'+str(teams))
 
     if load_m:
         if (settings.debug_level>1):
-            print(info_i()+"   Loading matrix from file, not building it.")
+            print(info_i()+" [OPRv4][build_m]  Loading matrix from file, not building it.")
             
-        M = numpy.load(PATH_TO_FTCAPI+'OPR-m.npy')
+        M = numpy.load(PATH_TO_FTCAPI+"OPR-m.npy")
 
         if settings.debug_level>1:
-            print(green_check()+"   Matrix M successfully loaded from file OPR-m.npy")
+            print(green_check()+" [OPRv4][build_m]  Matrix M successfully loaded from file OPR-m.npy")
 
     else:
         if settings.debug_level>1:
-            print(info_i()+'  load_m is false; manually building the matrix M.')
+            print(info_i()+" [OPRv4][build_m] load_m is false; manually building the matrix M.")
         
         M = []
-        #print(matches.shape[1])
+
         total_l = matches.shape[0]
         counter = 0
         #for match in matches:
-        #for match_index in range(matches.shape[0]):
         for row in matches.itertuples(index=False):
-
+            # Display progress
             if (settings.debug_level>0) and (counter%10==0):
                 print(info_i() + f'    Match {counter}/{total_l}    {round(100*(counter/total_l), 2)}%   ', end='\r')
             counter += 1
-            # for debug
-            #print('row:'+str(row))
-            #print('row as list:'+str(list(row)))
-            #exit()
+            
             r = []
             for team in teams:
                 # red
@@ -236,22 +233,18 @@ def build_m(load_m: bool, matches, teams=loadTeamNumbers()) -> numpy.matrix:
         
 
         if settings.debug_level>0:
-            print() # add a linebreak to offset the \r we did
+            print() # add a linebreak to offset the \r printed in progress
         
         # Only enable for heavy debug - will spit out lots of stuff on the terminal
         #if debug>1:
         #    print(info_i()+'M before matricizing:')
         #    print(M)
 
-        if CRAPPY_LAPTOP:
-            del row, r, b # save memory
-
         # Matricize
         M = numpy.matrix(M, dtype=numpy.byte)
 
         if settings.debug_level>1:
             print(info_i()+'M after matricizing:')
-            #print(info_i()+'M type: '+str(type(M)))
             print(M)
         
 
@@ -267,14 +260,10 @@ def build_m(load_m: bool, matches, teams=loadTeamNumbers()) -> numpy.matrix:
             numpy.savetxt(PATH_TO_FTCAPI+"debug/M-debug.csv", M, delimiter=",")
             print(green_check()+'  Saved.')
 
-    #print(' TWOOO')
-    #print(type(M))
-    #print(M)
-
     return M
 
 
-def build_scores(matches: pd.DataFrame):
+def build_scores(matches: pd.DataFrame) -> tuple:
     """
     Outputs a tuple of Scores, Autos, and Margins as type numpy.matrix for the given matches dataframe.
 
@@ -290,8 +279,8 @@ def build_scores(matches: pd.DataFrame):
     Scores  = []
     Autos   = []
     Margins = []
-    #for match in matches:
     try:
+        # for match in matches, append the scores
         for row in matches.itertuples(index=False):
             Scores.append( [row[3]]) # red alliance score
             Scores.append( [row[5]]) # blue score
@@ -302,7 +291,7 @@ def build_scores(matches: pd.DataFrame):
     
     except TypeError as e:
         log_error('[OPRv4][build_scores] TypeError occured most likely due to indices in the input dataframe (which should not be there)')
-        print('\n A TypeError happened! This is most likely because you forgot to cut out the index of the dataframe.')
+        print('\n'+red_x()+' TypeError! This is most likely because you forgot to cut out the index of the dataframe.')
         print('\nRow:')
         print(row)
         print('types:')
@@ -310,14 +299,15 @@ def build_scores(matches: pd.DataFrame):
             print(f'  - {i} - {type(i)}')
         raise e
 
-    # Return the matrix
+    # Return the scores matrices
     return numpy.matrix(Scores, dtype=numpy.float32), numpy.matrix(Autos, dtype=numpy.float32), numpy.matrix(Margins, dtype=numpy.float32)
 
 
 def loadMatchesByRecent(
         filter_by_teams=None,
-        number_of_days_from_today=NUMBER_OF_DAYS_FOR_RECENT_OPR):
+        number_of_days_from_today=NUMBER_OF_DAYS_FOR_RECENT_OPR) -> pd.DataFrame:
     """
+    Loads matches, then filters by teams and number of days before today.
     Returns a pandas array containing all matches within NUMBER_OF_DAYS_FOR_RECENT_OPR (defined in commonresources.py)
     """
     allmatches = loadMatches(filter_by_teams=filter_by_teams)
@@ -330,8 +320,9 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
     This method is MUCH faster and better than using a pseudoinverse.
     Returns a tuple of OPRs, AUTOs, CCWMs
     This is used in prepare-machinelearning.py to reduce cycle times.
+    
+    Inspired by this guide for OPR calculation: https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/
     """
-    # Inspired by this guide for OPR calculation: https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/
     if (settings.debug_level>0):
         print(info_i()+"  [OPRv4.py][calculate_opr] Getting OPRs, Autos, and CCWMs")
     
@@ -339,7 +330,6 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
             print(info_i()+"        Getting OPRs")
     
     OPRs = numpy.linalg.lstsq(M, Scores, rcond=None)[0]
-    #OPRs = numpy.linalg.solve(M, Scores)[0] # the matrices aren't square so I can't do this
 
     if (settings.debug_level>1):
         print(info_i()+"        Getting Autos")
@@ -354,23 +344,23 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
     return OPRs, AUTOs, CCWMs
 
 
-
-def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs):
+def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     """
-    Returns a sorted results pandas DataFame object, sorted by OPR
+    Takes the list of teams and the statistics dataframes and sorts all by OPR.
+    Returns a sorted results pandas DataFame object.
     """
     if (settings.debug_level>0):
-        print(info_i()+" 8 Sorting reuslts...")
+        print(info_i()+" [OPRv4] Sorting reuslts...")
 
 
     if (settings.debug_level>2):
-        print(info_i()+'  Creating sorted_results_pd')
+        print(info_i()+' [OPRv4][create_and_sort_stats] Creating sorted_results_pd')
     
-        print(info_i()+'  Sizes of lists:')
-        print(info_i()+'  teamsList len: '+str(len(teamsList)))
-        print(info_i()+'  OPRs len:  '+str(len(OPRs)))
-        print(info_i()+'  AUTOs len: '+str(len(AUTOs)))
-        print(info_i()+'  CCWMs len: '+str(len(CCWMs)))
+        print(info_i()+'    Sizes of lists:')
+        print(info_i()+'    teamsList len: '+str(len(teamsList)))
+        print(info_i()+'    OPRs len:  '+str(len(OPRs)))
+        print(info_i()+'    AUTOs len: '+str(len(AUTOs)))
+        print(info_i()+'    CCWMs len: '+str(len(CCWMs)))
         
 
     # Cretae the sorted pandas array of teams and their respective stats
@@ -383,15 +373,21 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs):
         })
 
     except Exception as e:
-        print('teamsList:'+str(teamsList))
-        print('OPR:'+str(convertToList(OPRs)))
-        print('AUTOs:'+str(convertToList(AUTOs)))
-        print('CCWMs:'+str(convertToList(CCWMs)))
+        if settings.debug_level>1:
+            print(red_x()+' [OPRv4][create_and_sort_stats] Exception occured. Printing info for debug:')
+            print('teamsList:'+str(teamsList))
+            print('OPR:'+str(convertToList(OPRs)))
+            print('AUTOs:'+str(convertToList(AUTOs)))
+            print('CCWMs:'+str(convertToList(CCWMs)))
+        
+        else:
+            print(red_x()+' [OPRv4][create_and_sort_stats] Exception occured. Please set debug_level to 2 or above for full info.')
+        
         log_error('[OPRv4.py][create_and_sort_stats] Some weird value happened with this function. No idea why, good luck! Full error info:'+str(e))
         raise e
 
     if (settings.debug_level>2):
-        print(info_i()+'  stripping column strings of sorted_results_pd')
+        print(info_i()+'  Stripping column strings of sorted_results_pd')
 
     # Strip the columns. Really I'm not sure why I do this but I found it somewhere
     # and they told me to do it, and it supposedly stops a few things from breaking.
@@ -423,21 +419,20 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs):
         log_error('                                        matches: '+str(matches))
         log_error('                                        teamsList: '+str(teamsList))
 
-        print('info:')
-        #print('output_file_path:'+str(output_file_path))
-        print('sorted_results_pd:')
-        print(sorted_results_pd)
-        print('matches:')
-        print(matches)
-        print("M:")
-        #print(M)
+        if settings.debug_level>1:
+            print('[OPRv4][create_and_sort_stats] Exception occured while processing sorted_results_pd. Displaying debug info:')
+            print('sorted_results_pd:')
+            print(sorted_results_pd)
+            print('matches:')
+            print(matches)
+        
+        else:
+            print('[OPRv4][create_and_sort_stats] Exception occured while processing sorted_results_pd. Set debug_level to 2 or more for full debug info.')
+
         print('\n\n\n\nn\n\n\n\n\n\n')
         raise e
         
     return sorted_results_pd
-
-
-
 
 
 def do_all_opr_stuff(matches, output_file_path: str, load_m=False):
@@ -448,20 +443,17 @@ def do_all_opr_stuff(matches, output_file_path: str, load_m=False):
     if (DO_JOBLIB_MEMORY and settings.debug_level>0):
         print(info_i()+'    build_m.check_call_in_cache (will func use joblib cache?) = '+str(build_m.check_call_in_cache(load_m, matches, teams=loadTeamNumbers())))
 
-    M = build_m(load_m, matches, teams=loadTeamNumbers())
-    #print('OUTSIDE')
-    #print('M: ')
-    #print(M)
+    M = build_m(load_m, matches, teams=loadTeamNumbers()) # Type numpy.matrix
 
-    if (settings.debug_level >0):
+    if (settings.debug_level>0):
         print()
-        print(info_i()+"    Building Scores")
+        print(info_i()+" [OPRv4][do_all_opr_stuff]   Building Scores")
 
     # Build scores
     Scores, Autos, Margins = build_scores(matches)
 
     if (settings.debug_level>2):
-        print(green_check()+'  Scores, Autos, and Margins calculated. Displaying below:')
+        print(green_check()+' [OPRv4][do_all_opr_stuff]  Scores, Autos, and Margins calculated. Displaying below:')
         print(info_i()+'Scores')
         print(Scores)
         print()
@@ -473,34 +465,31 @@ def do_all_opr_stuff(matches, output_file_path: str, load_m=False):
         print()
 
     if (settings.debug_level>1):
-        print(info_i()+"M type: "+str(type(M)))
-        print(info_i()+"M:")
+        print(info_i()+" [OPRv4][do_all_opr_stuff] Debug info:")
+        print(info_i()+"    M type: "+str(type(M)))
+        print(info_i()+"    M:")
         print(M)
         # Convert all matrices from type list to type matrix using numpy
         print(info_i()+"    Memory Update:")
-        print(f'        |  - M (int8) - {M.nbytes}b or {byte_to_gb(M.nbytes)}GB - Sizeof {sys.getsizeof(M)} - M.size (# of elements) {M.size}')
-        print('        |  - Scores  - ' + str(Scores.nbytes)  + 'b  - ' + str(sys.getsizeof(Scores)))
-        print('        |  - Autos   - ' + str(Autos.nbytes)   + 'b  - ' + str(sys.getsizeof(Autos)))
-        print('        |  - Margins - ' + str(Margins.nbytes) + 'b  - ' + str(sys.getsizeof(Margins)))
+        print(info_i()+f'        |  - M (int8) - {M.nbytes}b or {byte_to_gb(M.nbytes)}GB - Sizeof {sys.getsizeof(M)} - M.size (# of elements) {M.size}')
+        print(info_i()+'        |  - Scores  - ' + str(Scores.nbytes)  + 'b  - ' + str(sys.getsizeof(Scores)))
+        print(info_i()+'        |  - Autos   - ' + str(Autos.nbytes)   + 'b  - ' + str(sys.getsizeof(Autos)))
+        print(info_i()+'        |  - Margins - ' + str(Margins.nbytes) + 'b  - ' + str(sys.getsizeof(Margins)))
+        print(info_i()+'    Now using calculate_opr() to calculate OPRs, AUTOs, and CCWMs...')
 
     
-    # collect garbage to save RAM
-    #gc.collect()
-    
-    if (settings.debug_level>2):
-        print(info_i()+'    Garbage collected')
-        print(info_i()+'    Now using calculate_opr() to calculate OPRs, AUTOs, and CCWMs...')
-    
-    # This is the real RAM-intense operation...
+    # This is the real intense operation...
     # Actually calculate the OPR
     if (DO_JOBLIB_MEMORY and settings.debug_level>0):
         print(info_i()+'    calculate_opr.check_call_in_cache (will func use joblib cache?) = '+str(calculate_opr.check_call_in_cache(M, Scores, Autos, Margins)))
 
     OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins)
 
+    if settings.debug_level>0:
+        print(green_check()+" Raw OPRs, AUTOs, and CCWMS calculated.")
 
     if (settings.debug_level>2):
-        print(green_check()+'  raw (unrounded) OPRs, AUTOs, and CCWMS calculated. Displaying below:')
+        print(green_check()+'  Displaying raw ones below:')
         print(info_i()+'OPRs')
         print(OPRs)
         print()
@@ -518,9 +507,8 @@ def do_all_opr_stuff(matches, output_file_path: str, load_m=False):
     AUTOs = AUTOs.round(10)
     CCWMs = CCWMs.round(10)
 
-    
-    # create the unsorted list of teams
-    teamsList   = list(teams) # unsorted list of teams
+    # Create the unsorted list of teams
+    teamsList = list(teams)
 
     if (DO_JOBLIB_MEMORY and settings.debug_level>0):
         print(info_i()+' create_and_sort_stats.check_call_in_cache (will func use joblib cache?) = '+str(create_and_sort_stats.check_call_in_cache(teamsList, OPRs, AUTOs, CCWMs)))
@@ -534,17 +522,21 @@ def do_all_opr_stuff(matches, output_file_path: str, load_m=False):
         print(info_i()+f' Writing to the pandas csv file {output_file_path}...')
     
     sorted_results_pd.to_csv(output_file_path, index=False)
+
+    if (settings.debug_level>0):
+        print(green_check()+f' Saved to the csv file.')
+
 #endregion functions
 
 if __name__ == '__main__':
     #region Joblib memory
     # Turn all heavy functions into joblib memorized functions
-    # NOTE that memorized functions will probably not read from files, so
-    # any func that reads from files that change shouldn't be memorized
+    # NOTE that memorized functions will not read or write to files, so
+    # any func that deals in files shouldn't be cached.
     if (DO_JOBLIB_MEMORY):
 
         if settings.debug_level>0:
-            print(info_i()+' [OPRv4.py] DO_JOBLIB_MEMORY is True. caching calculate_opr, build_m, and build_scores.')
+            print(info_i()+' [OPRv4] DO_JOBLIB_MEMORY is True. Caching calculate_opr, build_m, and build_scores.')
 
         calculate_opr = memory.cache(calculate_opr)
         build_m       = memory.cache(build_m)
@@ -552,18 +544,18 @@ if __name__ == '__main__':
         create_and_sort_stats = memory.cache(create_and_sort_stats)
 
         if settings.debug_level>0:
-            print(info_i()+' [OPRv4.py] Memory successfully cached.')
+            print(green_check()+' [OPRv4] Memory successfully cached.')
 
 
     elif settings.debug_level>0:
-        print(info_i()+' [OPRv4.py] NOT doing joblib memory caching - the respective variable in commonresources is False.')
+        print(info_i()+' [OPRv4] NOT doing joblib memory caching - the respective variable in commonresources is False.')
     #endregion Joblib memory
 
     #region set settings
 
     # While in "field_mode" (during an event), global calcs take waaay to long.
     # We instead assume that the person was smart and ran a global calc session
-    # very recently to the event.
+    # very recently before the event, and use the previous global stats.
     if settings.field_mode:
         do_opr_for_all_time = True
         do_opr_event_only   = True
@@ -774,7 +766,6 @@ if __name__ == '__main__':
 if settings.debug_level>0:
     print(info_i()+f' [OPRv4.py] Total OPRv4 program took {seconds_to_time(time.time()-starttime)}')
     print(green_check()+' [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheetsapi.py')
-    #print('\n\n\n\n\n\n\n\n\n\n\n\n')
 
 
 
