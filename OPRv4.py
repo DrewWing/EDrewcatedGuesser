@@ -171,9 +171,11 @@ A value of 1 means the team was in that alliance and a value of 0 means the team
 First loop through each red alliance and then loop through each blue alliance.
 The resulting matrix should have 2 * len(matches) rows.
 """
-def build_m(load_m: bool, matches, teams=loadTeamNumbers()) -> numpy.matrix:
+def build_m(load_m: bool, matches: pd.DataFrame, teams=loadTeamNumbers()) -> numpy.matrix:
     """
-    Reuturns a matrix of type numpy.matrix M
+    Reuturns a matrix of type numpy.matrix M, with each row representing a match
+    and each column representing a team. Ones for teams that participate, zeroes
+    for teams that don't.
     """
     if settings.debug_level>0:
         print(info_i()+" [OPRv4] Building Matrix M for teams in alliances.")
@@ -195,6 +197,9 @@ def build_m(load_m: bool, matches, teams=loadTeamNumbers()) -> numpy.matrix:
             print(green_check()+" [OPRv4][build_m]  Matrix M successfully loaded from file OPR-m.npy")
 
     else:
+        #TODO: Possibly redo this section to make it one line?
+        # Maybe create a dataframe full of zeroes and somehow one-line
+        # add ones where applicable? Look into this.
         if settings.debug_level>1:
             print(info_i()+" [OPRv4][build_m] load_m is false; manually building the matrix M.")
         
@@ -241,7 +246,7 @@ def build_m(load_m: bool, matches, teams=loadTeamNumbers()) -> numpy.matrix:
         #    print(M)
 
         # Matricize
-        M = numpy.matrix(M, dtype=numpy.byte)
+        M = numpy.matrix(M, dtype=numpy.ubyte) # type uint8, Unsigned 8-bit integer (0-255)
 
         if settings.debug_level>1:
             print(info_i()+'M after matricizing:')
@@ -435,7 +440,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     return sorted_results_pd
 
 
-def do_all_opr_stuff(matches, output_file_path: str, load_m=False):
+def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False):
     """
     Calculates OPR based on input matches (from load_matches), and saves the sorted results to the output filepath (csv)
     """
