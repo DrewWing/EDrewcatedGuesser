@@ -305,7 +305,7 @@ def build_scores(matches: pd.DataFrame) -> tuple:
         raise e
 
     # Return the scores matrices
-    return numpy.matrix(Scores, dtype=numpy.float32), numpy.matrix(Autos, dtype=numpy.float32), numpy.matrix(Margins, dtype=numpy.float32)
+    return numpy.matrix(Scores, dtype=numpy.short), numpy.matrix(Autos, dtype=numpy.short), numpy.matrix(Margins, dtype=numpy.short) # type short, or signed int16
 
 
 def loadMatchesByRecent(
