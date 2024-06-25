@@ -24,6 +24,7 @@ param (
     [switch]$DryRun = $false,
     [switch]$rankingsonly = $false,
     [switch]$ShowDebugText = $false,
+    [switch]$NoApiCalls = $false,
     [bool]$FieldMode = $true,
     [int]$DebugLevel = 0 # Debug level of python scripts
 )
@@ -159,9 +160,9 @@ function GetSchedule {
 
 function cycle {
     Start-Sleep -Seconds 0.1
-    PrintStatus "Getting FTC event data...  l"
 
-    if ($DryRun -eq $false) {
+    if (($DryRun -eq $false) -and ($NoApiCalls -eq $false)) {
+        PrintStatus "Getting FTC event data...  l"
         GetMatches
         PrintStatus "Getting FTC event data  2/3 l"
         GetSchedule
@@ -170,7 +171,7 @@ function cycle {
     
     }
     
-    Start-Sleep -Seconds 0.5
+    Start-Sleep -Seconds 0.3
     
     # If updating the team data, calculate and push the team OPR data
     if (($UpdateTeams -eq $true) -and ($DryRun -eq $false)) {
@@ -223,6 +224,7 @@ function DisplayHelp {
     Write-Output "  OneCycle      Do only one cycle."
     Write-Output "  RankingsOnly  Get rankings data for event, then push rankings data to sheets."
     Write-Output "  DryRun        Do a dry run, where nothing actually runs, just the visual output."
+    Write-Output "  NoAPICalls    Disables calls to the FTC API. Usually good for debug."
     Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts."
     Write-Output "  FieldMode <bool>  Default true, uses last calculations for global OPR stats, instead of calculating it."
 
