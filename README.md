@@ -8,6 +8,7 @@ Also see the [Updates](Updates.md) page.
 ## Things to work on:
 
 ### Bugs
+  - `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
   - `[OPR]` `[Speed]` `[Urgent!!!]` Right Now global OPRs are calculated (because CRAPPY_LAPTOP is False) all the time, using up a rediculous amount of CPU time every time the matches change. Somehow fix that. (maybe only do it every time the event changes?)
   - `[Speed]` Maybe add GPU/NPU support?
   - `[OPR]` `[Accuracy]` `[fixed]` Fix bug where event opr is really wrong for whatever reason.
