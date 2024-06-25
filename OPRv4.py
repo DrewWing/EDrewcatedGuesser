@@ -346,7 +346,7 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
 
     CCWMs = numpy.linalg.lstsq(M, Margins, rcond=None)[0]
 
-    return OPRs, AUTOs, CCWMs
+    return OPRs, AUTOs, CCWMs # Items in the matrices are of type float64, which have around 15 digits of accuracy
 
 
 def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
@@ -417,7 +417,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         sorted_results_pd['AutoOPR'] = sorted_results_pd['AutoOPR']
         sorted_results_pd['CCWM'   ] = sorted_results_pd['CCWM'   ]
     
-    # Any other exceptions, raise the error but print info about it for debug
+    # Any other exceptions, raise the error and print debug info
     except Exception as e:
         log_error('[OPRv4][create_and_sort_stats] Some other error occured while processing sorted_results_pd. Full error message: '+str(e))
         log_error('                                        sorted_results_pd: '+str(sorted_results_pd))
@@ -448,7 +448,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False)
     if (DO_JOBLIB_MEMORY and settings.debug_level>0):
         print(info_i()+'    build_m.check_call_in_cache (will func use joblib cache?) = '+str(build_m.check_call_in_cache(load_m, matches, teams=loadTeamNumbers())))
 
-    M = build_m(load_m, matches, teams=loadTeamNumbers()) # Type numpy.matrix
+    M = build_m(load_m, matches, teams=loadTeamNumbers()) # Type numpy.matrix with ones and zeroes
 
     if (settings.debug_level>0):
         print()
@@ -506,11 +506,11 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False)
         print()
 
     if settings.debug_level>1:
-        print(info_i()+'    Rounding OPRs, AUTOs, and CCWMs to 10 places (prevents extremely near-zero values such as 10^-16)')
+        print(info_i()+'    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)')
 
-    OPRs  = OPRs.round(10)
-    AUTOs = AUTOs.round(10)
-    CCWMs = CCWMs.round(10)
+    OPRs  = OPRs.round(14)
+    AUTOs = AUTOs.round(14)
+    CCWMs = CCWMs.round(14)
 
     # Create the unsorted list of teams
     teamsList = list(teams)

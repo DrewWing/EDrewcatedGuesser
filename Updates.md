@@ -3,6 +3,9 @@
 Remember to check out the [README](README.md) file
 
 ## 47.1
+Reduced size of certain matrices (lower RAM and faster overall!). \
+Now rounding stats to 14 places instead of 10 for greater accuracy and precision. \
+Various code quality-of-life and clarity updates. \
 Added support for windows (added a powershell file). \
 Added a new virtual environment (outside of working directory for now), `ftcapivenvwindows` for windows, 
 because apparently the other one just didn't work at all on windows for whatever reason.
