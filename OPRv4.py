@@ -768,9 +768,9 @@ if __name__ == '__main__':
 
 
 
-if settings.debug_level>0:
-    print(info_i()+f' [OPRv4.py] Total OPRv4 program took {seconds_to_time(time.time()-starttime)}')
-    print(green_check()+' [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheetsapi.py')
+    if settings.debug_level>0:
+        print(info_i()+f' [OPRv4.py] Total OPRv4 program took {seconds_to_time(time.time()-starttime)}')
+        print(green_check()+' [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheetsapi.py')
 
 
 

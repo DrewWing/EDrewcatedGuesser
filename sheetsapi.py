@@ -17,6 +17,7 @@ settings = PythonSettings()
 # import google stuff
 try:
     from google.oauth2 import service_account
+    import google.auth.exceptions
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
 
@@ -302,6 +303,22 @@ def push_data(service, sheetid: str, range: str, credentials, data):
         print()
         
         return error
+    
+    except google.auth.exceptions.TransportError as error:
+        print(red_x()+" [sheetsapi][push_data] Google Authentication TransportError!")
+        print(red_x()+"         Most likely due to a weak connection or incorrectly set up DNS.")
+        print(red_x()+f"         Full error info: {error}")
+        log_error("[sheetsapi][push_data] Google Authentication TransportError! Most likely due to weak connection or incorrectly set up DNS.")
+        log_error(f"         Full error info: {error}")
+        log_error("           Error has been printed and raised, irreguardless of debug_level setting.")
+        raise error
+    
+    except KeyboardInterrupt as error:
+        raise error
+    
+    except Exception as error:
+        log_error(f" [sheetsapi][push_data] Some unknown Exception occured! Not a HttpError or google.auth.exceptions.TransportError. Full error info: {error}")
+        raise error
 
 
 
