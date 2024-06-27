@@ -22,10 +22,20 @@ parser = argparse.ArgumentParser("init_settings.py", description=desc)
 parser.add_argument("-EventCode", help="An alphanumeric event code for the current event.", type=str, required=True)
 parser.add_argument("-DebugLevel", help="The debug level used for all python scripts. Determines debug info printed to terminal. Default 0", type=int, required=False, default=0)
 parser.add_argument("-showsettings", help="Displays the settings for this script.", type=bool, required=False)
-parser.add_argument("-FieldMode", help="During an event, set to true (default True). Prevents global calculations from being performed (LOTS of CPU time).", type=bool, required=False, default=True)
+parser.add_argument("-FieldMode", help="During an event, set to true (default True). Prevents global calculations from being performed (LOTS of CPU time).", type=str, required=False, default=True)
 
 
 args = parser.parse_args()
+
+# ftcapiv4.ps1 hands init_settings boolean values that may be wrongly capitalized.
+# Fix that here
+
+if args.FieldMode.lower() in ["true"]:
+    args.FieldMode = True
+
+else:
+    args.FieldMode = False
+
 
 #path_to_ftcapi = str(pathlib.Path().resolve())
 path_to_ftcapi = str(os.path.dirname(os.path.realpath(__file__)))

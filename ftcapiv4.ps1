@@ -29,11 +29,9 @@ param (
     [int]$DebugLevel = 0 # Debug level of python scripts
 )
 
-
 if ($ShowDebugText -eq $true){
-    Write-Debug "User parameters collected."
+    Write-Output "User parameters collected."
 }
-
 
 cd "E:\DrewFTCAPI\ftcapi-branch47-1" #TODO: alwasys update this to the latest version
 
@@ -43,7 +41,7 @@ cd "E:\DrewFTCAPI\ftcapi-branch47-1" #TODO: alwasys update this to the latest ve
 python init_settings.py -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
 
 if ($ShowDebugText -eq $true){
-    Write-Debug "Virtual Environment activated. Starting..."
+    Write-Output "Virtual Environment activated. Starting..."
 }
 
 $iteration=1
@@ -56,6 +54,7 @@ $SeasonYear="2023" # First year of the season. For instance, the 2023-2024 schoo
 # gets the PersonalAccessToken
 Get-Content secrets.txt | Foreach-Object{
     $var = $_.Split('=')
+    Remove-Variable -Name $var[0]
     New-Variable -Name $var[0] -Value $var[1]
  }
 
@@ -63,8 +62,11 @@ Get-Content secrets.txt | Foreach-Object{
 #$token = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $PersonalAccessToken)))
 $AuthorizationHeader = @{authorization = "Basic $PersonalAccessToken"}
 
-if ($ShowDebugText -eq $true){
-    Write-Debug "Initial variables set."
+
+if (($ShowDebugText -eq $true) -or ($true -eq $true)){
+    Write-Output "Initial variables set."
+    Write-Output "PersonalAccessToken is $PersonalAccessToken"
+    Write-Output "FieldMode is $FieldMode"
 }
 #endregion setup
 
@@ -235,7 +237,7 @@ function DisplayHelp {
 
 
 if ($ShowDebugText -eq $true){
-    Write-Debug "User parameters collected."
+    Write-Output "User parameters collected."
 }
 
 if (($help -eq $true) -or ($h -eq $true)) {
