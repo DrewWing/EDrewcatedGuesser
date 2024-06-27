@@ -33,7 +33,7 @@ if ($ShowDebugText -eq $true){
     Write-Output "User parameters collected."
 }
 
-cd "E:\DrewFTCAPI\ftcapi-branch47-1" #TODO: alwasys update this to the latest version
+Set-Location "E:\DrewFTCAPI\ftcapi-branch47-1" #TODO: alwasys update this to the latest version
 
 # Activate the virtual environment where we installed the required python packages (mostly google sheets api stuff).
 . "E:\DrewFTCAPI\ftcapivenvwindows\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
@@ -188,7 +188,7 @@ function cycle {
     
     PrintStatus "Pushing match data...      l"
 
-    if ($DryRun -eq $false){
+    if (($DryRun -eq $false) -and ($NoApiCalls -eq $false)){
         # Push the matches and rankings data to the google sheet
         python "sheetsapi.py" matches rankings
     }
