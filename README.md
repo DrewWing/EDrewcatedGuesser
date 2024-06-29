@@ -2,7 +2,12 @@
 ## by Drew Wingfield
 This is the README file.
 
-**NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation. I'll get all that ironed out before I release this.
+DO NOT DISTRIBUTE!
+You may **not** earn money from this program. It's not just my terms, it's the terms of using the official FTC API.
+
+**NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation. I'll get all that ironed out before I release this. \
+Everything that I'm doing right now is unpublished, so you **may not** use it under any of these unpublished licenses. \
+I'm doing my best, just use whatever version is most current under its own license and ignore this. It has many bugs and is not worth it.
 
 You can find the license [here](LICENSE.txt).
 Also see the [Updates](Updates.md) page.
@@ -11,19 +16,26 @@ Also see the [Updates](Updates.md) page.
 
 ### Bugs
   - [ ] `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
+    - [ ] Figure out where in the world these files keep coming from! (unused)
   - [X] ~~`[OPR]` `[Speed]` `[Urgent!!!]` Right Now global OPRs are calculated (because CRAPPY_LAPTOP is False) all the time, using up a rediculous amount of CPU time every time the matches change. Somehow fix that. (maybe only do it every time the event changes?)~~
   - [ ] `[Speed]` Maybe add GPU/NPU support?
-  - [ ] `[OPR]` `[Accuracy]` `[fixed]` Fix bug where event opr is really wrong for whatever reason.
+  - [X] ~~`[OPR]` `[Accuracy]` Fix bug where event opr is really wrong for whatever reason.~~
   - [ ] `[OPR]` `[Accuracy]` Weird bug with some teams' recent OPR calculated as 0 for lower amounts of days (30)
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
 
 ### Other
+  - [ ] `[speed]` `[packages]` Maybe install CuPy?
+  - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets
   - [ ] `[Sheets]` `[QOL]` It would be nice to add the team name to the number when pushing to sheets
-  - [ ] `[NEEDED]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
-  - [ ] `[QOL]` Redo the README.
+  - [ ] `[NEEDED]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
+  - [ ] `[QOL]` `[Readme]` Redo the README.
   - [ ] `[QOL]` Remove all unneccessary files
-  - [ ] `[Accuracy]` Retrain the algorithms
+    - [X] ~~Figure out where in the world OPR-m.npy comes from~~
+    - [X] ~~Figure out if anything in the world uses OPR-m.npy~~
+    - [ ] All opr/teamstats stuff
+    - [ ] All references to opr/teamstats stuff
+  - [X] ~~`[Accuracy]` Retrain the algorithms~~
   - [ ] `[Code QOL]` Making predictions work with both the EventMatches and EventSchedule classes (jsonparse)
     - and the implementation of the predictions in sheetsapi
     - and the processing of the data (getting recent OPRs, etc etc.)
@@ -119,6 +131,8 @@ Thanks to [this article](https://www.johndcook.com/blog/2010/01/19/dont-invert-t
 Printing in BASH with help from some people on [this StackOverflow post](https://stackoverflow.com/questions/1898712/make-sure-int-variable-is-2-digits-long-else-add-0-in-front-to-make-it-2-digits).
 
 Python printing in colors (Colors class) was taken from [Rene-d](https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007).
+
+Google sheets api was implemented with lots of help from [their sample program](https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py) and [quickstart](https://developers.google.com/sheets/api/quickstart/python).
 
 ## More documentation goes here!
 As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `error.log` with a timestamp.

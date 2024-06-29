@@ -3,15 +3,21 @@
 Remember to check out the [README](README.md) file
 
 ## 47.1
+#### General
+Fixed a bunch of bugs. \
+Made the ReadMe more readable. \
+Added `FieldMode`, a variable when true will disable global OPR calculation (saves cpu time not needed) \
 Reduced size of certain matrices (lower RAM and faster overall!). \
 Now rounding stats to 14 places instead of 10 for greater accuracy and precision. \
 Various code quality-of-life and clarity updates. \
-Added support for windows (added a powershell file). \
-Added a new virtual environment (outside of working directory for now), `ftcapivenvwindows` for windows, 
-because apparently the other one just didn't work at all on windows for whatever reason.
 Added a python script [`init_settings.py`](init_settings.py) to keep track of all global settings. \
 **Added git** (version control yay!). \
 Deleted archive files.
+
+#### Windows Support!
+Added support for windows (added ``ftcapiv4.ps1``). \
+Added a new virtual environment (outside of working directory for now), `ftcapivenvwindows` for windows, 
+because apparently the other one just didn't work at all on windows for whatever reason.
 
 ## 46.1
 Lots of machine learning stuff and some bug fixes.
