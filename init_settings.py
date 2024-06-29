@@ -1,4 +1,5 @@
-
+#
+# -*- coding: utf-8 -*-
 # init_settings.py
 # Started 2024/06/16
 # by Drew Wingfield

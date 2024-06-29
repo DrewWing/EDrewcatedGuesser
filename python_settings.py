@@ -1,3 +1,6 @@
+#
+# -*- coding: utf-8 -*-
+
 
 if __name__ == "__main__":
     print("python_settings.py should not be called as main!")

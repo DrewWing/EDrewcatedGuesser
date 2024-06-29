@@ -1,3 +1,5 @@
+#
+# -*- coding: utf-8 -*-
 # sheetsapi.py
 # by Drew Wingfield
 

@@ -1,3 +1,5 @@
+#
+# -*- coding: utf-8 -*-
 
 # Prepare-machinelearning.py
 # Started 2024-02-14

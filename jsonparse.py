@@ -1,3 +1,5 @@
+#
+# -*- coding: utf-8 -*-
 # jsonparse
 # by Drew Wingfield
 # started 2024-01-29
