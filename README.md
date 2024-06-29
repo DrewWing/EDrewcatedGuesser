@@ -31,6 +31,7 @@ Also see the [Updates](Updates.md) page.
   - [ ] `[NEEDED]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
   - [ ] `[QOL]` `[Readme]` Redo the README.
   - [ ] `[QOL]` Remove all unneccessary files
+    - [ ] Figure out what to do with viewdata.py
     - [X] ~~Figure out where in the world OPR-m.npy comes from~~
     - [X] ~~Figure out if anything in the world uses OPR-m.npy~~
     - [ ] All opr/teamstats stuff
