@@ -626,9 +626,6 @@ if __name__ == '__main__':
         matches = loadMatches()  # Uses all-matches.csv
 
 
-
-        #gc.collect()
-
         if settings.debug_level>0:
             print(info_i()+'    Number of teams:'+str(len(teams)))
             print(info_i()+'    Calculating global OPR for all matches.')
@@ -663,9 +660,6 @@ if __name__ == '__main__':
         
         matches = loadMatches(filter_by_teams=teams)
 
-
-
-        #gc.collect()
 
         if settings.debug_level>0:
             print(info_i()+'Number of teams:'+str(len(teams)))
@@ -706,8 +700,6 @@ if __name__ == '__main__':
 
 
 
-        #gc.collect()
-
         if settings.debug_level>0:
             print(info_i()+' Number of teams:'+str(len(teams)))
             print(info_i()+' Calculating recent OPR for all matches.')
@@ -732,9 +724,6 @@ if __name__ == '__main__':
             print(info_i()+' Preparing for OPR calculation with specific event code '+str(EVENTCODE))
             print(info_i()+' ')
 
-
-        #if CRAPPY_LAPTOP:
-        #    gc.collect()
 
         # Prepares the OPR calculation
         #Arguments:
@@ -762,7 +751,6 @@ if __name__ == '__main__':
         if settings.debug_level>0:
             print(green_check()+'Calculated OPR for event only.')
 
-        #gc.collect()
 
 
 
