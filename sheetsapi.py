@@ -50,7 +50,7 @@ from jsonparse import *
 
 #region Constants
 
-# Don't change scopes unless modifying it to access something other than spreadsheets
+# Don't change scopes unless modifying this script to access a google service other than spreadsheets
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
 
 # Write ranges
@@ -254,7 +254,7 @@ def get_team_data(filepath: str):
 #region pushes
 def push_data(service, sheetid: str, range: str, credentials, data):
     """
-    Pushes data to a sheet.
+    Pushes data to a Google Sheets spreadsheet.
     The data is in the format of a 2d list;
     [
         #row
@@ -381,6 +381,9 @@ def push_matches(service):
 
 
 def push_all_matches_heatmap(service):
+    """
+    This isn't really used anywhere, I should remove it.
+    """
     if settings.debug_level>0:
         print(info_i()+' [sheetsapi.py] Pushing all matches data for sheets heatmap')
     if settings.debug_level>1:

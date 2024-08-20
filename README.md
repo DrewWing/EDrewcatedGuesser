@@ -3,7 +3,7 @@
 This is the README file.
 
 DO NOT DISTRIBUTE!
-You may **not** earn money from this program. It's not just my terms, it's the terms of using the official FTC API.
+You may **not** earn money or monetize in any way from this program. It's not just my terms, it's the terms of using the official FTC API.
 
 **NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation. I'll get all that ironed out before I release this. \
 Everything that I'm doing right now is unpublished, so you **may not** use it under any of these unpublished licenses. \
@@ -24,6 +24,8 @@ Also see the [Updates](Updates.md) page.
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
 
 ### Other
+  - [ ] `[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore
+  - [ ] Remove all references to heatmap stuff.
   - [ ] `[speed]` `[packages]` Maybe install CuPy?
   - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets
@@ -141,4 +143,4 @@ As always, this is a work in progress and has some bugs. Errors should be both p
 Good luck debugging!
 
 <br><br>
-All documentation and code is (c) 2024 Drew Wingfield unless otherwise mentioned. All rights reserved.
+All documentation and code is Copyright (c) 2024 Drew Wingfield unless otherwise mentioned. All rights reserved.

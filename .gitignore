@@ -9,6 +9,7 @@ machinefile.csv
 matches-per-team.csv
 seasondata.json
 team-list-filtered.csv
+opr-m.npy
 
 settings.config
 
@@ -23,3 +24,4 @@ opr/
 Archive2/
 
 .vscode/
+opr/opr-result-sorted.csv
