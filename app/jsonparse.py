@@ -764,7 +764,11 @@ def prepare_opr_calculation(
     
     matchcounter  = 0
     eventcounter  = 0
-    l=len(os.listdir((PATH_TO_FTCAPI+'opr/all-events')))
+    l=len(os.listdir(
+        (
+            PATH_TO_FTCAPI+'generatedfiles'+('\\' if '\\' in PATH_TO_FTCAPI else '/')+
+            'opr'+('\\' if '\\' in PATH_TO_FTCAPI else '/')+'all-events')
+        ))
 
     matches_per_team_dic = {}
     all_matches_dic = {
@@ -791,7 +795,7 @@ def prepare_opr_calculation(
         print(info_i()+'    [prepare_opr_calculation] Getting teams...')
     
     if specific_event==None:
-        path_list = [ PATH_TO_FTCAPI+'opr/all-events/'+i for i in os.listdir(PATH_TO_FTCAPI+('opr/all-events'))]
+        path_list = [ PATH_TO_FTCAPI+'generatedfiles/opr/all-events/'+i for i in os.listdir(PATH_TO_FTCAPI+('generatedfiles/opr/all-events'))]
 
     elif specific_event=='RECENT':
         if settings.debug_level>0:
@@ -871,7 +875,7 @@ def prepare_opr_calculation(
     if (specific_event_teams != None):
         try:
             # If the current event is the specific event given, add all teams to list
-            event_teams_raw_json = get_json(PATH_TO_FTCAPI+'eventdata/eventteams.json') # Created when FTC APIing
+            event_teams_raw_json = get_json(PATH_TO_FTCAPI+'generatedfilees/eventdata/eventteams.json') # Created when FTC APIing
 
             #print('event_teams_raw_json[teams]'+str(event_teams_raw_json['teams']))
     
@@ -927,9 +931,9 @@ def prepare_opr_calculation(
     
     #print(matches_per_team)
     if settings.debug_level>1:
-        print(green_check()+'    Teams assembled. Writing all matches per team to file matches-per-team.csv...       ')
+        print(green_check()+'    Teams assembled. Writing all matches per team to file generatedfiles/matches-per-team.csv...       ')
     
-    matches_per_team.to_csv(PATH_TO_FTCAPI+'matches-per-team.csv', index=False)
+    matches_per_team.to_csv(PATH_TO_FTCAPI+'generatedfiles/matches-per-team.csv', index=False)
 
 
     if settings.debug_level>1:

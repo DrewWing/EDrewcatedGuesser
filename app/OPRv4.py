@@ -101,7 +101,7 @@ def loadTeamNumbers() -> list:
     Loads teams from a csv file team-list-filtered.csv (created in jsonparse.py)
     """
     # return list(pd.read_csv(PATH_TO_FTCAPI+'matches-per-team.csv')['teamNumber'])
-    return list(pd.read_csv(PATH_TO_FTCAPI+'team-list-filtered.csv')['teamNumber'])
+    return list(pd.read_csv(PATH_TO_FTCAPI+'generatedfiles/team-list-filtered.csv')['teamNumber'])
 
 
 def filterMatchesByTeams(matches, teams: list):

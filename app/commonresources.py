@@ -25,9 +25,10 @@ import datetime
 from python_settings import PythonSettings
 global_settings = PythonSettings()
 
+slash = ('\\' if '\\' in global_settings.path_to_ftcapi else '/') # support both forwardslash and backslash type paths
 
-PATH_TO_FTCAPI = global_settings.path_to_ftcapi+('\\' if '\\' in global_settings.path_to_ftcapi else '/') # Should have trailing slash!
-PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+"joblibcache"
+PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
+PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+"app"+slash+"joblibcache"
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
 EVENTCODE = global_settings.event_code
@@ -51,8 +52,8 @@ else:
 # whether or not to memorize functions using joblib.memory
 DO_JOBLIB_MEMORY = True  # Used to be True
 
-# used in sheetsapi
-SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI + 'service-account-key-ftc-api-for-sheets-19d729dc80e8.json'  # TODO: Remove before publication
+# used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
+SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + 'service-account-key-ftc-api-for-sheets-19d729dc80e8.json'  # TODO: Remove before publication
 SPREADSHEET_ID = "1KIox_wRJ0QdoUhu2oH1j6Q2Cj-mTO0PEnwTQ97-7wqY" #TODO: change this every event.
 # A spreadsheet id is found in the URL of the given sheet:
 # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
@@ -128,7 +129,7 @@ def log_error(message: str, level="ERROR"):
     """
     Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
     """
-    with open(PATH_TO_FTCAPI+"errors.log", "a") as myfile:
+    with open(PATH_TO_FTCAPI+f"generatedfiles{slash}errors.log", "a") as myfile:
         myfile.write(f'[{datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")}][{level}!] '+str(message)+'\n')
 
 

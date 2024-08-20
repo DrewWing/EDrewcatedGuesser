@@ -24,7 +24,7 @@ class PythonSettings():
         settings_path = str(
             dir_path + 
             ("\\" if "\\" in dir_path else "/") + # Accomodate forwardslash paths and backslash paths
-            "settings.config"
+            "generatedfiles"+("\\" if "\\" in dir_path else "/")+"settings.config"
         )
         
         # gather the settings from the settings.config file

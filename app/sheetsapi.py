@@ -435,7 +435,7 @@ def push_teams(service):
         print(info_i()+'    Writing season-long OPR data')
         
     write_to_range = TEAMS_WRITE_RANGE
-    data_to_push   = get_team_data(PATH_TO_FTCAPI+'opr/opr-result-sorted.csv')
+    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-result-sorted.csv')
     
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
@@ -457,7 +457,7 @@ def push_teams(service):
         print(info_i()+'    Writing event OPR data')
         
     write_to_range = TEAMS_EVENT_WRITE_RANGE
-    data_to_push   = get_team_data(PATH_TO_FTCAPI+'opr/opr-event-result-sorted.csv')
+    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-event-result-sorted.csv')
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
@@ -484,7 +484,7 @@ def push_teams(service):
         print(info_i()+'    Writing recent OPR  data')
         
     write_to_range = TEAMS_RECENT_WRITE_RANGE
-    data_to_push   = get_team_data(PATH_TO_FTCAPI+'opr/opr-recent-result-sorted.csv')
+    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-recent-result-sorted.csv')
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
@@ -510,9 +510,9 @@ def push_rankings(service):
         print(info_i()+' [sheetsapi.py] Pushing rankings data to sheets')
     if settings.debug_level>1:
         print(info_i()+'    Uses:')
-        print(info_i()+'      - eventdata/eventrankings.json')
+        print(info_i()+'      - generatedfiles/eventdata/eventrankings.json')
         print(info_i()+'    Creates:')
-        print(info_i()+'      - eventdata/eventrankings.csv')
+        print(info_i()+'      - generatedfiles/eventdata/eventrankings.csv')
         
     #
     # Write event ranking data
@@ -522,7 +522,7 @@ def push_rankings(service):
         
     # from jsonparse, save the rankings dataframe as a csv
     try:
-        rankings_dataframe(PATH_TO_FTCAPI+'eventdata/eventrankings.json',PATH_TO_FTCAPI+'eventdata/eventrankings.csv')
+        rankings_dataframe(PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.json',PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.csv')
 
     except IndexError as e:
         log_error(f'[sheetsapi.py][push_rankings] IndexError with rankngs_dataframe in jsonparse. This indicates that eventdata/eventrankings.json is either empty or malformed. This is normal if the event hasn\'t started yet. full error msg: {e}')
@@ -531,7 +531,7 @@ def push_rankings(service):
     write_to_range = TEAMS_RANKING_WRITE_RANGE
     
     try:
-        data_to_push   = pd.read_csv(PATH_TO_FTCAPI+'eventdata/eventrankings.csv')
+        data_to_push   = pd.read_csv(PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.csv')
         # Dropping multiple columns with help from 
         # https://stackoverflow.com/questions/13411544/delete-a-column-from-a-pandas-dataframe
         data_to_push.drop(
@@ -545,8 +545,8 @@ def push_rankings(service):
 
     except pd.errors.EmptyDataError:
         # if the file is empty
-        data_to_push = [['No rankings for the given event'],['(eventdata/eventrankings.csv is empty)']]
-        log_error('[sheetsapi.py][push_rankings] eventdata/eventrankings.csv is empty. This is normal if an event hasn\'t started yet, but is bad if the rankings are out.',level="Warn")
+        data_to_push = [['No rankings for the given event'],['(generatedfiles/eventdata/eventrankings.csv is empty)']]
+        log_error('[sheetsapi.py][push_rankings] generatedfiles/eventdata/eventrankings.csv is empty. This is normal if an event hasn\'t started yet, but is bad if the rankings are out.',level="Warn")
     
     
 
