@@ -32,9 +32,16 @@ param (
 
 $currentLocation=Get-Location # The current location, should be the working directory
 
-if ($ShowDebugText -eq $true){
+if ($ShowDebugText -eq $true) {
     Write-Output "User parameters collected."
     Write-Output "Current location $currentLocation"
+    Write-Output "Now initializing correct directories"
+}
+
+python ".\__init__.py"
+
+if ($ShowDebugText -eq $true) {
+    Write-Output "Directories initialized. Now activating virtual environment."
 }
 
 
@@ -43,7 +50,7 @@ if ($ShowDebugText -eq $true){
 
 python "app/init_settings.py" -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
 
-if ($ShowDebugText -eq $true){
+if ($ShowDebugText -eq $true) {
     Write-Output "Virtual Environment activated. Starting..."
 }
 
