@@ -30,7 +30,7 @@ param (
 )
 
 
-$currentLocation=Get-Location # The current location of this script, should be the working directory
+$currentLocation=Get-Location # The current location, should be the working directory
 
 if ($ShowDebugText -eq $true){
     Write-Output "User parameters collected."
@@ -41,7 +41,7 @@ if ($ShowDebugText -eq $true){
 # Activate the virtual environment where we installed the required python packages (mostly google sheets api stuff).
 . "ftcapivenvwindows\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
 
-python init_settings.py -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
+python "app/init_settings.py" -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
 
 if ($ShowDebugText -eq $true){
     Write-Output "Virtual Environment activated. Starting..."

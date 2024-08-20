@@ -65,10 +65,10 @@ lines = [
     ""
 ]
 
+slash = ("\\" if "\\" in path_to_ftcapi else "/") # Accomodate forwardslash paths and backslash paths
+
 settings_path = str(
-    path_to_ftcapi + 
-    ("\\" if "\\" in path_to_ftcapi else "/") + # Accomodate forwardslash paths and backslash paths
-    "settings.config"
+    path_to_ftcapi+slash+"generatedfiles"+slash+"settings.config"
 )
 
 with open(settings_path, 'w+') as thefile:
