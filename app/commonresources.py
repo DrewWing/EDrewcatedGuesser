@@ -109,14 +109,19 @@ class Colors:
     END = "\033[0m"
 
 
+def make_printable(s: str) -> str:
+    """ Makes strings printable, reducing UnicodeDecodeErrors"""
+    return s.encode(sys.stdout.encoding, errors="replace").decode()
+
+
 def green_check():
-    return '['+Colors.LIGHT_GREEN+'✓'+Colors.END+']'
+    return make_printable('['+Colors.LIGHT_GREEN+'✓'+Colors.END+']')
 
 def red_x():
-    return '['+Colors.RED+'X'+Colors.END+']'
+    return make_printable('['+Colors.RED+'X'+Colors.END+']')
 
 def info_i():
-    return '['+Colors.BLUE+'i'+Colors.END+']'
+    return make_printable('['+Colors.BLUE+'i'+Colors.END+']')
 #endregion color stuffs
 
 
