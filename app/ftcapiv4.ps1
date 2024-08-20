@@ -119,7 +119,7 @@ function GetMatches {
 
     #echo "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode"
     # Get all event matches
-    $response = Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
+    Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
                     -OutFile "app/generatedfiles/eventdata/eventmatches.json"
@@ -176,9 +176,9 @@ function cycle {
     if (($DryRun -eq $false) -and ($NoApiCalls -eq $false)) {
         PrintStatus "Getting FTC event data...  l"
         GetMatches
-        PrintStatus "Getting FTC event data  2/3 l"
+        PrintStatus "Getting FTC event data 2/3 l"
         GetSchedule
-        PrintStatus "Getting FTC event data  3/3 l"
+        PrintStatus "Getting FTC event data 3/3 l"
         GetRankings
     
     }
