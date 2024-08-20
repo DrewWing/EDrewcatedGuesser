@@ -29,14 +29,17 @@ param (
     [int]$DebugLevel = 0 # Debug level of python scripts
 )
 
+
+$currentLocation=Get-Location # The current location of this script, should be the working directory
+
 if ($ShowDebugText -eq $true){
     Write-Output "User parameters collected."
+    Write-Output "Current location $currentLocation"
 }
 
-Set-Location "E:\DrewFTCAPI\ftcapi-branch47-1" #TODO: alwasys update this to the latest version
 
 # Activate the virtual environment where we installed the required python packages (mostly google sheets api stuff).
-. "E:\DrewFTCAPI\ftcapivenvwindows\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
+. "ftcapivenvwindows\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
 
 python init_settings.py -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
 
@@ -210,11 +213,11 @@ function cycle {
 
 function DisplayHelp {
     # Display Help
-    Write-Output "ftcapiv4.sh"
+    Write-Output "FTCAPI v47.1 Alpha"
     Write-Output "by Drew Wingfield"
     Write-Output "  - Make sure to see the documentation in the README.md file"
     Write-Output "  - This program uses the official FIRST API for match info"
-    Write-Output "    You can find it here: https://frc-events.firstinspires.org/services/API"
+    Write-Output "    You can find it here: https://ftc-events.firstinspires.org/services/API"
     Write-Output ""
     Write-Output "Syntax: "
     Write-Output "  . ftcapifinal.sh -EventCode FTCCMP1FRAN"
@@ -223,11 +226,11 @@ function DisplayHelp {
     Write-Output "  h     Print this Help."
     Write-Output "  help  Print this Help."
     #printf "  T     Update the team stats. \n"
-    Write-Output "  OneCycle      Do only one cycle."
+    Write-Output "  OneCycle      Do only one cycle of getting matches, calculating stats, and pushing data."
     Write-Output "  RankingsOnly  Get rankings data for event, then push rankings data to sheets."
-    Write-Output "  DryRun        Do a dry run, where nothing actually runs, just the visual output."
-    Write-Output "  NoAPICalls    Disables calls to the FTC API. Usually good for debug."
-    Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts."
+    Write-Output "  DryRun        Do a dry run, where nothing actually runs, just the visual output (for debug/testing)."
+    Write-Output "  NoAPICalls    Disables calls to the FTC API (for debug)."
+    Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts. The info printed increases with the number."
     Write-Output "  FieldMode <bool>  Default true, uses last calculations for global OPR stats, instead of calculating it."
 
     #printf "V     Print software version and exit. \n\n"
@@ -254,21 +257,10 @@ if ($rankingsonly -eq $true) {
     return 0
 }
 
-#printf "EventCode: $EventCode\n"
-#printf "one\n"
-#return 1
-
-#Write-Output " REMEMBER TO CHECK THIS (should be latest version!!!):"
-#Write-Output " pathtoftcapi =" "$pathtoftcapi"
-#Write-Output "\n\n\n\n\n\n\n\n\n\n\n\n\n\n" # needs to be here to offset the "going up" of the cursor
-
 
 if ($OneCycle -eq $true){
     cycle
-
-}
-    
-else {
+} else {
     while ($true){
         cycle
     }
@@ -276,7 +268,7 @@ else {
 
 
 
-#deactivate the virtual environment
+# Deactivate the virtual environment
 deactivate
 
 
