@@ -49,6 +49,7 @@ except ImportError as e:
 #endregion imports
 
 starttime = time.time()
+slash = ('\\' if '\\' in PATH_TO_FTCAPI else '/')
 
 #region joblib
 # Set up joblib's cache memory location
@@ -101,7 +102,7 @@ def loadTeamNumbers() -> list:
     Loads teams from a csv file team-list-filtered.csv (created in jsonparse.py)
     """
     # return list(pd.read_csv(PATH_TO_FTCAPI+'matches-per-team.csv')['teamNumber'])
-    return list(pd.read_csv(PATH_TO_FTCAPI+'generatedfiles/team-list-filtered.csv')['teamNumber'])
+    return list(pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}team-list-filtered.csv')['teamNumber'])
 
 
 def filterMatchesByTeams(matches, teams: list):
@@ -118,13 +119,13 @@ def filterMatchesByTeams(matches, teams: list):
 def loadMatches(filter_by_teams: list = []):
     """
     Returns a pandas object of the all-matches.csv file containing all matches.
-    \nRelies on all-matches.csv
+    \nRelies on generatedfiles/all-matches.csv
     \nParameters:
     \n\t filter_by_teams (list) - Filters the matches only including the team numbers in the list
     
     """
     #TODO: Update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(PATH_TO_FTCAPI+'all-matches.csv') # Get the csv data
+    all_matches = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}all-matches.csv') # Get the csv data
 
     # Make the start time column use the datetime format
     all_matches['actualStartTime'] = pd.to_datetime(all_matches['actualStartTime'], format='mixed')
@@ -191,7 +192,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams=loadTeamNumbers()) -> num
         if (settings.debug_level>1):
             print(info_i()+" [OPRv4][build_m]  Loading matrix from file, not building it.")
             
-        M = numpy.load(PATH_TO_FTCAPI+"OPR-m.npy")
+        M = numpy.load(PATH_TO_FTCAPI+f"generatedfiles{slash}OPR-m.npy")
 
         if settings.debug_level>1:
             print(green_check()+" [OPRv4][build_m]  Matrix M successfully loaded from file OPR-m.npy")
@@ -254,15 +255,15 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams=loadTeamNumbers()) -> num
         
 
         # save the matrix to a file for later loading
-        numpy.save(PATH_TO_FTCAPI+'OPR-m',M)
+        numpy.save(PATH_TO_FTCAPI+f'generatedfiles{slash}OPR-m',M)
 
     if (settings.debug_level>2):
         print(info_i()+'  M:')
         print(M)
         print()
         if (settings.debug_level>3):
-            print(info_i()+'  Saving M to debug/M-debug.csv for debug purposes... (this could take a little bit if it is big)')
-            numpy.savetxt(PATH_TO_FTCAPI+"debug/M-debug.csv", M, delimiter=",")
+            print(info_i()+'  Saving M to generatedfiles/M-debug.csv for debug purposes... (this could take a little bit if it is big)')
+            numpy.savetxt(PATH_TO_FTCAPI+f"generatedfiles{slash}M-debug.csv", M, delimiter=",")
             print(green_check()+'  Saved.')
 
     return M
@@ -388,7 +389,12 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         else:
             print(red_x()+' [OPRv4][create_and_sort_stats] Exception occured. Please set debug_level to 2 or above for full info.')
         
-        log_error('[OPRv4.py][create_and_sort_stats] Some weird value happened with this function. No idea why, good luck! Full error info:'+str(e))
+        log_error('[OPRv4.py][create_and_sort_stats] Some weird value happened with this function and an exception occured. No idea why, good luck! Full error info:'+str(e))
+        log_error('[OPRv4.py][create_and_sort_stats] More info on the inputs. If these numbers arent the same, that is bad:')
+        log_error('    length of teamsList: '+str(len(teamsList)))
+        log_error('    length of OPR: '+str(len(convertToList(OPRs))))
+        log_error('    length of AUTOs: '+str(len(convertToList(AUTOs))))
+        log_error('    length of CCWMs: '+str(len(convertToList(CCWMs))))
         raise e
 
     if (settings.debug_level>2):
@@ -440,9 +446,11 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     return sorted_results_pd
 
 
-def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False):
+def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False, fallback=None):
     """
-    Calculates OPR based on input matches (from load_matches), and saves the sorted results to the output filepath (csv)
+    Calculates OPR based on input matches (from load_matches), and saves the sorted results to the output filepath (csv).
+    If fallback is set to the string 'zeroes', and there are empty dataframes, it will fill them with zeroes. Otherwise, it
+    returns an error.
     """
     # Build M
     if (DO_JOBLIB_MEMORY and settings.debug_level>0):
@@ -504,6 +512,36 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False)
         print(info_i()+'CCWMs')
         print(CCWMs)
         print()
+    
+    # Create the unsorted list of teams
+    teamsList = list(teams)
+
+    if fallback=="zeroes":
+        used_fallback = False
+
+        if OPRs.size == 0:
+            used_fallback = True
+            OPRs = numpy.zeros((len(teamsList), 1))
+        
+        if AUTOs.size == 0:
+            used_fallback = True
+            AUTOs = numpy.zeros((len(teamsList), 1))
+        
+        if CCWMs.size == 0:
+            used_fallback = True
+            CCWMs = numpy.zeros((len(teamsList), 1))
+        
+        if (settings.debug_level>2) and (used_fallback):
+            print(green_check()+'  Fallback to zeroes used. Displaying new ones below:')
+            print(info_i()+f'OPRs (shape {OPRs.shape})')
+            print(OPRs)
+            print()
+            print(info_i()+f'AUTOs (shape {AUTOs.shape})')
+            print(AUTOs)
+            print()
+            print(info_i()+f'CCWMs (shape {CCWMs.shape})')
+            print(CCWMs)
+            print()
 
     if settings.debug_level>1:
         print(info_i()+'    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)')
@@ -512,8 +550,6 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False)
     AUTOs = AUTOs.round(14)
     CCWMs = CCWMs.round(14)
 
-    # Create the unsorted list of teams
-    teamsList = list(teams)
 
     if (DO_JOBLIB_MEMORY and settings.debug_level>0):
         print(info_i()+' create_and_sort_stats.check_call_in_cache (will func use joblib cache?) = '+str(create_and_sort_stats.check_call_in_cache(teamsList, OPRs, AUTOs, CCWMs)))
@@ -632,7 +668,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=PATH_TO_FTCAPI+'opr/opr-global-result-sorted.csv',  
+            output_file_path=PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-global-result-sorted.csv',  
             load_m=False
         )
 
@@ -667,7 +703,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=PATH_TO_FTCAPI+'opr/opr-result-sorted.csv',  
+            output_file_path=PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-result-sorted.csv',  
             load_m=False
         )
 
@@ -706,8 +742,9 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=PATH_TO_FTCAPI+'opr/opr-recent-result-sorted.csv', 
-            load_m=False
+            output_file_path=PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-recent-result-sorted.csv', 
+            load_m=False,
+            fallback="zeroes"
         )
 
 
@@ -733,7 +770,7 @@ if __name__ == '__main__':
         jsonparse.prepare_opr_calculation(specific_event=EVENTCODE)
 
         teams   = loadTeamNumbers() # load teams from matches-per-team.csv
-        matches = loadMatchesByRecent(filter_by_teams=teams)
+        matches = loadMatches(filter_by_teams=teams)
 
         if settings.debug_level>0:
             print(info_i()+'Calculating OPR for matches within event...')
@@ -744,7 +781,7 @@ if __name__ == '__main__':
         #print(matches)
         do_all_opr_stuff(
             matches = matches, 
-            output_file_path = PATH_TO_FTCAPI+'opr/opr-event-result-sorted.csv',  
+            output_file_path = PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-event-result-sorted.csv',  
             load_m  = False
         )
 
