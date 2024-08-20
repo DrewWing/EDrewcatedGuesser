@@ -336,17 +336,18 @@ def push_matches(service):
     
     write_to_range = MATCHES_WRITE_RANGE
 
+    slash = ('\\' if '\\' in PATH_TO_FTCAPI else '/')
     # get the data
-    event_object   = EventMatches(get_json(PATH_TO_FTCAPI+"eventdata/eventmatches.json"))
-    event_schedule_qual    = EventSchedule(get_json(PATH_TO_FTCAPI+'eventdata/eventschedule-qual.json'))
-    event_schedule_playoff = EventSchedule(get_json(PATH_TO_FTCAPI+'eventdata/eventschedule-playoff.json'))
+    event_object   = EventMatches(get_json(PATH_TO_FTCAPI+f"generatedfiles{slash}eventdata{slash}eventmatches.json"))
+    event_schedule_qual    = EventSchedule(get_json(PATH_TO_FTCAPI+f'generatedfiles{slash}eventdata{slash}eventschedule-qual.json'))
+    event_schedule_playoff = EventSchedule(get_json(PATH_TO_FTCAPI+f'generatedfiles{slash}eventdata{slash}eventschedule-playoff.json'))
 
     import pickle
 
-    with open(PATH_TO_FTCAPI+'gsNeigh.pkl', 'rb') as f:
+    with open(PATH_TO_FTCAPI[:-4]+'gsNeigh.pkl', 'rb') as f: # the clipping of PATH_TO_FTCAPI removes the "/app"
         gsNeigh = pickle.load(f)
     
-    with open(PATH_TO_FTCAPI+'gsSVC.pkl','rb') as f:
+    with open(PATH_TO_FTCAPI[:-4]+'gsSVC.pkl','rb') as f:
         gsSVC = pickle.load(f)
     
     predictors = [gsNeigh, gsSVC]
