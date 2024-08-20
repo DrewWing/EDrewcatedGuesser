@@ -2,29 +2,15 @@
 service-account-key-ftc-api-for-sheets-19d729dc80e8.json
 secrets.txt
 
-all-matches.csv
-errors.log
-event-ids-to-get.txt
-machinefile.csv
-matches-per-team.csv
-seasondata.json
-team-list-filtered.csv
-opr-m.npy
-
-settings.config
-
 joblibcache/
 
 __pycache__/
-debug/
-eventdata/
 
-opr/
+app/generatedfiles/
 
 Archive2/
 
 .vscode/
-opr/opr-result-sorted.csv
 
 ftcapivenv/
 ftcapivenvwindows/
