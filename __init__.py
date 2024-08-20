@@ -19,9 +19,10 @@ def make_required_directories():
     for dir in [
         "app/generatedfiles",
         "app/generatedfiles/joblibcache",
-        #"app/generatedfiles/all-events",
-        #"app/generatedfiles/all-teams",
-        #"app/generatedfiles/eventdata"
+        "app/generatedfiles/opr",
+        "app/generatedfiles/opr/all-events",
+        #"app/generatedfiles/opr/all-teams",
+        "app/generatedfiles/eventdata"
     ]:
         if not os.path.exists(dir):
             os.makedirs(dir)
