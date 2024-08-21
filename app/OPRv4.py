@@ -71,10 +71,10 @@ try:
 except Exception as e:
     log_error( '[OPRv4.py][setup stuff] Joblib memory creation had an error. Some info:')
     log_error(f'                              PATH_TO_JOBLIB_CACHE={PATH_TO_JOBLIB_CACHE}')
-    log_error( '                              You are recieving this because you probably forgot to plug in the external hard drive!')
-    log_error( '                              To disable this error, set DO_JOBLIB_CACHE to False in commonresources.py')
+    log_error( '                              The most likely cause for this is if you put your joblib cache somewhere other than the working directory.')
+    log_error( '                              The error has been printed to the console and raised, reguardless of the debug_level.')
     
-    print(red_x()+ ' [OPRv4][setup] Joblib memory creation had a FIleNotFoundError. Some info:')
+    print(red_x()+ ' [OPRv4][setup] Joblib memory creation had an error. Some info:')
     print(red_x()+f'                 PATH_TO_JOBLIB_CACHE={PATH_TO_JOBLIB_CACHE}')
     print(red_x()+ '   The most likely cause for this is if you put your joblib cache somewhere other than the working directory.\n')
     raise e
@@ -172,7 +172,7 @@ A value of 1 means the team was in that alliance and a value of 0 means the team
 First loop through each red alliance and then loop through each blue alliance.
 The resulting matrix should have 2 * len(matches) rows.
 """
-def build_m(load_m: bool, matches: pd.DataFrame, teams=loadTeamNumbers()) -> numpy.matrix:
+def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
     """
     Reuturns a matrix of type numpy.matrix M, with each row representing a match
     and each column representing a team. Ones for teams that participate, zeroes

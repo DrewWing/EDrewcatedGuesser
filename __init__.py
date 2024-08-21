@@ -18,7 +18,7 @@ def make_required_directories():
     # Make required directories if they don't exist already
     for dir in [
         "app/generatedfiles",
-        "app/generatedfiles/joblibcache",
+        #"app/generatedfiles/joblibcache",
         "app/generatedfiles/opr",
         "app/generatedfiles/opr/all-events",
         #"app/generatedfiles/opr/all-teams",
