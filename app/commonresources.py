@@ -28,7 +28,7 @@ global_settings = PythonSettings()
 slash = ('\\' if '\\' in global_settings.path_to_ftcapi else '/') # support both forwardslash and backslash type paths
 
 PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
-PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+"app"+slash+"joblibcache"
+PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+f"generatedfiles{slash}joblibcache"
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
 EVENTCODE = global_settings.event_code
