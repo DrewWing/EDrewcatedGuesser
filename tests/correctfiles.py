@@ -34,8 +34,10 @@ class correctFileTest(unittest.TestCase):
         """
         Makes sure no markdown files are anywhere but the root directory
         """
-        data_extensions = [".md"]
-        list_of_app_files = os.listdir("app")
+        markdown_extensions = [".md"]
+        self.no_extensions_in_directory(markdown_extensions, "app","A markdown file is in apps! It should be somewhere else!")
+        self.no_extensions_in_directory(markdown_extensions, "app/generatedfiles","A markdown file is in generatedfiles! It should be somewhere else!")
+
 
 
 
