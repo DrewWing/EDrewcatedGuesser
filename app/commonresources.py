@@ -32,7 +32,7 @@ slash = ('\\' if '\\' in global_settings.path_to_ftcapi else '/') # support both
 PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
 
 #region joblibpath
-PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+f"generatedfiles{slash}joblibcache"
+PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+f"generatedfiles{slash}joblibcache{slash}joblib"
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
