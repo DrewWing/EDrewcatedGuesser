@@ -9,6 +9,7 @@
 
 from commonresources import PATH_TO_FTCAPI, red_x, info_i, green_check, get_json
 
+slash = ('\\' if '\\' in PATH_TO_FTCAPI else '/')
 
 print(info_i()+' [viewdata.py] Importing')
 
@@ -44,7 +45,7 @@ def using_hist2d(ax, x, y, bins=(50, 50)):
 if do_first_map:
     print(info_i()+' Generating data')
     # Generate Data
-    allmatches = pd.read_csv(PATH_TO_FTCAPI+'all-matches.csv')
+    allmatches = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}all-matches.csv')
     
     allmatches.drop(
                 ['description'], 
