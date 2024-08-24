@@ -30,6 +30,7 @@ param (
     [string]$VenvDir = "reqtest" # The directory of virtual environment to use
 )
 
+$Version="47-1Alpha"
 
 $currentLocation=Get-Location # The current location, should be the working directory
 
@@ -90,7 +91,7 @@ function PrintStatus {
     #Write-Output '\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F'
     Write-Output "`n`n`n"
     Write-Output ' @------------------------------------@'
-    Write-Output ' @ FTC API V47.1  -  Drew Wingfield   @'
+    Write-Output ' @ FTC API v$Version  -  Drew Wingfield   @'
     Write-Output ' @------------------------------------@'
     Write-Output " @ Iteration: $iteration   "
     Write-Output " @ Last Update:  $global:LastUpdate "
@@ -221,7 +222,7 @@ function cycle {
 
 function DisplayHelp {
     # Display Help
-    Write-Output "FTCAPI v47.1 Alpha"
+    Write-Output "FTCAPI v$Version"
     Write-Output "by Drew Wingfield"
     Write-Output "  - Make sure to see the documentation in the README.md file"
     Write-Output "  - This program uses the official FIRST API for match info"

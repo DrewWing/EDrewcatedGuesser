@@ -31,7 +31,7 @@ if settings.debug_level>0:
         exit()
 
 
-from OPRv4 import loadMatches, filterMatchesByTeams, filter_dataframe_by_time, build_m, build_scores, calculate_opr
+from OPR import loadMatches, filterMatchesByTeams, filter_dataframe_by_time, build_m, build_scores, calculate_opr
 import jsonparse  # For OPR calculation preparation
 
 import os
