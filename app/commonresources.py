@@ -21,6 +21,8 @@ __author__ = 'Drew Wingfield'
 import sys
 import json
 import datetime
+import os
+import pathlib
 
 from python_settings import PythonSettings
 global_settings = PythonSettings()
@@ -28,7 +30,24 @@ global_settings = PythonSettings()
 slash = ('\\' if '\\' in global_settings.path_to_ftcapi else '/') # support both forwardslash and backslash type paths
 
 PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
+
+#region joblibpath
 PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+f"generatedfiles{slash}joblibcache"
+
+# The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
+# It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
+PATH_TO_JOBLIB_CACHE = str(pathlib.Path(PATH_TO_JOBLIB_CACHE).parent.resolve())
+
+if os.name == "nt":
+    #PATH_TO_JOBLIB_CACHE = os.path.join(PATH_TO_JOBLIB_CACHE, "cache")
+    if PATH_TO_JOBLIB_CACHE.startswith("\\\\"):
+        PATH_TO_JOBLIB_CACHE = "\\\\?\\UNC\\" + PATH_TO_JOBLIB_CACHE[2:]
+    else:
+        PATH_TO_JOBLIB_CACHE = "\\\\?\\" + PATH_TO_JOBLIB_CACHE
+else:
+    PATH_TO_JOBLIB_CACHE = os.path.join(folder, "cache")
+#endregion joblibpath
+
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
 EVENTCODE = global_settings.event_code

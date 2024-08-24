@@ -15,7 +15,7 @@ Also see the [Updates](Updates.md) page.
 ## Things to work on:
 
 ### Bugs
-  - [ ] `[Joblib]` `[Critical]` Joblib causes a CacheWarning on certain functions, calling it a "race condition." This happens on certain Windows versions when a path exceeds 250 something characters. The function fails and everything gets wonky.
+  - [X] ~~`[Joblib]` `[Critical]` Joblib causes a CacheWarning on certain functions, calling it a "race condition." This happens on certain Windows versions when a path exceeds 250 something characters. The function fails and everything gets wonky.~~
   - [ ] `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
     - [ ] Figure out where in the world these files keep coming from! (unused)
   - [X] ~~`[OPR]` `[Speed]` `[Urgent!!!]` Right Now global OPRs are calculated (because CRAPPY_LAPTOP is False) all the time, using up a rediculous amount of CPU time every time the matches change. Somehow fix that. (maybe only do it every time the event changes?)~~
@@ -25,6 +25,7 @@ Also see the [Updates](Updates.md) page.
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
 
 ### Other
+  - [ ] `[Code]` `[QOL]` Redo all the path things to make them better lol
   - [ ] `[Code]` `[Tests]` Add tests
     - [X] ~~Correct files in correct places~~
     - [ ] Machine learning is recent to the correct season  year
@@ -145,6 +146,8 @@ Printing in BASH with help from some people on [this StackOverflow post](https:/
 Python printing in colors (Colors class) was taken from [Rene-d](https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007).
 
 Google sheets api was implemented with lots of help from [their sample program](https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py) and [quickstart](https://developers.google.com/sheets/api/quickstart/python).
+
+Thanks to viniciusarrud on GitHub in [this Joblib issue](https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714) for a solution to a particular bug involving pathing on Windows.
 
 ## More documentation goes here!
 As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `error.log` with a timestamp.
