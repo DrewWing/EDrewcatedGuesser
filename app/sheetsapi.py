@@ -344,10 +344,10 @@ def push_matches(service):
 
     import pickle
 
-    with open(PATH_TO_FTCAPI[:-4]+'gsNeigh.pkl', 'rb') as f: # the clipping of PATH_TO_FTCAPI removes the "/app"
+    with open(PATH_TO_FTCAPI+'gsNeigh.pkl', 'rb') as f:
         gsNeigh = pickle.load(f)
     
-    with open(PATH_TO_FTCAPI[:-4]+'gsSVC.pkl','rb') as f:
+    with open(PATH_TO_FTCAPI+'gsSVC.pkl','rb') as f:
         gsSVC = pickle.load(f)
     
     predictors = [gsNeigh, gsSVC]
