@@ -30,7 +30,7 @@ param (
     [string]$VenvDir = "reqtest" # The directory of virtual environment to use
 )
 
-$Version="47-1Alpha"
+$version="48.0 Alpha"
 
 $currentLocation=Get-Location # The current location, should be the working directory
 
@@ -90,9 +90,9 @@ function PrintStatus {
 
     #Write-Output '\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F'
     Write-Output "`n`n`n"
-    Write-Output ' @------------------------------------@'
-    Write-Output ' @ FTC API v$Version  -  Drew Wingfield   @'
-    Write-Output ' @------------------------------------@'
+    Write-Output " @------------------------------------@"
+    Write-Output " @ FTC API v$global:version  -  Drew Wingfield   @"
+    Write-Output " @------------------------------------@"
     Write-Output " @ Iteration: $iteration   "
     Write-Output " @ Last Update:  $global:LastUpdate "
     Write-Output " @ Current Time: $((Get-Date).ToString())"

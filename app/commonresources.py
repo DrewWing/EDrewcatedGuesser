@@ -15,7 +15,7 @@ __all__ = [
     'PATH_TO_FTCAPI', 'PATH_TO_JOBLIB_MEMORY', 'SERVICE_ACCOUNT_FILE', 
     'SPREADSHEET_ID' 
 ]
-__version__ = '47-1 ALPHA'
+__version__ = '48.0 ALPHA'
 __author__ = 'Drew Wingfield'
 
 import sys

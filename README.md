@@ -1,4 +1,4 @@
-# FTCAPI V47.1 (Alpha)
+# FTCAPI V48.0 (Alpha)
 ## by Drew Wingfield
 This is the README file.
 
