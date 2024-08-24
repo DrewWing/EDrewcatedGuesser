@@ -15,6 +15,7 @@ Also see the [Updates](Updates.md) page.
 ## Things to work on:
 
 ### Bugs
+  - [ ] `[Joblib]` `[Critical]` Joblib causes a CacheWarning on certain functions, calling it a "race condition." This happens on certain Windows versions when a path exceeds 250 something characters. The function fails and everything gets wonky.
   - [ ] `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
     - [ ] Figure out where in the world these files keep coming from! (unused)
   - [X] ~~`[OPR]` `[Speed]` `[Urgent!!!]` Right Now global OPRs are calculated (because CRAPPY_LAPTOP is False) all the time, using up a rediculous amount of CPU time every time the matches change. Somehow fix that. (maybe only do it every time the event changes?)~~
