@@ -182,7 +182,6 @@ if __name__ == "__main__":
     print(info_i()+'[commonresources] This file was called as __main__, which usually does not happen.')
     print(info_i()+'    Displaying constants and their values:')
     a = {
-        'CURRENT_VERSION'  : CURRENT_VERSION,
         'NUMBER_OF_DAYS_FOR_RECENT_OPR' : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         'EVENTCODE'       : EVENTCODE,
         'PATH_TO_FTCAPI'  : PATH_TO_FTCAPI,
