@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# ftcapiv4.sh
+# ftcapi.sh
 # by Drew Wingfield
 # started February 2024
 # forked from ftcapiv3 on Feb 26th, 2024
@@ -163,7 +163,7 @@ cycle () {
 Help()
 {
    # Display Help
-   printf "ftcapiv4.sh\nby Drew Wingfield\n"
+   printf "ftcapi.sh\nby Drew Wingfield\n"
    printf "Make sure to see the documentation in the README.md file\n"
    printf "This program uses the official FIRST API for match info\nYou can find it here: https://frc-events.firstinspires.org/services/API\n\n"
    printf "Syntax: . ftcapifinal.sh [-e|h|o] \n"
@@ -258,4 +258,4 @@ fi
 deactivate
 
 
-printf "[ftcapiv4] Program complete!\n"
+printf "[ftcapi] Program complete!\n"

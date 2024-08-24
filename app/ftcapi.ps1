@@ -1,5 +1,5 @@
 
-# ftcapiv4.ps1
+# ftcapi.ps1
 # by Drew Wingfield
 # forked from ftcapiv4 on June 6th, 2024
 # because i guess i need to have windows support.
@@ -191,7 +191,7 @@ function cycle {
     if (($UpdateTeams -eq $true) -and ($DryRun -eq $false)) {
         # update teams here
         PrintStatus "Calculating OPRs...        l"
-        python "app/OPRv4.py" # NOTE: Needs to be done before pushing matches
+        python "app/OPR.py" # NOTE: Needs to be done before pushing matches
         # Pushing matches includes calculating predictions, which relies on OPR and recentOPR stats
         PrintStatus "Pushing team data...       l"
         python "app/sheetsapi.py" teams
@@ -282,5 +282,5 @@ if ($OneCycle -eq $true){
 deactivate
 
 
-Write-Output "[ftcapiv4] Program complete!"
+Write-Output "[ftcapi] Program complete!"
 #endregion procedural

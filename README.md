@@ -32,7 +32,7 @@ Also see the [Updates](Updates.md) page.
   - [ ] `[Code]` Update version number! (`47-1` -> `48.0`)
   - [ ] `[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable (or automatic?)
   - [X] ~~`[QOL]` `[variables]` In ftcapiv4.ps1, make the virtual environment dir an input variable (or automatic?)~~
-  - [ ] `[Files]` Rename files to remove versions in names. Ex: `ftcapiv4.ps1` -> `ftcapi.ps1`
+  - [X] ~~`[Files]` Rename files to remove versions in names. Ex: `ftcapiv4.ps1` -> `ftcapi.ps1`~~
   - [ ] `[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore
     - [ ] `[Readme]` Update Readme file instructions, file names, and directory names to match current ones.
   - [ ] Remove all references to heatmap stuff.
@@ -60,7 +60,7 @@ Also see the [Updates](Updates.md) page.
 
 ## Running the Program
 ### Windows
-Most of the time, you should be running the program `ftcapiv4.ps1`. \
+Most of the time, you should be running the program `ftcapi.ps1`. \
 It is reccomended to use the `-h` argument to get familiar with the arguments.
 
 
@@ -71,7 +71,7 @@ During events, there are two really important parameters:
 
 Your typical configuration during an event with an event code of `FTCCMPFRAN1` is going to look something like this:
 ```powershell
-. 'your_path_to_the_directory\ftcapiv4.ps1' -FieldMode $True -EventCode "FTCCMPFRAN1"
+. 'your_path_to_the_directory\ftcapi.ps1' -FieldMode $True -EventCode "FTCCMPFRAN1"
 ```
 
 #### Between Events
@@ -81,17 +81,17 @@ You can also add the flag `-OneCycle` to only perform one cycle and then termina
 
 A configuration between events might look something like this:
 ```powershell
-. 'your_path_to_the_directory\ftcapiv4.ps1' -OneCycle -Fieldmode $False
+. 'your_path_to_the_directory\ftcapi.ps1' -OneCycle -Fieldmode $False
 ```
 
 ### Linux
-To run the program after setting up the correct variables (see below), run the `ftcapiv4.sh` program, which kind of calls everything else. If you want to do anything other than the basics, you're going to have to dig a little deeper into the code. Use the `h` modifier to get the help menu.
+To run the program after setting up the correct variables (see below), run the `ftcapi.sh` program, which kind of calls everything else. If you want to do anything other than the basics, you're going to have to dig a little deeper into the code. Use the `h` modifier to get the help menu.
 
 ### MacOS
 Good luck haha. I've had enough trouble adding support for both Linux and Windows, so there's no way I'm going to spend another 2,000 hours attempting to add MacOS support.
 
 ## Setting Up
-Please note that this software needs to be set up correctly to work. This should be configured automatically by `ftcapiv4.ps1` or `ftcapiv4.sh`.
+Please note that this software needs to be set up correctly to work. This should be configured automatically by `ftcapi.ps1` or `ftcapi.sh`.
 
 ### Common Resources
 Certain variables in commonresources.py need to be set up correctly;
@@ -103,7 +103,7 @@ Certain variables in commonresources.py need to be set up correctly;
 
 
 ### The FTCAPI BASH Program
-In ftcapiv4.sh there are several necessary variables to configure;
+In ftcapi.sh there are several necessary variables to configure;
  - `authorizationheader` (string) should be set to your authorization token for the FTC API. Ex: `"Authorization: Basic <your_token_goes_here>"`
 
  - `pathtoftcapi` should be similarly configured as in commonresources.py, except **without the trailing forwardslash.** Ex: `/home/wingfield/ftcapi-branch44-1`
