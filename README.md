@@ -15,24 +15,19 @@ Also see the [Updates](Updates.md) page.
 ## Things to work on:
 
 ### Bugs
-  - [X] ~~`[Joblib]` `[Critical]` Joblib causes a CacheWarning on certain functions, calling it a "race condition." This happens on certain Windows versions when a path exceeds 250 something characters. The function fails and everything gets wonky.~~
   - [ ] `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
     - [ ] Figure out where in the world these files keep coming from! (unused)
-  - [X] ~~`[OPR]` `[Speed]` `[Urgent!!!]` Right Now global OPRs are calculated (because CRAPPY_LAPTOP is False) all the time, using up a rediculous amount of CPU time every time the matches change. Somehow fix that. (maybe only do it every time the event changes?)~~
   - [ ] `[Speed]` Maybe add GPU/NPU support?
-  - [X] ~~`[OPR]` `[Accuracy]` Fix bug where event opr is really wrong for whatever reason.~~
   - [ ] `[OPR]` `[Accuracy]` Weird bug with some teams' recent OPR calculated as 0 for lower amounts of days (30)
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
 
 ### Other
+  - [ ] `[Files]` Put all doc files (readme and updates) into a docs folder?
   - [ ] `[Code]` `[QOL]` Redo all the path things to make them better lol
   - [ ] `[Code]` `[Tests]` Add tests
     - [X] ~~Correct files in correct places~~
     - [ ] Machine learning is recent to the correct season  year
-  - [ ] `[Code]` Update version number! (`47-1` -> `48.0`)
   - [ ] `[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable (or automatic?)
-  - [X] ~~`[QOL]` `[variables]` In ftcapiv4.ps1, make the virtual environment dir an input variable (or automatic?)~~
-  - [X] ~~`[Files]` Rename files to remove versions in names. Ex: `ftcapiv4.ps1` -> `ftcapi.ps1`~~
   - [ ] `[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore
     - [ ] `[Readme]` Update Readme file instructions, file names, and directory names to match current ones.
   - [ ] Remove all references to heatmap stuff.
@@ -48,7 +43,6 @@ Also see the [Updates](Updates.md) page.
     - [X] ~~Figure out if anything in the world uses OPR-m.npy~~
     - [ ] All opr/teamstats stuff
     - [ ] All references to opr/teamstats stuff
-  - [X] ~~`[Accuracy]` Retrain the algorithms~~
   - [ ] `[Code QOL]` Making predictions work with both the EventMatches and EventSchedule classes (jsonparse)
     - and the implementation of the predictions in sheetsapi
     - and the processing of the data (getting recent OPRs, etc etc.)
@@ -134,23 +128,28 @@ If you *are* retraining the algorithm, follow these steps.
 
 
 ## Credits/Honorable Mentions
+Though I wrote almost the entirety of the project by myself, I had some help. Below are some resources that I used (whether for copypasting code, general reference, or other research).
+
 This program uses the official FIRST API to get information on matches, schedules, and scores.
 You can find it [here](https://frc-events.firstinspires.org/services/API).
 
-Thanks to The [Blue Alliance](https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/) for an overview of OPR.
+Thanks to [The Blue Alliance](https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/) for an overview of OPR and the math behind it.
 
 Thanks to [this article](https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/) for ideas on matrix calculation.
 
 Printing in BASH with help from some people on [this StackOverflow post](https://stackoverflow.com/questions/1898712/make-sure-int-variable-is-2-digits-long-else-add-0-in-front-to-make-it-2-digits).
 
-Python printing in colors (Colors class) was taken from [Rene-d](https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007).
+Python printing in colors (the `Colors` class in `commonresources.py`) was taken from [Rene-d](https://gist.github.com/rene-d/9e584a7dd2935d0f461904b9f2950007).
 
-Google sheets api was implemented with lots of help from [their sample program](https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py) and [quickstart](https://developers.google.com/sheets/api/quickstart/python).
+The Google Sheets API was implemented with lots of help from [their sample program](https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py) and [quickstart](https://developers.google.com/sheets/api/quickstart/python).
 
 Thanks to viniciusarrud on GitHub in [this Joblib issue](https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714) for a solution to a particular bug involving pathing on Windows.
 
+The diagram `FTCAPI file diagram.drawio` (soon to be exported into an image and put in this doc) was generated using [Drawio](https://app.diagrams.net/) [24.7.7], made by JGraph, https://github.com/jgraph/drawio. \
+I am not JGraph, this project is not by JGraph, and JGraph neither endorses me nor this project.
+
 ## More documentation goes here!
-As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `error.log` with a timestamp.
+As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `app/generatedfiles/error.log` with a timestamp.
 
 Good luck debugging!
 
