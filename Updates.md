@@ -2,6 +2,46 @@
 
 Remember to check out the [README](README.md) file
 
+## 48.0 Alpha
+August 24th, 2024
+#### Overview
+Wow, this update took awhile. here's the overview:
+
+ - Redid the file system
+ - Added tests
+ - Fixed numerous bugs
+ - Added diagram to files (soon to be in docs)
+ - Updated ReadMe (still needs work)
+
+#### Bugs
+Fixed a lot of bugs:
+
+ - Joblib Cachewarning due to oversized path (only on Windows machines)
+ - global OPR calculation running during events, causing rediculously slow cycle times
+ - OPR was "really wrong for some reason."
+ - Version number wasn't correctly displayed
+ - *Lots more that I forgot about or don't care to mention*
+
+#### Other changes
+ - Renamed files to remove versions in their names. Ex: `ftcapiv4.ps1` -> `ftcapi.ps1`
+ - Updated version number
+ - Added a virtual environment directory option to the main powershell script
+ - Retrained the algorithms
+ - Added tests to make sure files in `app` were scripts and files in `app/generatedfiles` were not scripts.
+ - Added a couple debug/stats tools (probably temporary)
+   - `flushGeneratedFiles.ps1`
+   - `linecounter.py`
+ - Updated the `LICENSE.txt`
+ - Updated the ReadMe
+ - Redid the file system
+   - Most scripts are in the `apps` folder
+   - Generated files are in the `apps/generatedfiles` folder
+   - Tests are in the `tests` folder
+   - Gitignore now properly works
+
+That's all for now!
+
+
 ## 47.1
 #### General
 Fixed a bunch of bugs. \
