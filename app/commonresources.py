@@ -11,7 +11,7 @@
 
 __all__ = [
     'get_json', 'log_error', 'byte_to_gb', 'seconds_to_time', 
-    'NUMBER_OF_DAYS_FOR_RECENT_OPR', 'LATEST_VERSION', 'DO_JOBLIB_MEMORY', 
+    'NUMBER_OF_DAYS_FOR_RECENT_OPR', 'DO_JOBLIB_MEMORY', 
     'PATH_TO_FTCAPI', 'PATH_TO_JOBLIB_MEMORY', 'SERVICE_ACCOUNT_FILE', 
     'SPREADSHEET_ID' 
 ]
@@ -51,8 +51,6 @@ else:
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
 EVENTCODE = global_settings.event_code
-
-LATEST_VERSION = 47.1
 
 # TODO: make this and its correspondant in jsonparse all caps
 accepted_match_types = ['Qualifier', 'Championship','League Tournament', 'League Meet', 'Super Qualifier', 'FIRST Championship']
@@ -184,7 +182,7 @@ if __name__ == "__main__":
     print(info_i()+'[commonresources] This file was called as __main__, which usually does not happen.')
     print(info_i()+'    Displaying constants and their values:')
     a = {
-        'LATEST_VERSION'  : LATEST_VERSION,
+        'CURRENT_VERSION'  : CURRENT_VERSION,
         'NUMBER_OF_DAYS_FOR_RECENT_OPR' : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         'EVENTCODE'       : EVENTCODE,
         'PATH_TO_FTCAPI'  : PATH_TO_FTCAPI,

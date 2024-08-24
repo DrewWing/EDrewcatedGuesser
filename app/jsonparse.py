@@ -15,7 +15,7 @@
 import sys
 import os
 
-from commonresources import log_error, green_check, info_i, red_x, get_json, PATH_TO_FTCAPI, LATEST_VERSION, accepted_match_types
+from commonresources import log_error, green_check, info_i, red_x, get_json, PATH_TO_FTCAPI, accepted_match_types
 
 from python_settings import PythonSettings
 settings = PythonSettings()
@@ -984,7 +984,6 @@ def prepare_opr_calculation(
 if __name__ == "__main__" and 'get-events-global' in sys.argv:
     print(info_i()+'  [jsonparse.py] This script was called as __main__')
     print(info_i()+'      Jsonparse getting global event ids that match')
-    print(info_i()+'      Latest version in commonresources.py = '+str(LATEST_VERSION))
     print(info_i()+'      Getting the season\'s data from seasondata at '+str(PATH_TO_FTCAPI+f'generatedfiles{slash}seasondata.json'))
 
     write_needed_events(SeasonEvents(get_json(PATH_TO_FTCAPI+f'generatedfiles{slash}seasondata.json')), texasonly=False)
