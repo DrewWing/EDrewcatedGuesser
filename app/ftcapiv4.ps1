@@ -26,7 +26,8 @@ param (
     [switch]$ShowDebugText = $false,
     [switch]$NoApiCalls = $false,
     [bool]$FieldMode = $true,
-    [int]$DebugLevel = 0 # Debug level of python scripts
+    [int]$DebugLevel = 0, # Debug level of python scripts
+    [string]$VenvDir = "reqtest" # The directory of virtual environment to use
 )
 
 
@@ -46,7 +47,7 @@ if ($ShowDebugText -eq $true) {
 
 
 # Activate the virtual environment where we installed the required python packages (mostly google sheets api stuff).
-. "ftcapivenvwindows\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
+. "$VenvDir\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
 
 python "app/init_settings.py" -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
 
@@ -61,7 +62,7 @@ $UpdateTeams=$true
 $SeasonYear="2023" # First year of the season. For instance, the 2023-2024 school year is just "2023"
 
 
-# gets the PersonalAccessToken
+# gets the PersonalAccessToken from secrets.txt
 Get-Content secrets.txt | Foreach-Object{
     $var = $_.Split('=')
     Remove-Variable -Name $var[0]
@@ -239,13 +240,14 @@ function DisplayHelp {
     Write-Output "  NoAPICalls    Disables calls to the FTC API (for debug)."
     Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts. The info printed increases with the number."
     Write-Output "  FieldMode <bool>  Default true, uses last calculations for global OPR stats, instead of calculating it."
+    Write-Output "  VenvDir <str>     Uses the given path (local or absolute) for the parent directory of the used Virutal Environment."
 
     #printf "V     Print software version and exit. \n\n"
 }
 
 #endregion functions
 
-
+#region procedural
 if ($ShowDebugText -eq $true){
     Write-Output "User parameters collected."
 }
@@ -280,3 +282,4 @@ deactivate
 
 
 Write-Output "[ftcapiv4] Program complete!"
+#endregion procedural

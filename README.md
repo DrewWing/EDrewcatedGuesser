@@ -29,9 +29,9 @@ Also see the [Updates](Updates.md) page.
   - [ ] `[Code]` `[Tests]` Add tests
     - [X] ~~Correct files in correct places~~
     - [ ] Machine learning is recent to the correct season  year
-    - [ ] Joblib cache warning bug thingy
   - [ ] `[Code]` Update version number! (`47-1` -> `48.0`)
   - [ ] `[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable (or automatic?)
+  - [X] ~~`[QOL]` `[variables]` In ftcapiv4.ps1, make the virtual environment dir an input variable (or automatic?)~~
   - [ ] `[Files]` Rename files to remove versions in names. Ex: `ftcapiv4.ps1` -> `ftcapi.ps1`
   - [ ] `[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore
     - [ ] `[Readme]` Update Readme file instructions, file names, and directory names to match current ones.
