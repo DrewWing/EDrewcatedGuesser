@@ -356,7 +356,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     Returns a sorted results pandas DataFame object.
     """
     if (settings.debug_level>0):
-        print(info_i()+" [OPRv4] Sorting reuslts...")
+        print(info_i()+" [OPRv4][create_and_sort_stats] Sorting reuslts...")
 
 
     if (settings.debug_level>2):
@@ -398,18 +398,20 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         raise e
 
     if (settings.debug_level>2):
-        print(info_i()+'  Stripping column strings of sorted_results_pd')
+        print(info_i()+'  | Stripping column strings of sorted_results_pd')
 
     # Strip the columns. Really I'm not sure why I do this but I found it somewhere
     # and they told me to do it, and it supposedly stops a few things from breaking.
     sorted_results_pd.columns=sorted_results_pd.columns.str.strip()
 
     if (settings.debug_level>2):
-        print(info_i()+'  Sorting sorted_results_pd')
+        print(info_i()+'  | Sorting sorted_results_pd')
 
     # Actually sort the pandas results
     sorted_results_pd.sort_values(by='OPR', ascending=False, inplace=True)
 
+    if settings.debug_level>2:
+        print(info_i()+"  | Done sorting sorted_results_pd. Now removing brackets.")
     # Remove the extra brackets
     try:
         sorted_results_pd['OPR'    ] = sorted_results_pd['OPR'    ].str.get(0)
@@ -443,6 +445,9 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         print('\n\n\n\nn\n\n\n\n\n\n')
         raise e
         
+    if settings.debug_level>1:
+        print(green_check()+"  | create_and_sort_stats is done. Now returning sorted_results_pd")
+
     return sorted_results_pd
 
 
