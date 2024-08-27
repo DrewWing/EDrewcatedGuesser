@@ -3,7 +3,7 @@
 This is the README file.
 
 DO NOT DISTRIBUTE!
-You may **not** earn money or monetize in any way from this program. It's not just my terms, it's the terms of using the official FTC API.
+You may **not** earn money or monetize in any way from this program. It's not just my terms, it's also a part of the terms of using the official FTC API.
 
 **NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation. I'll get all that ironed out before I release this. \
 Everything that I'm doing right now is unpublished, so you **may not** use it under any of these unpublished licenses. \
@@ -30,7 +30,7 @@ Also see the [Updates](Updates.md) page.
   - [ ] `[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable (or automatic?)
   - [ ] `[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore
     - [ ] `[Readme]` Update Readme file instructions, file names, and directory names to match current ones.
-  - [ ] Remove all references to heatmap stuff.
+  - [X] ~~Remove all references to heatmap stuff.~~
   - [ ] `[speed]` `[packages]` Maybe install CuPy?
   - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets

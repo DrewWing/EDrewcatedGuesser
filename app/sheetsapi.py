@@ -380,44 +380,6 @@ def push_matches(service):
         print(green_check()+' [sheetsapi.py] Done pushing matches data!')
 
 
-
-def push_all_matches_heatmap(service):
-    """
-    This isn't really used anywhere, I should remove it.
-    """
-    if settings.debug_level>0:
-        print(info_i()+' [sheetsapi.py] Pushing all matches data for sheets heatmap')
-    if settings.debug_level>1:
-        print(info_i()+'    Uses:')
-        print(info_i()+'      - all-matches.csv')
-    
-    write_to_range = MATCHES_WRITE_RANGE
-
-    # gets all matches and saves it to all-matches.csv
-    import jsonparse
-    jsonparse.prepare_opr_calculation()
-
-    # get the data
-    data_to_push   = pd.read_csv(PATH_TO_FTCAPI+'all-matches.csv').toList()
-    
-    # Add the timestamp to the begining of the data
-    data_to_push = add_timestamp(data_to_push)
-    
-    if settings.debug_level>0:
-        print(info_i()+' Pushing data')
-
-    
-    # push the data
-    push_data(
-        service, "1SNiuJIEgJQrqIv7QS6E5AlT3WDz73UXuF00aXiTCJw4", "'API Stuff'!B6:N26000", credentials, 
-        data_to_push
-    )
-
-    if settings.debug_level>0:
-        print(green_check()+' [sheetsapi.py] done pushing matches data!')
-
-
-
 def push_teams(service):
     """
     Pushes the team data to the spreadsheet
@@ -699,11 +661,6 @@ if ('matches' in sys.argv):
 
 if ('elims' in sys.argv):
     push_elims_predictions(service)
-
-
-if ('allmatchesheatmap' in sys.argv):
-    push_all_matches_heatmap(service)
-
 
 if ('teams' in sys.argv):
     push_teams(service)
