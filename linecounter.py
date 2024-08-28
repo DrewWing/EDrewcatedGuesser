@@ -13,7 +13,14 @@
 
 import os
 import fnmatch
-from commonresources import info_i, red_x, green_check
+
+# Add app to the path to prevent errors when commonresources tries to import python_settings
+import sys
+# caution: path[0] is reserved for script path (or '' in REPL)
+sys.path.insert(1, 'app')
+
+
+from app.commonresources import info_i, red_x, green_check
 
 
 print(info_i()+" linecounter.py by Drew Wingfield")
