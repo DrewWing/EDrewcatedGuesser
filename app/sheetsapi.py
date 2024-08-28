@@ -27,9 +27,9 @@ except ImportError as e:
     log_error('[sheetsapi.py][imports] ImportError while importing the google apiclient modules - Are you using the correct virtual environment? Full error info:'+str(e))
     print("\n\n------\nIf you're seeing this, the googleapiclient module couldn't be imported")
     print("Try these things:")
-    print("  - Activating the virtual environment before running this script (source virtenv1/bin/activate)")
+    print("  - Activating the virtual environment before running this script")
     print("  - making sure the googleapiclient is installed to the virtual environment")
-    print("    (/home/wingfield/virtenv1/bin/pip install google-api-python-client)")
+    print("    (pip install google-api-python-client)")
     print("  - The source can be found at https://github.com/googleapis/google-api-python-client")
     print("  - Also see https://realpython.com/python-virtual-environments-a-primer/")
     print("Good luck!\n")
@@ -129,7 +129,7 @@ def add_timestamp(lst: list):
 #region gets
 def get_data(service, sheetid: str, range: str, credentials=build_credentials()):
     if settings.debug_level>0:
-        print(info_i()+" [sheetsapi.py] [get_data] Getting data from range {}...".format(range))
+        print(info_i()+f" [sheetsapi.py] [get_data] Getting data from range {range}...")
 
     try:
         # Call the Sheets API
@@ -201,7 +201,6 @@ def get_elims_matches(service, credentials):
 def get_event_data(event_object, event_schedule_qual, event_schedule_playoff, playoff_only=False):
     """
     Returns data about matches in an event, in >2D list format.
-
     """
     data_to_push = []
     c=0 # total count of matches
@@ -271,8 +270,7 @@ def push_data(service, sheetid: str, range: str, credentials, data):
         # First, clear all the cells to prevent overlap
         # with help from https://stackoverflow.com/questions/41986898/google-sheets-api-python-clear-sheet
         body = {}
-        resultClear = service.spreadsheets( ).values( ).clear( spreadsheetId=sheetid, range=range,
-                                                       body=body ).execute( )
+        resultClear = service.spreadsheets().values().clear(spreadsheetId=sheetid, range=range, body=body).execute()
         # then push the data
         
         body = {"values": data}
@@ -386,6 +384,7 @@ def push_teams(service):
     """
     if settings.debug_level>0:
         print(info_i()+' [sheetsapi.py] Pushing teams data to sheets')
+
     if settings.debug_level>1:
         print(info_i()+'    Uses:')
         print(info_i()+'      - opr-result-sorted.csv')
@@ -398,7 +397,7 @@ def push_teams(service):
         print(info_i()+'    Writing season-long OPR data')
         
     write_to_range = TEAMS_WRITE_RANGE
-    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-result-sorted.csv')
+    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-result-sorted.csv') #TODO: Fix this path
     
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
@@ -420,7 +419,7 @@ def push_teams(service):
         print(info_i()+'    Writing event OPR data')
         
     write_to_range = TEAMS_EVENT_WRITE_RANGE
-    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-event-result-sorted.csv')
+    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-event-result-sorted.csv') #TODO: Fix this path
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
@@ -447,7 +446,7 @@ def push_teams(service):
         print(info_i()+'    Writing recent OPR  data')
         
     write_to_range = TEAMS_RECENT_WRITE_RANGE
-    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-recent-result-sorted.csv')
+    data_to_push   = get_team_data(PATH_TO_FTCAPI+'generatedfiles/opr/opr-recent-result-sorted.csv') #TODO: Fix this path
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
@@ -473,9 +472,9 @@ def push_rankings(service):
         print(info_i()+' [sheetsapi.py] Pushing rankings data to sheets')
     if settings.debug_level>1:
         print(info_i()+'    Uses:')
-        print(info_i()+'      - generatedfiles/eventdata/eventrankings.json')
+        print(info_i()+'      - generatedfiles/eventdata/eventrankings.json') #TODO: Fix this path
         print(info_i()+'    Creates:')
-        print(info_i()+'      - generatedfiles/eventdata/eventrankings.csv')
+        print(info_i()+'      - generatedfiles/eventdata/eventrankings.csv') #TODO: Fix this path
         
     #
     # Write event ranking data
@@ -485,7 +484,7 @@ def push_rankings(service):
         
     # from jsonparse, save the rankings dataframe as a csv
     try:
-        rankings_dataframe(PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.json',PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.csv')
+        rankings_dataframe(PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.json',PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.csv') #TODO: Fix this path
 
     except IndexError as e:
         log_error(f'[sheetsapi.py][push_rankings] IndexError with rankngs_dataframe in jsonparse. This indicates that eventdata/eventrankings.json is either empty or malformed. This is normal if the event hasn\'t started yet. full error msg: {e}')
@@ -494,7 +493,7 @@ def push_rankings(service):
     write_to_range = TEAMS_RANKING_WRITE_RANGE
     
     try:
-        data_to_push   = pd.read_csv(PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.csv')
+        data_to_push   = pd.read_csv(PATH_TO_FTCAPI+'generatedfiles/eventdata/eventrankings.csv') #TODO: Fix this path
         # Dropping multiple columns with help from 
         # https://stackoverflow.com/questions/13411544/delete-a-column-from-a-pandas-dataframe
         data_to_push.drop(
@@ -508,7 +507,7 @@ def push_rankings(service):
 
     except pd.errors.EmptyDataError:
         # if the file is empty
-        data_to_push = [['No rankings for the given event'],['(generatedfiles/eventdata/eventrankings.csv is empty)']]
+        data_to_push = [['No rankings for the given event'],['(generatedfiles/eventdata/eventrankings.csv is empty)']] #TODO: Fix this path
         log_error('[sheetsapi.py][push_rankings] generatedfiles/eventdata/eventrankings.csv is empty. This is normal if an event hasn\'t started yet, but is bad if the rankings are out.',level="Warn")
     
     
