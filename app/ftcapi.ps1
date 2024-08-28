@@ -27,7 +27,8 @@ param (
     [switch]$NoApiCalls = $false,
     [bool]$FieldMode = $true,
     [int]$DebugLevel = 0, # Debug level of python scripts
-    [string]$VenvDir = "reqtest" # The directory of virtual environment to use
+    [string]$VenvDir = "reqtest", # The directory of virtual environment to use
+    [int]$SeasonYear = "2023" # First year of the season. For instance, the 2023-2024 school year is just "2023"
 )
 
 $version="48.0 Alpha"
@@ -60,7 +61,6 @@ $iteration=1
 $status="OK"
 $LastUpdate="0000-00-00 00:00:00"
 $UpdateTeams=$true
-$SeasonYear="2023" # First year of the season. For instance, the 2023-2024 school year is just "2023"
 
 
 # gets the PersonalAccessToken from secrets.txt
@@ -242,6 +242,7 @@ function DisplayHelp {
     Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts. The info printed increases with the number."
     Write-Output "  FieldMode <bool>  Default true, uses last calculations for global OPR stats, instead of calculating it."
     Write-Output "  VenvDir <str>     Uses the given path (local or absolute) for the parent directory of the used Virutal Environment."
+    Write-Output "  SeasonYear <int>  First year of the season. For instance, the 2023-2024 school year is just '2023'"
 
     #printf "V     Print software version and exit. \n\n"
 }
