@@ -37,7 +37,7 @@ Also see the [Updates](Updates.md) page.
     - [X] ~~Correct files in correct places~~
     - [ ] Machine learning is recent to the correct season  year
   - [X] ~~`[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable~~ (or automatic?)
-  - [ ] `[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore
+  - [X] ~~`[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore~~
     - [ ] `[Readme]` Update Readme file instructions, file names, and directory names to match current ones.
   - [X] ~~Remove all references to heatmap stuff.~~
   - [ ] `[speed]` `[packages]` Maybe install CuPy?
