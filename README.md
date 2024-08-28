@@ -5,9 +5,9 @@ This is the README file.
 DO NOT DISTRIBUTE!
 You may **not** earn money or monetize in any way from this program. It's not just my terms, it's also a part of the terms of using the official FTC API.
 
-**NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation. I'll get all that ironed out before I release this. \
+**NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation, except this paragraph. I'll get all that ironed out before I release this.  \
 Everything that I'm doing right now is unpublished, so you **may not** use it under any of these unpublished licenses. \
-I'm doing my best, just use whatever version is most current under its own license and ignore this. It has many bugs and is not worth it.
+I'm doing my best, just use whatever version is most current under its own license. It has many bugs and is not worth it.
 
 You can find the license [here](LICENSE.txt).
 Also see the [Updates](Updates.md) page.
@@ -22,6 +22,15 @@ Also see the [Updates](Updates.md) page.
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
 
 ### Other
+  - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and this file
+    - [ ] Scripts in `app` folder
+    - [ ] `tests` folder
+    - [ ] `__init__.py`
+  - [ ] `[Files]` Remove these files before release (dev tools or generally not needed)
+    - [ ] all packages.txt
+    - [ ] flushGeneratedFiles.ps1
+    - [ ] linecounter.py
+    - [ ] viewdata.py?
   - [ ] `[Files]` Put all doc files (readme and updates) into a docs folder?
   - [ ] `[Code]` `[QOL]` Redo all the path things to make them better lol
   - [ ] `[Code]` `[Tests]` Add tests
@@ -147,6 +156,23 @@ Thanks to viniciusarrud on GitHub in [this Joblib issue](https://github.com/jobl
 
 The diagram `FTCAPI file diagram.drawio` (soon to be exported into an image and put in this doc) was generated using [Drawio](https://app.diagrams.net/) [24.7.7], made by JGraph, https://github.com/jgraph/drawio. \
 I am not JGraph, this project is not by JGraph, and JGraph neither endorses me nor this project.
+
+### External libraries
+
+This software uses the following external libraries:
+
+ - Google API Python Client Framework: Copyright Google APIs. Licensed under Apache 2.0 license, see LICENSES.apache for details. \
+Website: https://github.com/googleapis/google-api-python-client?tab=readme-ov-file
+
+ - Matplotlib Framework: Copyright (c)
+2012- Matplotlib Development Team; All Rights Reserved. Licensed similar to the PSF license, see LICENSES.matplotlib for details. \
+Website: https://matplotlib.org/stable/
+
+ - Pandas Framework: Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team. Licensed under a BSD 3-Clause license, see LICENSES.pandas for details. \
+Website: https://github.com/pandas-dev/pandas?tab=readme-ov-file
+
+
+
 
 ## More documentation goes here!
 As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `app/generatedfiles/error.log` with a timestamp.
