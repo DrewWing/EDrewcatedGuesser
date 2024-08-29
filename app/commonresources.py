@@ -82,7 +82,8 @@ def get_json(path: str):
     Returns the raw json for a given path.
     """
     try:
-        return json.load(open(path, 'r', encoding='utf-8-sig'))  # output.json
+        with open(path, 'r', encoding='utf-8-sig') as thefile:
+            return json.load(thefile)  # output.json
     
     except Exception as e:
         log_error( f'[commonresources.py][get_json] Some Error occured with getting json of path {path}.'
