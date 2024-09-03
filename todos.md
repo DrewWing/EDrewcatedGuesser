@@ -1,13 +1,16 @@
 # To-Dos
-This is the todos.md file. For more information, please read the [Readme](README.md)
+This is the `todos.md` file. For more information, please read the [Readme](README.md).
 
+Items labeled `Critical` need to be fixed/completed before release.
 
 ### Bugs
   - [ ] `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
     - [ ] Figure out where in the world these files keep coming from! (unused)
   - [ ] `[Speed]` Maybe add GPU/NPU support?
+    - [ ] `[Code]` Switch to Pytorch?
   - [ ] `[OPR]` `[Accuracy]` Weird bug with some teams' recent OPR calculated as 0 for lower amounts of days (30)
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
+  - [ ] `[Tests]` `[Argparse]` Import tests fail due to argparse.
 
 ### Other
   - [ ] `[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)
@@ -19,7 +22,7 @@ This is the todos.md file. For more information, please read the [Readme](README
     - [ ] Scripts in `app` folder
     - [ ] `tests` folder
     - [ ] `__init__.py`
-  - [ ] `[Files]` Remove these files before release (dev tools or generally not needed)
+  - [ ] `[Files]` `[Critical]` Remove these files before release (dev tools or generally not needed)
     - [ ] all packages.txt
     - [ ] flushGeneratedFiles.ps1
     - [ ] linecounter.py
@@ -33,11 +36,10 @@ This is the todos.md file. For more information, please read the [Readme](README
   - [X] ~~`[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore~~
     - [ ] `[Readme]` Update Readme file instructions, file names, and directory names to match current ones.
   - [X] ~~Remove all references to heatmap stuff.~~
-  - [ ] `[speed]` `[packages]` Maybe install CuPy?
   - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets
   - [ ] `[Sheets]` `[QOL]` It would be nice to add the team name to the number when pushing to sheets
-  - [ ] `[NEEDED]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
+  - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
   - [ ] `[QOL]` `[Readme]` Redo the README.
   - [ ] `[QOL]` Remove all unneccessary files
     - [ ] Figure out what to do with viewdata.py
