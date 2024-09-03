@@ -22,6 +22,11 @@ Also see the [Updates](Updates.md) page.
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
 
 ### Other
+  - [ ] `[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)
+  - [ ] `[General]` Get a better Todo system (usse a bug-tracking system?)
+  - [ ] `[OS Support]` `[Critical]` Linux support
+    - [ ] Fix Linux bash file
+    - [ ] Make sure everything works on linux lol
   - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and this file
     - [ ] Scripts in `app` folder
     - [ ] `tests` folder
@@ -88,6 +93,7 @@ A configuration between events might look something like this:
 ```
 
 ### Linux
+**The current version of this program is broken, don't use it right now. It will be fixed... hopefully... sometime later...**
 To run the program after setting up the correct variables (see below), run the `ftcapi.sh` program, which kind of calls everything else. If you want to do anything other than the basics, you're going to have to dig a little deeper into the code. Use the `h` modifier to get the help menu.
 
 ### MacOS
