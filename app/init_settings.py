@@ -14,7 +14,6 @@
 # https://docs.python.org/3/library/argparse.html
 
 import argparse
-#import pathlib
 import os
 
 desc = "A program that writes certain variables to a machine-readable file for other scripts in Drew Wingfield's FTCAPI program."
@@ -31,14 +30,13 @@ args = parser.parse_args()
 # ftcapiv4.ps1 hands init_settings boolean values that may be wrongly capitalized.
 # Fix that here
 
-if args.FieldMode.lower() in ["true"]:
+if args.FieldMode.lower() == "true":
     args.FieldMode = True
 
 else:
     args.FieldMode = False
 
 
-#path_to_ftcapi = str(pathlib.Path().resolve())
 path_to_ftcapi = str(os.path.dirname(os.path.realpath(__file__)))
 
 if args.showsettings or args.DebugLevel > 0:
@@ -71,11 +69,11 @@ settings_path = str(
     path_to_ftcapi+slash+"generatedfiles"+slash+"settings.config"
 )
 
-with open(settings_path, 'w+') as thefile:
-    thefile.truncate()
+with open(settings_path, 'w+') as settings_file:
+    settings_file.truncate()
     for line in lines:
-        thefile.write(line)
-        thefile.write('\n')
+        settings_file.write(line)
+        settings_file.write('\n')
 
 
 
