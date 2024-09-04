@@ -26,14 +26,14 @@ try:
     import pandas as pd
 
 except ImportError as e:
-    log_error('[jsonparse.py][imports] ImportError while importing pandas. Are you using sklearn-venv? ("source sklearn-venv/bin/activate" on linux or "sklearn-venv/Scripts/activate" on windows)')
-    print('\n\n[jsonparse.py][imports] !!! ERROR !!!\n  Something went wrong during importing pandas. Are you using the correct venv? Use sklearn-venv using "source sklearn-venv/bin/activate" on linux or "sklearn-venv/Scripts/activate" on windows\n\n')
+    log_error('[jsonparse.py][imports] ImportError while importing pandas. Are you using a virtual environment with pandas installed?')
+    print('\n\n[jsonparse.py][imports] !!! ERROR !!!\n  Something went wrong during importing pandas. Are you using the correct venv?\n\n')
     raise e
 
 #endregion Imports
 
 
-def get_team_stats(team_number):
+def get_team_stats(team_number) -> dict:
     """ 
     Returns a dictionary containing the stats of the team. 
     Uses: 
@@ -65,17 +65,13 @@ def get_team_stats(team_number):
     #Team,OPR,AutoOPR,CCWM
 
     all_oprs_recent = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-recent-result-sorted.csv', index_col=False)
-    #region debugstuff
-    #print(' the loc thing:')
-    #print(all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]['OPR'])
-    #endregion debugstuff
 
     try:
         team_stats['recentOPR']     = all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]['OPR'].values[0]
         team_stats['recentAutoOPR'] = all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]['AutoOPR'].values[0]
         team_stats['recentCCWM']    = all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]['CCWM'].values[0]
     
-    except IndexError as e:
+    except IndexError:
         team_stats['recentOPR']     = 1
         team_stats['recentAutoOPR'] = 1
         team_stats['recentCCWM']    = 1
@@ -152,6 +148,10 @@ class EventMatches():
                 
                 self.matches_split.append(appendlist)
             except IndexError as e:
+                log_error(f'[jsonparse.py][EventMatches][__init__] An index error occured. Teams {match['teams']}')
+                log_error(f'    touornamentLevel: {match['tournamentLevel']}')
+                log_error(f'    actualStartTime: {match['actualStartTime']}')
+                log_error(f'    Error info: {e}')
                 print(red_x()+'\n\n  An index error was detected! Some useful info:')
                 print(red_x()+'    Teams:'+str(match['teams']))
                 print(red_x()+'    tournamentLevel:'+str(match['tournamentLevel']))
@@ -160,10 +160,10 @@ class EventMatches():
                 raise e
 
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<EventMatches class with {self.number_of_matches} matches>"
     
-    def make_dataframe(self):
+    def make_dataframe(self) -> pd.DataFrame:
         
         if settings.debug_level>1:
             print(info_i()+'         [jsonparse.py][EventMatches][make_dataframe] Making the dataframe with proper format (for the predictors)')
@@ -176,22 +176,8 @@ class EventMatches():
             'recentredOPR':[],'recentredAutoOPR':[],'recentredCCWM':[], 
             'recentblueOPR':[], 'recentblueAutoOPR':[], 'recentblueCCWM':[]
         }
-        #counter = 0
+        
         for match in self.matches_split:
-            #print(f'counter: {counter}') #TODO remove
-            #counter += 1
-            # match['tournamentLevel'],
-            #         match['scoreRedFinal'],
-            #         match['scoreRedFoul'],
-            #         match['scoreRedAuto'],
-            #         match['scoreBlueFinal'],
-            #         match['scoreBlueFoul'],
-            #         match['scoreBlueAuto'],
-            #         teamsdic['Red1'],
-            #         teamsdic['Red2'],
-            #         teamsdic['Blue1'],
-            #         teamsdic['Blue2'],
-
             red1  = get_team_stats(match[7])
             red2  = get_team_stats(match[8])
             blue1 = get_team_stats(match[9])
@@ -210,20 +196,18 @@ class EventMatches():
             dic_thing['recentblueOPR'].append(     blue1['recentOPR']  + blue2['recentOPR'])
             dic_thing['recentblueAutoOPR'].append( blue1['AutoOPR'] + blue2['recentAutoOPR'])
             dic_thing['recentblueCCWM'].append(    blue1['recentCCWM'] + blue2['recentCCWM'])
-
-        #print('dic_thing:') #TODO remove
-        #print(dic_thing)
         
         return pd.DataFrame(dic_thing)
 
-    def predict_outcomes(self, predictors: list, inplace: bool):
+    def predict_outcomes(self, predictors: list, inplace: bool) -> list:
         """
         Using a given list of predictors, predicts the outcomes of matches.
         If inplace is false, returns just the predictions.
         Otherwise, appends the predictions to self.matches_split
         """
 
-        # matchdata needs to be some kind of dataframe containing all matches in the given EventMatches object, and their respective calculated OPR, CCWM, AutoOPR, recentOPR, recentCCWM, and recentAutoOPR for each team
+        # Matchdata needs to be some kind of dataframe containing all matches in the given EventMatches object, 
+        # and their respective calculated OPR, CCWM, AutoOPR, recentOPR, recentCCWM, and recentAutoOPR for each team
         if settings.debug_level>1:
             print(info_i()+'     [jsonparse.py][EventMatches][predict_outcomes] Predicting outcomes of matches for this EventMatches object.')
         
@@ -232,8 +216,6 @@ class EventMatches():
         # for each of the matches, then transform it, then precit it and return the predictions.
         #[['redOPR','redAutoOPR','redCCWM','blueOPR','blueAutoOPR','blueCCWM', 'recentredOPR','recentredAutoOPR','recentredCCWM', 'recentblueOPR', 'recentblueAutoOPR', 'recentblueCCWM']]
         
-        #print('matchdata') #TODO delete
-        #print(matchdata)
 
         if settings.debug_level>1:
             print(info_i()+'     [jsonparse.py][EventMatches][predict_outcomes] Match data formatted. Now doing the actual predictions')
@@ -244,8 +226,9 @@ class EventMatches():
         for predictor in predictors:
             try:
                 predictions_per_predictor.append(predictor.predict(matchdata))
+            
             except ValueError as e:
-                log_error('[jsonparse.py][EventMatches][predict_outcomes] match data is probably empty. This is normal if no matches have been played. Full error info:'+str(e), level='WARN')
+                log_error('[jsonparse.py][EventMatches][predict_outcomes] Match data is probably empty. This is NORMAL if no matches have been played. Full error info:'+str(e), level='WARN')
                 if settings.debug_level>0:
                     print(info_i()+' [jsonparse.py][EventMatches][predict_outcomes] Value error - This is NORMAL and fine if no matches played.')
 
@@ -261,10 +244,10 @@ class EventMatches():
                     index+=1
             
             except IndexError as e:
-                log_error(f'[jsonparse.py][EventMatches][predict_outcomes] Index error. This is completely normal if no matches have been played. {e}', level='WARN')
+                log_error(f'[jsonparse.py][EventMatches][predict_outcomes] Index error. This is completely NORMAL if no matches have been played. {e}', level='WARN')
         
         else:
-            # return predictions in the match order
+            # Return predictions in the match order
             return predictions_per_predictor
 
 
@@ -303,18 +286,15 @@ class EventSchedule():
         self.raw_json = raw_json
         self.matches  = raw_json['schedule']
         self.number_of_matches = len(raw_json['schedule'])
-
         self.matches_split = []
 
         for match in raw_json['schedule']:
             try:
-
                 teamsdic = {'Red1':1,'Red2':1,'Blue1':1,'Blue2':1}
 
                 for i in match['teams']:
                     teamsdic[i['station']] = i
                     
-                
                 appendlist = [
                     match['tournamentLevel'],
                     None, # None in place of all scores
@@ -357,19 +337,7 @@ class EventSchedule():
             if settings.debug_level > 3:
                 print(f'counter: {counter}') #TODO remove
                 counter += 1
-            #region thing
-            # match['tournamentLevel'],
-            #         match['scoreRedFinal'],
-            #         match['scoreRedFoul'],
-            #         match['scoreRedAuto'],
-            #         match['scoreBlueFinal'],
-            #         match['scoreBlueFoul'],
-            #         match['scoreBlueAuto'],
-            #         teamsdic['Red1'],
-            #         teamsdic['Red2'],
-            #         teamsdic['Blue1'],
-            #         teamsdic['Blue2'],
-            #endregion
+
             red1  = get_team_stats(match[7])
             red2  = get_team_stats(match[8])
             blue1 = get_team_stats(match[9])
@@ -395,7 +363,7 @@ class EventSchedule():
         
         return pd.DataFrame(dic_thing)
 
-    def predict_outcomes(self, predictors: list, inplace: bool, level: str=None):
+    def predict_outcomes(self, predictors: list, inplace: bool, level: str=None) -> list:
         """
         Using a given list of predictors, predicts the outcomes of matches.
         If inplace is false, returns just the predictions.
@@ -521,7 +489,7 @@ class SeasonEvents():
                 ]
             )
 
-    def filter(self, region=None,type=[], nottype=[], state=None):
+    def filter(self, region=None,type=[], nottype=[], state=None) -> list:
         """
         Returns a list of non-remote events in the raw json filtered by stuff 
         """
@@ -654,18 +622,17 @@ def write_needed_events(season_events, texasonly=False):
     event IDs (for non-remote events) and writes them to a file
     """
     print(info_i()+' Writing needed events...')
-    #all types: ['Qualifier', 'Championship', 'Scrimmage', 'Kickoff', 'League Tournament', 'League Meet', 'Super Qualifier', 'Volunteer Signup', 'Practice Day', 'Workshop', 'FIRST Championship', 'Demo / Exhibition', 'Off-Season']
+    # All types: ['Qualifier', 'Championship', 'Scrimmage', 'Kickoff', 'League Tournament', 'League Meet', 'Super Qualifier', 'Volunteer Signup', 'Practice Day', 'Workshop', 'FIRST Championship', 'Demo / Exhibition', 'Off-Season']
 
     rawevents = open(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}needed-events-raw.json','w+')
     rawevents.truncate()
     rawevents.write('{"matches":[\n')
     
     with open(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}needed-event-ids.txt','w+') as thefile:
-        thefile.truncate()
-        l=season_events.filter(type=accepted_match_types, state=("TX" if texasonly else None))
-        #print('len of l: '+str(len(l)))
+        thefile.truncate() # Clear the file
+        filtered_event_list = season_events.filter(type=accepted_match_types, state=("TX" if texasonly else None))
         # Iterate over every event
-        for event in l:
+        for event in filtered_event_list:
             # If it's not remote and it's an accepted type
             thefile.write(str(event['code'])+'\n') #write to the file
             rawevents.write(str(event).replace("'",'"').replace('False','false').replace('True','true').replace('None','null')+', \n')
@@ -718,7 +685,7 @@ def write_needed_teams(use_opr=False):
     print(green_check()+'    Teams assembled. Writing all teams to file team-ids-to-get.txt...       ')
     
     with open((PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}all-teamids-involved.txt' if use_opr else f'generatedfiles{slash}team-ids-to-get.txt'),'w+') as thefile:
-        thefile.truncate()
+        thefile.truncate() # Clear the file
         for team in allteams:
             thefile.write(str(team)+'\n')
 
@@ -726,7 +693,7 @@ def write_needed_teams(use_opr=False):
 
     
 
-def loadMatches(filter_by_teams=None):
+def loadMatches(filter_by_teams=None) -> pd.DataFrame:
     """
     Returns a pandas object of the csv file containing all matches (reads from all-matches.csv, created by prepare_opr_calculation)
     """
@@ -756,7 +723,7 @@ def prepare_opr_calculation(
     """
     Prepares the OPR calculation and writes to all-matches.csv and matches-per-team.csv
     
-    Draws from opr/all-events (created when curling in the BASH script)
+    Draws from opr/all-events (created when curling in the BASH/Powershell script)
     
     Arguments:
       - specific_event (str) - returns only the data pertaining to the specified event code.
