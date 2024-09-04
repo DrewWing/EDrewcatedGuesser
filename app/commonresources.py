@@ -87,7 +87,7 @@ def get_json(path: str):
     
     except Exception as e:
         log_error( f'[commonresources.py][get_json] Some Error occured with getting json of path {path}.'
-                    + f' Usually the cause is an empty or malformed file. Full error message: {e}'
+                    + f' Usually caused by an empty or malformed file. Raising this to the console. Full error message: {e}'
         )
         raise e
     
@@ -132,23 +132,23 @@ def make_printable(s: str) -> str:
     return s.encode(sys.stdout.encoding, errors="replace").decode()
 
 
-def green_check():
+def green_check() -> str:
     return make_printable('['+Colors.LIGHT_GREEN+'✓'+Colors.END+']')
 
-def red_x():
+def red_x() -> str:
     return make_printable('['+Colors.RED+'X'+Colors.END+']')
 
-def info_i():
+def info_i() -> str:
     return make_printable('['+Colors.BLUE+'i'+Colors.END+']')
 #endregion color stuffs
 
 
-def byte_to_gb(bytes):
+def byte_to_gb(bytes) -> float:
     """Returns the amount of Gb for a given amount of bytes"""
     return round((bytes / (10**9)), 4)
 
 
-def log_error(message: str, level="ERROR"):
+def log_error(message: str, level="ERROR") -> None:
     """
     Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
     """
@@ -156,9 +156,7 @@ def log_error(message: str, level="ERROR"):
         myfile.write(f'[{datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")}][{level}!] '+str(message)+'\n')
 
 
-def seconds_to_time(seconds, roundto=3):
-    #if seconds < 1:
-    #    return f'{round(seconds*1000, 3)} ms'
+def seconds_to_time(seconds, roundto=3) -> str:
     
     minutes = int(seconds//60)
     if seconds >= 60:
@@ -189,7 +187,6 @@ if __name__ == "__main__":
         'CRAPPY_LAPTOP'   : CRAPPY_LAPTOP,
         'DO_JOBLIB_MEMORY': DO_JOBLIB_MEMORY,
         'PATH_TO_JOBLIB_CACHE'  : PATH_TO_JOBLIB_CACHE,
-        #'CALCULATE_OPR_GLOBALLY': CALCULATE_OPR_GLOBALLY,
         'SERVICE_ACCOUNT_FILE'  : SERVICE_ACCOUNT_FILE,
         'SPREADSHEET_ID': SPREADSHEET_ID,
         'sys.path'    : sys.path,
