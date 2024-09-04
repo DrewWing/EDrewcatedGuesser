@@ -23,6 +23,7 @@ print('Importing modules...')
 print('  - Builtins')
 import pickle
 import time
+import os
 
 starttime = time.time()
 
@@ -109,7 +110,7 @@ def describe_model(model, X_cat_test, Y_cat_test):
 print(info_i()+' Loading data...')
 
 
-pandasdata = pd.read_csv(PATH_TO_FTCAPI+'machinefile.csv', dtype={
+pandasdata = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'machinefile.csv'), dtype={
     'RedOPR' :np.longdouble, 'RedAutoOPR' :np.longdouble, 'RedCCWM' :np.longdouble, 
     'blueOPR':np.longdouble, 'blueAutoOPR':np.longdouble, 'blueCCWM':np.longdouble, 
     'recentRedOPR' :np.longdouble, 'recentRedAutoOPR' :np.longdouble, 'recentRedCCWM' :np.longdouble, 
@@ -280,12 +281,12 @@ print(green_check()+' gsSVC and gsNeigh created as GridSearchCVs')
 if LOAD_MODEL:
     print(info_i()+' Loading models...')
     
-    with open(PATH_TO_FTCAPI+'gsNeigh.pkl', 'rb') as f:
+    with open(os.path.join(PATH_TO_FTCAPI,'gsNeigh.pkl'), 'rb') as f:
         gsNeigh = pickle.load(f)
     
     print(green_check()+'     Model gsNeigh loaded.')
 
-    with open(PATH_TO_FTCAPI+'gsSVC.pkl', 'rb') as f:
+    with open(os.path.join(PATH_TO_FTCAPI,'gsSVC.pkl'), 'rb') as f:
         gsSVC = pickle.load(f)
     
     print(green_check()+'     Model gsSVC loaded.')
@@ -298,10 +299,10 @@ else:
 
     print(green_check()+' gsNeigh successfully fit!')
 
-    with open(PATH_TO_FTCAPI+'gsNeigh.pkl','wb') as f:
+    with open(os.path.join(PATH_TO_FTCAPI,'gsNeigh.pkl'),'wb') as f:
         pickle.dump(gsNeigh,f)
     
-    print(green_check()+' gsNeigh model saved as '+PATH_TO_FTCAPI+'gsNeigh.pkl')
+    print(green_check()+' gsNeigh model saved as '+os.path.join(PATH_TO_FTCAPI,'gsNeigh.pkl'))
 
     print(info_i()+' gsNeigh:')
     describe_model(gsNeigh, X_cat_test, Y_cat_test)
@@ -312,10 +313,10 @@ else:
     gsSVC.fit(X_cat_train, Y_cat_train)
     print(green_check()+' gsSVC successfully fit!')
 
-    with open(PATH_TO_FTCAPI+'gsSVC.pkl','wb') as f:
+    with open(os.path.join(PATH_TO_FTCAPI,'gsSVC.pkl'),'wb') as f:
         pickle.dump(gsSVC,f)
     
-    print(green_check()+' gsSVC model saved as '+PATH_TO_FTCAPI+'gsSVC.pkl')
+    print(green_check()+' gsSVC model saved as '+os.path.join(PATH_TO_FTCAPI,'gsSVC.pkl'))
     print('\n'+info_i()+'gsSVC')
     describe_model(gsSVC, X_cat_test, Y_cat_test)
     print(info_i()+f' That took {seconds_to_time((time.time()-starttime))} total so far')

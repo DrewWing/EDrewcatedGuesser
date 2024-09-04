@@ -21,11 +21,7 @@ class PythonSettings():
         self.field_mode = None
 
         dir_path = str(os.path.dirname(os.path.realpath(__file__)))
-        settings_path = str(
-            dir_path + 
-            ("\\" if "\\" in dir_path else "/") + # Accomodate forwardslash paths and backslash paths
-            "generatedfiles"+("\\" if "\\" in dir_path else "/")+"settings.config"
-        )
+        settings_path = os.path.join(dir_path,"generatedfiles","settings.config")
         
         # gather the settings from the settings.config file
         with open(settings_path,"r") as thefile:

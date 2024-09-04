@@ -9,7 +9,6 @@
 
 from commonresources import PATH_TO_FTCAPI, red_x, info_i, green_check, get_json
 
-slash = ('\\' if '\\' in PATH_TO_FTCAPI else '/')
 
 print(info_i()+' [viewdata.py] Importing')
 
@@ -18,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 import sys
+import os
 
 plt.style.use('dark_background')
 
@@ -45,7 +45,7 @@ def using_hist2d(ax, x, y, bins=(50, 50)):
 if do_first_map:
     print(info_i()+' Generating data')
     # Generate Data
-    allmatches = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}all-matches.csv')
+    allmatches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-matches.csv'))
     
     allmatches.drop(
                 ['description'], 
@@ -108,7 +108,7 @@ print(info_i()+' Generating data')
 # Generate Data
 #allmatches = pd.read_csv(PATH_TO_FTCAPI+'globaloprs/OPR-result-sorted.json')
 #{"teamNumber":25218, "teamName":"Undefined", "OPR":172.40222517085803, "AutoOPR":56.822136784937285, "CCWM":109.1174444069353}, 
-rj = get_json(PATH_TO_FTCAPI+'globaloprs/OPR-result-sorted.json')
+rj = get_json(os.path.join(PATH_TO_FTCAPI,'globaloprs','OPR-result-sorted.json'))
 rj_dic = {'teamNumber':[],'OPR':[],'AutoOPR':[],'CCWM':[]}
 
 for team in rj['matches']:
