@@ -20,7 +20,6 @@ from commonresources import log_error, green_check, info_i, red_x, get_json, PAT
 from python_settings import PythonSettings
 settings = PythonSettings()
 
-slash = ('\\' if '\\' in PATH_TO_FTCAPI else '/')
 
 try:
     import pandas as pd
@@ -44,7 +43,7 @@ def get_team_stats(team_number) -> dict:
     if settings.debug_level>1:
         print(info_i()+f'         [jsonparse.py][get_team_stats] Getting team stats for team #{team_number}')
     
-    all_oprs = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-result-sorted.csv', index_col=False)
+    all_oprs = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-result-sorted.csv'), index_col=False)
 
     try:
         team_stats['OPR']     = all_oprs[all_oprs["Team"]==team_number]['OPR'].values[0]
@@ -64,7 +63,7 @@ def get_team_stats(team_number) -> dict:
         team_stats['CCWM']    = 1
     #Team,OPR,AutoOPR,CCWM
 
-    all_oprs_recent = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-recent-result-sorted.csv', index_col=False)
+    all_oprs_recent = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-recent-result-sorted.csv'), index_col=False)
 
     try:
         team_stats['recentOPR']     = all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]['OPR'].values[0]
@@ -624,11 +623,11 @@ def write_needed_events(season_events, texasonly=False):
     print(info_i()+' Writing needed events...')
     # All types: ['Qualifier', 'Championship', 'Scrimmage', 'Kickoff', 'League Tournament', 'League Meet', 'Super Qualifier', 'Volunteer Signup', 'Practice Day', 'Workshop', 'FIRST Championship', 'Demo / Exhibition', 'Off-Season']
 
-    rawevents = open(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}needed-events-raw.json','w+')
+    rawevents = open(os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','needed-events-raw.json'),'w+')
     rawevents.truncate()
     rawevents.write('{"matches":[\n')
     
-    with open(PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}needed-event-ids.txt','w+') as thefile:
+    with open(os.path.join(PATH_TO_FTCAPI+f'generatedfiles','opr','needed-event-ids.txt'),'w+') as thefile:
         thefile.truncate() # Clear the file
         filtered_event_list = season_events.filter(type=accepted_match_types, state=("TX" if texasonly else None))
         # Iterate over every event
@@ -653,9 +652,9 @@ def write_needed_teams(use_opr=False):
     counter  = 0
     eventcounter = 0
     if (not use_opr):
-        thepath = PATH_TO_FTCAPI+f'generatedfiles{slash}all-events'
+        thepath = os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-events')
     else:
-        thepath = PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}all-events'
+        thepath = os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','all-events')
     
     l=len(os.listdir(thepath))
 
@@ -684,7 +683,7 @@ def write_needed_teams(use_opr=False):
     
     print(green_check()+'    Teams assembled. Writing all teams to file team-ids-to-get.txt...       ')
     
-    with open((PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}all-teamids-involved.txt' if use_opr else f'generatedfiles{slash}team-ids-to-get.txt'),'w+') as thefile:
+    with open(os.path.join(PATH_TO_FTCAPI,'generatedfiles',('opr','all-teamids-involved.txt' if use_opr else 'generatedfiles','team-ids-to-get.txt')),'w+') as thefile:
         thefile.truncate() # Clear the file
         for team in allteams:
             thefile.write(str(team)+'\n')
@@ -698,7 +697,7 @@ def loadMatches(filter_by_teams=None) -> pd.DataFrame:
     Returns a pandas object of the csv file containing all matches (reads from all-matches.csv, created by prepare_opr_calculation)
     """
     #TODO: update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}all-matches.csv')
+    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-matches.csv'))
     all_matches['actualStartTime'] = pd.to_datetime(all_matches['actualStartTime'], format='mixed')#format="%Y-%m-%"+"dT%H:%M:%S.%"+"f")
 
     # if filter_by_teams isn't none, filter the matches
@@ -735,7 +734,7 @@ def prepare_opr_calculation(
     eventcounter  = 0
     l=len(os.listdir(
         (
-            PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}all-events')
+            os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','all-events'))
         ))
 
     matches_per_team_dic = {}
@@ -763,19 +762,19 @@ def prepare_opr_calculation(
         print(info_i()+'    [prepare_opr_calculation] Getting teams...')
     
     if specific_event==None:
-        path_list = [ PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}all-events{slash}'+i for i in os.listdir(PATH_TO_FTCAPI+(f'generatedfiles{slash}opr{slash}all-events'))]
+        path_list = [ os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','all-events', j) for j in [i for i in os.listdir(os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','all-events'))]]
 
     elif specific_event=='RECENT':
         if settings.debug_level>0:
             # eventmatches.json is updated in ftcapiv3.sh, during the getmatches
             print(info_i() + '    [prepare_opr_calculation] Iterating through only event in eventmatches.json')
-        path_list = [PATH_TO_FTCAPI+f'generatedfiles{slash}eventdata{slash}eventmatches.json']
+        path_list = [os.path.join(PATH_TO_FTCAPI,'generatedfiles','eventdata','eventmatches.json')]
         l = 1
     
     else:
         if settings.debug_level>0:
             print(info_i() + '    [prepare_opr_calculation] Iterating through only one event with code '+str(specific_event))
-        path_list = [PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}all-events{slash}'+str(specific_event).upper()+'.json']
+        path_list = [os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','all-events',str(specific_event).upper()+'.json')]
         l = 1
 
     
@@ -843,7 +842,7 @@ def prepare_opr_calculation(
     if (specific_event_teams != None):
         try:
             # If the current event is the specific event given, add all teams to list
-            event_teams_raw_json = get_json(PATH_TO_FTCAPI+f'generatedfiles{slash}eventdata{slash}eventteams.json') # Created when FTC APIing
+            event_teams_raw_json = get_json(os.path.join(PATH_TO_FTCAPI,'generatedfiles','eventdata','eventteams.json')) # Created when FTC APIing
 
             #print('event_teams_raw_json[teams]'+str(event_teams_raw_json['teams']))
     
@@ -901,13 +900,13 @@ def prepare_opr_calculation(
     if settings.debug_level>1:
         print(green_check()+'    Teams assembled. Writing all matches per team to file generatedfiles/matches-per-team.csv...       ')
     
-    matches_per_team.to_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}matches-per-team.csv', index=False)
+    matches_per_team.to_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','matches-per-team.csv'), index=False)
 
 
     if settings.debug_level>1:
         print(green_check()+'    Teams assembled. Writing all team numbers to file generatedfiles/team-list-filtered.csv...       ')
     
-    matches_per_team['teamNumber'].to_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}team-list-filtered.csv', index=False)
+    matches_per_team['teamNumber'].to_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','team-list-filtered.csv'), index=False)
 
     
 
@@ -937,7 +936,7 @@ def prepare_opr_calculation(
     if settings.debug_level>0:
         print(green_check()+'    Matches assembled. Writing all teams to file generatedfiles/all-matches.csv...       ')
     
-    all_matches_pd.to_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}all-matches.csv', index=False)
+    all_matches_pd.to_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-matches.csv'), index=False)
 
     if settings.debug_level>2:
         print(green_check()+f'    Wrote about {len(pd.unique(all_matches_pd["Red1"]))} (unique in Red1) of teams out of {matchcounter} matches (matchcounter).')
@@ -951,9 +950,9 @@ def prepare_opr_calculation(
 if __name__ == "__main__" and 'get-events-global' in sys.argv:
     print(info_i()+'  [jsonparse.py] This script was called as __main__')
     print(info_i()+'      Jsonparse getting global event ids that match')
-    print(info_i()+'      Getting the season\'s data from seasondata at '+str(PATH_TO_FTCAPI+f'generatedfiles{slash}seasondata.json'))
+    print(info_i()+'      Getting the season\'s data from seasondata at '+os.path.join(PATH_TO_FTCAPI,'generatedfiles','seasondata.json'))
 
-    write_needed_events(SeasonEvents(get_json(PATH_TO_FTCAPI+f'generatedfiles{slash}seasondata.json')), texasonly=False)
+    write_needed_events(SeasonEvents(get_json(os.path.join(PATH_TO_FTCAPI,'generatedfiles','seasondata.json'))), texasonly=False)
 
 
 # -- End of file --

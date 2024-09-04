@@ -22,6 +22,7 @@ CCWM = Calculated Contribution to Winning Margin
 # Builtin imports
 import time
 import sys
+import os
 
 # Internal Imports
 import jsonparse
@@ -49,7 +50,6 @@ except ImportError as e:
 #endregion imports
 
 starttime = time.time()
-slash = ('\\' if '\\' in PATH_TO_FTCAPI else '/')
 
 #region joblib
 # Set up joblib's cache memory location
@@ -101,8 +101,7 @@ def loadTeamNumbers() -> list:
     """
     Loads teams from a csv file team-list-filtered.csv (created in jsonparse.py)
     """
-    # return list(pd.read_csv(PATH_TO_FTCAPI+'matches-per-team.csv')['teamNumber'])
-    return list(pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}team-list-filtered.csv')['teamNumber'])
+    return list(pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','team-list-filtered.csv'))['teamNumber'])
 
 
 def filterMatchesByTeams(matches, teams: list):
@@ -125,7 +124,7 @@ def loadMatches(filter_by_teams: list = []):
     
     """
     #TODO: Update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(PATH_TO_FTCAPI+f'generatedfiles{slash}all-matches.csv') # Get the csv data
+    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-matches.csv')) # Get the csv data
 
     # Make the start time column use the datetime format
     all_matches['actualStartTime'] = pd.to_datetime(all_matches['actualStartTime'], format='mixed')
@@ -192,7 +191,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         if (settings.debug_level>1):
             print(info_i()+" [OPRv4][build_m]  Loading matrix from file, not building it.")
             
-        M = numpy.load(PATH_TO_FTCAPI+f"generatedfiles{slash}OPR-m.npy")
+        M = numpy.load(os.path.join(PATH_TO_FTCAPI,"generatedfiles","OPR-m.npy"))
 
         if settings.debug_level>1:
             print(green_check()+" [OPRv4][build_m]  Matrix M successfully loaded from file OPR-m.npy")
@@ -255,7 +254,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         
 
         # save the matrix to a file for later loading
-        numpy.save(PATH_TO_FTCAPI+f'generatedfiles{slash}OPR-m',M)
+        numpy.save(os.path.join(PATH_TO_FTCAPI,'generatedfiles','OPR-m'),M)
 
     if (settings.debug_level>2):
         print(info_i()+'  M:')
@@ -263,7 +262,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         print()
         if (settings.debug_level>3):
             print(info_i()+'  Saving M to generatedfiles/M-debug.csv for debug purposes... (this could take a little bit if it is big)')
-            numpy.savetxt(PATH_TO_FTCAPI+f"generatedfiles{slash}M-debug.csv", M, delimiter=",")
+            numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"generatedfiles","M-debug.csv"), M, delimiter=",")
             print(green_check()+'  Saved.')
 
     return M
@@ -673,7 +672,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-global-result-sorted.csv',  
+            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-global-result-sorted.csv'),  
             load_m=False
         )
 
@@ -708,7 +707,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-result-sorted.csv',  
+            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-result-sorted.csv'),  
             load_m=False
         )
 
@@ -747,7 +746,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-recent-result-sorted.csv', 
+            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-recent-result-sorted.csv'), 
             load_m=False,
             fallback="zeroes"
         )
@@ -786,7 +785,7 @@ if __name__ == '__main__':
         #print(matches)
         do_all_opr_stuff(
             matches = matches, 
-            output_file_path = PATH_TO_FTCAPI+f'generatedfiles{slash}opr{slash}opr-event-result-sorted.csv',  
+            output_file_path = os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-event-result-sorted.csv'),  
             load_m  = False
         )
 

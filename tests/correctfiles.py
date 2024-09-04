@@ -13,7 +13,7 @@ class correctFileTest(unittest.TestCase):
 
         for extension in extensions:
             for file in list_of_files:
-                self.assertFalse(extension in file, msg=msg+f" - Extension  {extension} with path {file}.")
+                self.assertFalse(extension == os.path.splitext(file)[1], msg=msg+f" - Extension  {extension} with path {file}.")
 
 
     def test_app_files(self):

@@ -55,7 +55,7 @@ lines = [
     "# DO NOT EDIT THIS, IT WILL NOT MATTER!",
     "# To edit settings, call the ftcapiv4.sh or ftcapiv4.ps1 with different arguments,",
     "# or edit those respective files.",
-    f"# This file is written by {path_to_ftcapi}\\init_settings.py",
+    f"# This file is written by {os.path.join(path_to_ftcapi,"init_settings.py")}",
     f"event_code={args.EventCode}",
     f"path_to_ftcapi={path_to_ftcapi}",
     f"debug_level={args.DebugLevel}",
@@ -63,11 +63,7 @@ lines = [
     ""
 ]
 
-slash = ("\\" if "\\" in path_to_ftcapi else "/") # Accomodate forwardslash paths and backslash paths
-
-settings_path = str(
-    path_to_ftcapi+slash+"generatedfiles"+slash+"settings.config"
-)
+settings_path = os.path.join(path_to_ftcapi,"generatedfiles","settings.config")
 
 with open(settings_path, 'w+') as settings_file:
     settings_file.truncate()

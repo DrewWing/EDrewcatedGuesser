@@ -32,7 +32,7 @@ slash = ('\\' if '\\' in global_settings.path_to_ftcapi else '/') # support both
 PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
 
 #region joblibpath
-PATH_TO_JOBLIB_CACHE = PATH_TO_FTCAPI+f"generatedfiles{slash}joblibcache{slash}joblib"
+PATH_TO_JOBLIB_CACHE = os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib")
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
@@ -44,8 +44,7 @@ if os.name == "nt":
         PATH_TO_JOBLIB_CACHE = "\\\\?\\UNC\\" + PATH_TO_JOBLIB_CACHE[2:]
     else:
         PATH_TO_JOBLIB_CACHE = "\\\\?\\" + PATH_TO_JOBLIB_CACHE
-else:
-    PATH_TO_JOBLIB_CACHE = os.path.join(folder, "cache")
+
 #endregion joblibpath
 
 
@@ -152,7 +151,7 @@ def log_error(message: str, level="ERROR") -> None:
     """
     Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
     """
-    with open(PATH_TO_FTCAPI+f"generatedfiles{slash}errors.log", "a") as myfile:
+    with open(os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"), "a") as myfile:
         myfile.write(f'[{datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")}][{level}!] '+str(message)+'\n')
 
 
