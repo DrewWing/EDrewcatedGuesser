@@ -15,7 +15,7 @@ Items labeled `Critical` need to be fixed/completed before release.
 ### Other
   - [ ] `[Code]` Remove the rankings_dataframe function in jsonparse, it seems to not be called anywhere
   - [ ] `[Code]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
-  - [ ] `[Code]` Have a standard variable, class, and function naming system
+  - [ ] `[Code]` Have a standard variable, class, and function naming system (camel case vs underscores vs etc.)
   - [ ] `[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)
   - [ ] `[General]` Get a better Todo system (usse a bug-tracking system?)
   - [ ] `[OS Support]` `[Critical]` Linux support
