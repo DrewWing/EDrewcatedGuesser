@@ -8,9 +8,16 @@ class importsTest(unittest.TestCase):
 
     def test_external_imports(self):
         try:
-            import pandas
+            import sys
+            import os
+            import json
             import joblib
             import numpy
+            import pandas
+            import datetime
+            import pathlib
+
+            # Google API stuff
             from google.oauth2 import service_account
             import google.auth.exceptions
             from googleapiclient.discovery import build
@@ -31,8 +38,8 @@ class importsTest(unittest.TestCase):
             import commonresources
             import OPR
             import jsonparse
-            #import init_settings #TODO: this uses argparse, fix this test later
-            #import sheetsapi #TODO: fix this one too
+            import init_settings #TODO: this uses argparse, fix this test later
+            import sheetsapi #TODO: fix this one too
         
         except ImportError as e:
             raise AssertionError(e)
