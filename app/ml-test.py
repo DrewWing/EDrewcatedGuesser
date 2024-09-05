@@ -1,5 +1,6 @@
-
-#ml-test.py
+#
+# -*- coding: utf-8 -*-
+# ml-test.py
 # by Drew Wingfield
 # started 2024-02-15
 # 
