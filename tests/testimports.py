@@ -16,6 +16,7 @@ class importsTest(unittest.TestCase):
             import pandas
             import datetime
             import pathlib
+            import pickle
 
             # Google API stuff
             from google.oauth2 import service_account
