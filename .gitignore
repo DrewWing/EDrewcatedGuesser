@@ -12,5 +12,6 @@ app/generatedfiles/
 
 ftcapivenv/
 ftcapivenvwindows/
+.venv/
 
 reqtest
