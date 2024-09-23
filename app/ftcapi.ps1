@@ -27,7 +27,7 @@ param (
     [switch]$NoApiCalls = $false,
     [bool]$FieldMode = $true,
     [int]$DebugLevel = 0, # Debug level of python scripts
-    [string]$VenvDir = "reqtest", # The directory of virtual environment to use
+    [string]$VenvDir = ".venv", # The directory of virtual environment to use
     [int]$SeasonYear = "2023" # First year of the season. For instance, the 2023-2024 school year is just "2023"
 )
 
