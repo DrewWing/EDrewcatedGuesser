@@ -61,6 +61,7 @@ Write-Output " Using activate path $venvActivatePath."
 Write-Output " Installing required packages... (this could take up to 10 minutes)"
 
 # Now install all required packages
+Write-Output "`n`n Installing required packages... `n" >> $logPath
 python -m pip install -r .\requirements.txt >> $logPath
 
 Write-Output " ############################################################ "
