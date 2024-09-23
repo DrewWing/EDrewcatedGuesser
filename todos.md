@@ -11,6 +11,7 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [ ] `[OPR]` `[Accuracy]` Weird bug with some teams' recent OPR calculated as 0 for lower amounts of days (30)
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
   - [ ] `[Tests]` `[Argparse]` Import tests fail due to argparse.
+  - [X] ~~`[Critical]` `[Git]` `[External]` Fix the gitignore in all branches to ignore .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.~~
 
 ### Other
   - [ ] `[ReadMe]` Add documentation about the venvSetup.ps1 script.
