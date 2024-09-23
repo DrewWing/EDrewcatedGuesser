@@ -9,6 +9,7 @@ __pycache__/
 app/generatedfiles/
 
 .vscode/
+.venv/
 
 ftcapivenv/
 ftcapivenvwindows/
