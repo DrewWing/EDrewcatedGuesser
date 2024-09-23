@@ -14,6 +14,7 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [X] ~~`[Critical]` `[Git]` `[External]` Fix the gitignore in all branches to ignore .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.~~
 
 ### Other
+  - [ ] `[Git]` Perhaps ignore all .log files?
   - [ ] `[ReadMe]` Add documentation about the venvSetup.ps1 script.
   - [ ] `[Code]` Remove the rankings_dataframe function in jsonparse, it seems to not be called anywhere
   - [ ] `[Code]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
