@@ -13,6 +13,7 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [ ] `[Tests]` `[Argparse]` Import tests fail due to argparse.
 
 ### Other
+  - [ ] `[ReadMe]` Add documentation about the venvSetup.ps1 script.
   - [ ] `[Code]` Remove the rankings_dataframe function in jsonparse, it seems to not be called anywhere
   - [ ] `[Code]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
   - [ ] `[Code]` Have a standard variable, class, and function naming system (camel case vs underscores vs etc.)
