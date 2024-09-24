@@ -1,5 +1,6 @@
 # Conventions
 All of the informal rules for naming, whitespace, etc. for the entire project.
+Most of this is reminders for myself.
 
 ## Directories and Files
 ### Naming Directories
@@ -14,6 +15,7 @@ Powershell | Camel Case, but first letter is lowercase. No word separators | `fl
 Markdown | Camel Case | `StablePackageVersions.md`
 Trained ML Models | If using Grid Search, start with `gs`. Then an abbreviated version of the model type (first letter capitalized). | `gsNeigh.pkl` or `gsSVC.pkl`
 
+Notable eceptions are the `README.md`, `LICENSE.txt`, and `todos.md` files.
 
 ## Python Code
 
@@ -37,9 +39,11 @@ All python files should start with the following:
 ```
 Notice that this header does not contain a shebang, as all Python scripts should be run under the Virtual Environment (usually `.venv`).
 
+I'm working on learning the [docstrings](https://peps.python.org/pep-0257/) and will update this when I finish.
 
 #### Imports
-All imports should be within a region defined by `#region <region name>` and `#endregion <region name>`. They should further be categorized by builtins, files from this project, then external modules.
+All imports should be within a region defined by `#region <region name>` and `#endregion <region name>`. They should further be categorized by builtins, files from this project, then external modules. \
+As per [PEP 8](https://peps.python.org/pep-0008), you should only import one module for each line.
 
 #### Constants
 Constants should be next, in their own region. See below for naming conventions.
@@ -56,8 +60,17 @@ Code that is procedural in the script should be under the `Procedural` region. C
 ---
 
 ### General
+Generally just please adhere to [PEP 8](https://peps.python.org/pep-0008).
+
+Use double quotes `"` except for certain situations where Python can't handle it (strings within f-strings).
+
 Lines should be no longer than 5 billion characters long (haha TODO: decide this).
 
+#### Indentation
+As per [PEP 8](https://peps.python.org/pep-0008/#indentation), there will be 4 spaces per indentation level. Resistance will not be tolerated.
+
+
+#### Comments
 Comments should be capitalized properly and have a space between the # and the comment.\
 Example:
 ```python
@@ -70,3 +83,5 @@ Exceptions are TODOs. Comments that are to-do should start with ```TODO: ``` imm
 ## Powershell Code
 Insert text here.
 
+## BASH Code
+Insert text here.
