@@ -29,13 +29,16 @@ All python files should start with the following:
 # Name of the File (Title Case)
 # Started MM-DD-YYYY
 # by Drew Wingfield
+#
+"""
+A short description of what this script is and provides.
 
-# Description:
-# Enter the description here (what this file does/provides).
+This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+See the documentation in the README.md file.
+See the license in the LICENSE.txt file.
 
-# This file is a part of Drew Wingfield's FTCAPI program.
-# See the documentation in the README.md file.
-# See the license in the LICENSE.txt file.
+A longer description of the script goes here, if necessary.
+"""
 ```
 Notice that this header does not contain a shebang, as all Python scripts should be run under the Virtual Environment (usually `.venv`).
 
@@ -80,8 +83,57 @@ data_to_push = add_timestamp(data_to_push)
 Exceptions are TODOs. Comments that are to-do should start with ```TODO: ``` immediately after the # sign.
 
 
-## Powershell Code
-Insert text here.
+## PowerShell Code
+
+### Layout
+
+#### Header
+All PowerShell files should start with the following:
+```powershell
+<#
+.SYNOPSIS
+    A brief description of what the script does.
+
+.DESCRIPTION
+    A more detailed explanation of the script's functionality, including its purpose and how it works.
+
+.PARAMETER <ParameterName>
+    Description of each parameter used by the script.
+
+.EXAMPLE
+    Example usage of script.
+
+.EXAMPLE
+    Another example usage.
+
+.NOTES
+    Additional info.
+
+    Created/Forked from <other script> on MM-DD-YYYY
+
+.AUTHOR
+    Drew Wingfield
+
+.COPYRIGHT
+    This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+    Please see the license in the LICENSE.txt and documentation in the README.md file.
+
+.VERSION
+    Current version number.
+
+#>
+```
+
+#### Setup
+Everything relating to a set-up of the script, including: parameters, variable declarations and virtual environment activation.
+These should all be in a region titled `setup` or `Setup`.
+
+#### Functions
+All functions should be placed in a region titled `functions` or `Functions`.
+
+#### Procedural
+Everything else should be placed under a region titled `procedural` or `Procedural`.
 
 ## BASH Code
 Insert text here.
+
