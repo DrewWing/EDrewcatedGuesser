@@ -1,18 +1,37 @@
+<#
+.SYNOPSIS
+    Adds and sets up a Virtual Environment for use with this program.
 
-# venvSetup.ps1
-# by Drew Wingfield
-# created on September 20th, 2024
-# by Drew Wingfield
+.DESCRIPTION
+    Creates a Virtual Environment at the location specified and installs
+    all required packages listed in "requirements.txt".
+    Writes a log of packages to "venvSetup.log"
+    
+    Created on September 20th, 2024
 
-# Please see the README.txt and LICENSE.txt files for more info.
+    AUTHOR: Drew Wingfield
+    VERSION: 48.0
+    COPYRIGHT: 
+        This script is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+        Please see the license in the LICENSE.txt and documentation in the README.md file.
+
+.PARAMETER VenvName
+            The (local) path to the directory of the Virtual Environment to use, as a string.
+            Defaults to ".venv"
+        
+.PARAMETER replace
+    If a Virtuual Environment currently exists with the path, replaces it.
+    Otherwise creates the venv as normal.
+    Defaults to false
+
+.NOTES
+    Additional info.
+
+#>
 
 param (
-    [switch]$help = $false, #TODO: add this feature
-    [switch]$h = $false,
-    [switch]$replace = $false,
-    [switch]$DryRun = $false,
-    [int]$DebugLevel = 0, # Debug level of python scripts
-    [string]$VenvName = ".venv" # The directory of virtual environment to use
+    [string]$VenvName = ".venv",
+    [switch]$replace = $false
 )
 
 $currentLocation=Get-Location # The current location, should be the working directory
@@ -61,7 +80,7 @@ Write-Output " Using activate path $venvActivatePath."
 Write-Output " Installing required packages... (this could take up to 10 minutes)"
 
 # Now install all required packages
-Write-Output "`n`n Installing required packages... `n" >> $logPath
+Write-Output "`n`n $((Get-Date).ToString()) Installing required packages... `n" >> $logPath
 python -m pip install -r .\requirements.txt >> $logPath
 
 Write-Output " ############################################################ "
