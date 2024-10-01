@@ -103,7 +103,7 @@ All PowerShell files should start with the following:
     AUTHOR: Drew Wingfield
     VERSION: <The current version of the program>
     COPYRIGHT: 
-        This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+        This script is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
         Please see the license in the LICENSE.txt and documentation in the README.md file.
 
 
