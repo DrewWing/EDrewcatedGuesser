@@ -1,22 +1,43 @@
 #
 # -*- coding: utf-8 -*-
-# sheetsapi.py
+# Sheets API
+# Started on an unmarked date
 # by Drew Wingfield
+#
+"""
+This script provides an interface for pulling and pushing data to/from a Google Sheets spreadsheet.
 
-# lots of help from https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py
-# and https://developers.google.com/sheets/api/quickstart/python
-# as well as lots of documentation and random other stuff.
+This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+See the documentation in the README.md file.
+See the license in the LICENSE.txt file.
+
+Lots of help from https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py
+    and https://developers.google.com/sheets/api/quickstart/python
+    as well as lots of documentation and random other stuff.
+"""
+
 
 
 #region Imports
+# Builtins
+import sys
+import datetime
+import pickle
 
-# common resources
+
+# Intraproject imports
 from commonresources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_ID, log_error
 
 from python_settings import PythonSettings
 settings = PythonSettings()
 
-# import google stuff
+from jsonparse import *
+
+
+# External imports
+import pandas as pd
+
+# Import Google stuff
 try:
     from google.oauth2 import service_account
     import google.auth.exceptions
@@ -34,16 +55,6 @@ except ImportError as e:
     print("  - Also see https://realpython.com/python-virtual-environments-a-primer/")
     print("Good luck!\n")
     raise e
-
-
-import pandas as pd
-
-# sys
-import sys
-import datetime
-
-# import json parser
-from jsonparse import *
 
 #endregion Imports
 
@@ -72,8 +83,10 @@ TEAMS_WRITE_METADATA_RANGE  = "API-Teams!B1:G4"
 #region utils
 def build_credentials(credentials=None):
     """
-    Builds the google credentials.
-    Returns the credentials
+    Builds and returns Google credentials.
+
+    Arguments:
+    credentials -- Any existing credentials (default: None)
     """
     if settings.debug_level>1:
         print(info_i()+"[sheetsapi.py] [build_credentials] Starting to build credentials.")
@@ -116,9 +129,7 @@ def build_credentials(credentials=None):
 
 
 def add_timestamp(lst: list):
-    """
-    Adds a timestamp to the beginning of a given list
-    """
+    """ Adds a timestamp to the beginning of a given list. """
     lst = lst[::-1]
     lst.append([datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")])
     lst = lst[::-1]
@@ -128,6 +139,14 @@ def add_timestamp(lst: list):
 
 #region gets
 def get_data(service, sheetid: str, range: str, credentials=build_credentials()):
+    """ Uses Google's Sheets API to pull data from a spreadsheet.
+
+    Arguments:
+    service -- A service object built via build()
+    sheetid -- A string containing the unique id of the Google Sheet
+    range -- A string containing the range of cells to pull data from
+    credentials -- Credentials built using the build_credentials() function
+    """
     if settings.debug_level>0:
         print(info_i()+f" [sheetsapi.py] [get_data] Getting data from range {range}...")
 
@@ -163,12 +182,18 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
 
 def get_elims_matches(service, credentials):
     """
-    Gets the elims match data from the sheets, and returns a Dataframe containing the team numbers for each team.
+    Pulls elims match data.
+
+    Pulls the Eliminations match data from the Google Sheets, and returns a Pandas Dataframe containing the team numbers for each team.
+    
+    Arguments:
+    service -- A service object built via build()
+    credentials -- Credentials built using the build_credentials() function
     """
     if settings.debug_level>0:
         print(info_i()+' [sheetsapi.py][get_elims_matches] Getting matches in the elims combinations.')
     
-    e = get_data(service, sheetid=SPREADSHEET_ID, range=MATCHES_READ_ELIMS_RANGE, credentials=credentials)
+    elims_data_raw = get_data(service, sheetid=SPREADSHEET_ID, range=MATCHES_READ_ELIMS_RANGE, credentials=credentials)
 
     if settings.debug_level>1:
         print(info_i()+' [sheetsapi.py][get_elims_matches] Data recieved. Processing data...')
@@ -176,7 +201,7 @@ def get_elims_matches(service, credentials):
     elims_match_teams = {'Red1':[],'Red2':[],'Blue1':[],'Blue2':[],}
 
 
-    for row in e:
+    for row in elims_data_raw:
         #if debug:
         #    print('\n'+info_i()+'    ', end='')
 
@@ -201,6 +226,12 @@ def get_elims_matches(service, credentials):
 def get_event_data(event_object, event_schedule_qual, event_schedule_playoff, playoff_only=False):
     """
     Returns data about matches in an event, in >2D list format.
+    
+    Arguments:
+    event_object -- TODO: Add this description
+    event_schedule_qual -- TODO: Add this description
+    event_schedule_playoff -- TODO: Add this description
+    playoff_only (optional) --  (default: False)
     """
     data_to_push = []
     c=0 # total count of matches
@@ -243,9 +274,7 @@ def get_event_data(event_object, event_schedule_qual, event_schedule_playoff, pl
 
 
 def get_team_data(filepath: str):
-    """
-    Returns a pandas DataFrame from a given filepath to a .csv file
-    """
+    """ Returns a pandas DataFrame from a given filepath to a .csv file """
     return pd.read_csv(filepath)
 #endregion gets
 
@@ -254,6 +283,14 @@ def get_team_data(filepath: str):
 def push_data(service, sheetid: str, range: str, credentials, data):
     """
     Pushes data to a Google Sheets spreadsheet.
+    
+
+    Arguments:
+    service -- A service object built via build()
+    sheetid -- A string containing the unique id of the Google Sheet
+    range -- A string containing the range of cells to push data to
+    credentials -- Credentials built using the build_credentials() function
+    data -- A 2D list, see the format below:
     The data is in the format of a 2d list;
     [
         #row
@@ -323,6 +360,16 @@ def push_data(service, sheetid: str, range: str, credentials, data):
 
 
 def push_matches(service):
+    """
+    Pushes match data to a Google Spreadsheet.
+
+    More specifically, this function gathers data from the machinelearning/eventdata
+    folder, predicts the matches, and pushes the data to the Google Sheets.
+
+    Arguments:
+    service -- A service object built via build()
+    """
+    
     if settings.debug_level>0:
         print(info_i()+' [sheetsapi.py][push_matches] Pushing matches data to sheets')
         
@@ -334,12 +381,11 @@ def push_matches(service):
     
     write_to_range = MATCHES_WRITE_RANGE
 
-    # get the data
+    # Get the data
     event_object   = EventMatches(get_json(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","eventmatches.json")))
     event_schedule_qual    = EventSchedule(get_json(os.path.join(PATH_TO_FTCAPI,'generatedfiles','eventdata','eventschedule-qual.json')))
     event_schedule_playoff = EventSchedule(get_json(os.path.join(PATH_TO_FTCAPI,'generatedfiles','eventdata','eventschedule-playoff.json')))
 
-    import pickle
 
     with open(os.path.join(PATH_TO_FTCAPI,'gsNeigh.pkl'), 'rb') as f:
         gsNeigh = pickle.load(f)
@@ -367,7 +413,7 @@ def push_matches(service):
         print(info_i()+' Pushing data')
 
     
-    # push the data
+    # Push the data
     push_data(
         service, SPREADSHEET_ID, write_to_range, credentials, 
         data_to_push
@@ -379,7 +425,13 @@ def push_matches(service):
 
 def push_teams(service):
     """
-    Pushes the team data to the spreadsheet
+    Pushes team data to a Google Spreadsheet
+    
+    More specifically, this function gathers data from the sorted stats in
+    the generatedfiles/opr folder and pushes the data to the Google Sheets.
+
+    Arguments:
+    service -- A service object built via build()
     """
     if settings.debug_level>0:
         print(info_i()+' [sheetsapi.py] Pushing teams data to sheets')
@@ -404,7 +456,7 @@ def push_teams(service):
     if settings.debug_level>1:
         print(info_i()+'    Pushing data')
         
-    # push the data
+    # Push the data
     push_data(
         service, SPREADSHEET_ID, write_to_range, credentials, 
         data_to_push
@@ -425,7 +477,7 @@ def push_teams(service):
     if settings.debug_level>1:
         print(info_i()+'    Pushing data')
         
-    # push the data
+    # Push the data
     if len(data_to_push)==1:
         if settings.debug_level>0:
             print(info_i()+'    There is no data for the event OPR! Pushing a timestamp with a message.')
@@ -465,7 +517,13 @@ def push_teams(service):
 
 def push_rankings(service):
     """
-    Pushes ranking data to the sheet
+    Pushes ranking data to a Google Spreadsheet.
+
+    More specifically, this function gathers data from the machinelearning/eventdata
+    folder and pushes the data to the Google Sheets.
+
+    Arguments:
+    service -- A service object built via build()
     """
     if settings.debug_level>0:
         print(info_i()+' [sheetsapi.py] Pushing rankings data to sheets')
@@ -568,8 +626,6 @@ def push_elims_predictions(service):
          }
         )
 
-    import pickle
-
     if settings.debug_level>1:
         print(info_i()+' [sheetsapi.py][push_elims_predictions] Elims matches data recieved. Now loading models.')
 
@@ -649,7 +705,7 @@ def push_elims_predictions(service):
 # Get the credentials
 credentials = build_credentials()
 
-#build the service
+# Build the service
 service = build('sheets', 'v4', credentials=credentials)
 
 

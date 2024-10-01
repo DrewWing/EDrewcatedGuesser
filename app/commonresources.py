@@ -1,13 +1,19 @@
 #
 # -*- coding: utf-8 -*-
+
 # Common Resources
 # Started 02-18-2024
 # by Drew Wingfield
 #
+"""
+A set of common constants and functions for Drew Wingfield's FTCAPI program.
 
-# A set of common constants and functions for Drew Wingfield's FTCAPI program.
-# See the documentation in the README.md file.
-# See the license in the LICENSE.txt file.
+This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+See the documentation in the README.md file.
+See the license in the LICENSE.txt file.
+
+"""
+
 
 __all__ = [
     'get_json', 'log_error', 'byte_to_gb', 'seconds_to_time', 
