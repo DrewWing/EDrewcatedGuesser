@@ -98,7 +98,6 @@ All PowerShell files should start with the following:
     A more detailed explanation of the script's functionality, including its purpose and how it works.
     
     Created/Forked from <other script> on MM-DD-YYYY
-    because i guess i need to have windows support.
 
     AUTHOR: Drew Wingfield
     VERSION: <The current version of the program>
