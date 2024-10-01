@@ -96,6 +96,16 @@ All PowerShell files should start with the following:
 
 .DESCRIPTION
     A more detailed explanation of the script's functionality, including its purpose and how it works.
+    
+    Created/Forked from <other script> on MM-DD-YYYY
+    because i guess i need to have windows support.
+
+    AUTHOR: Drew Wingfield
+    VERSION: <The current version of the program>
+    COPYRIGHT: 
+        This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+        Please see the license in the LICENSE.txt and documentation in the README.md file.
+
 
 .PARAMETER <ParameterName>
     Description of each parameter used by the script.
@@ -108,18 +118,6 @@ All PowerShell files should start with the following:
 
 .NOTES
     Additional info.
-
-    Created/Forked from <other script> on MM-DD-YYYY
-
-.AUTHOR
-    Drew Wingfield
-
-.COPYRIGHT
-    This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
-    Please see the license in the LICENSE.txt and documentation in the README.md file.
-
-.VERSION
-    Current version number.
 
 #>
 ```
