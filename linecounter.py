@@ -11,8 +11,8 @@
 # recursively finding files with help from stackoverflow
 # https://stackoverflow.com/questions/2186525/how-to-use-to-find-files-recursively
 
+#region setup
 import os
-
 # Add app to the path to prevent errors when commonresources tries to import python_settings
 # Taken from Cameron on StackOverflow: https://stackoverflow.com/a/4383597/25598210
 import sys
@@ -24,8 +24,7 @@ from app.commonresources import info_i, red_x, green_check
 
 
 print(info_i()+" linecounter.py by Drew Wingfield")
-print(info_i()+" This is intended to be a temporary thing and should be deleted before release.")
-
+print(info_i()+" This is intended to be a temporary script and should be deleted before release.")
 
 
 def pretty_percent(lines_to_count,total_lines):
@@ -47,6 +46,34 @@ ignore_list = [line[:-1] if line[-1]=="/" else line for line in ignore_list]
 
 ignore_list.append(".git")
 
+# Keeps track of statistics per language, such as file and line count.
+# I made this dynamic so you can easily add more languages later. You're welcome.
+language_stats = {
+    "python":{
+        "valid extensions":[".py"],
+        "lines":0,
+        "files":0
+    },
+    "powershell":{
+        "valid extensions":[".ps1"],
+        "lines":0,
+        "files":0
+    },
+    "bash":{
+        "valid extensions":[".sh"],
+        "lines":0,
+        "files":0
+    },
+}
+
+ALL_VALID_EXTENSIONS = []
+for language in language_stats.keys():
+    ALL_VALID_EXTENSIONS += language_stats[language]["valid extensions"]
+
+#endregion setup
+
+
+
 matches = []
 for root, dirnames, filenames in os.walk(path_to_directory):
     # Excluding directories/files from os.walk with help from unutbu on StackOverflow:
@@ -64,7 +91,7 @@ for root, dirnames, filenames in os.walk(path_to_directory):
     # print(f"filenames: {filenames}")
 
     for filename in filenames:
-        if filename.endswith((".sh",".ps1",".py")):
+        if filename.endswith(tuple(ALL_VALID_EXTENSIONS)):
             matches.append(os.path.join(root, filename))
 
 
@@ -129,18 +156,19 @@ for file_path in matches:
     visual_counter+=1
 
 
-
+#region results
 print()
 print(green_check()+" Done!")
 print(green_check()+f" Read {total_file_count} files.")
 print(info_i()+f" Total lines: {total_line_count}")
-print(info_i()+f" Non-comment lines: {line_count_uncommented} - {pretty_percent(line_count_uncommented,total_line_count)}% of all lines")
-print(info_i()+f" lines with print: {lines_with_print_statements} - {pretty_percent(lines_with_print_statements,line_count_uncommented)}% of code")
-print(info_i()+f" lines with 1 or more indents: {lines_with_indents} - {pretty_percent(lines_with_indents,line_count_uncommented)}% of code")
-print(info_i()+f" for loops: {lines_with_for_statements}")
-print(info_i()+f" functions: {functions}")
-print(info_i()+f" classes: {classes}")
-print(info_i()+f" todos: {todos}")
+print(info_i()+f"     Non-comment lines: {line_count_uncommented} - {pretty_percent(line_count_uncommented,total_line_count)}% of all lines")
+print(info_i()+f"     lines with print: {lines_with_print_statements} - {pretty_percent(lines_with_print_statements,line_count_uncommented)}% of code")
+print(info_i()+f"     lines with 1 or more indents: {lines_with_indents} - {pretty_percent(lines_with_indents,line_count_uncommented)}% of code")
+print(info_i()+f"     for loops: {lines_with_for_statements}")
+print(info_i()+f"     functions: {functions}")
+print(info_i()+f"     classes: {classes}")
+print(info_i()+f"     todos: {todos}")
 print(green_check()+" Program complete.")
+#endregion results
 
 # -- END OF FILE --
