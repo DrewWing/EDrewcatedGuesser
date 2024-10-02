@@ -16,16 +16,16 @@ Items labeled `Critical` need to be fixed/completed before release.
 ### Other
   - [ ] `[Code]` Update the `__all__` variable in `commonresources.py`. Figure out if it's even needed.
   - [ ] `[Code]` In the powershell script, warn user if `secrets.txt` does not exist.
-  - [ ] `[Git]` Perhaps ignore all .log files?
-  - [ ] `[ReadMe]` Add documentation about the venvSetup.ps1 script.
-  - [ ] `[Code]` Remove the rankings_dataframe function in jsonparse, it seems to not be called anywhere
-  - [ ] `[Code]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
+  - [ ] `[Git]` Perhaps ignore all `.log` files in `.gitignore`?
+  - [ ] `[ReadMe]` Add documentation about `venvSetup.ps1` script.
+  - [ ] `[Code]` `[DeadCode]` Remove the `rankings_dataframe` function in jsonparse, it seems to not be called anywhere
+  - [ ] `[Code]` `[Feature]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
   - [ ] `[Code]` Have a standard variable, class, and function naming system (camel case vs underscores vs etc.)
   - [ ] `[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)
-  - [ ] `[General]` Get a better Todo system (usse a bug-tracking system?)
+  - [ ] `[General]` Get a better Todo system (use a bug-tracking system?)
   - [ ] `[OS Support]` `[Critical]` Linux support
-    - [ ] Fix Linux bash file
-    - [ ] Make sure everything works on linux lol
+    - [ ] Fix Linux BASH scripts
+    - [ ] Make sure everything works on linux
   - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and this file
     - [ ] Scripts in `app` folder
     - [ ] `tests` folder
@@ -35,7 +35,7 @@ Items labeled `Critical` need to be fixed/completed before release.
     - [ ] flushGeneratedFiles.ps1
     - [ ] linecounter.py
     - [ ] viewdata.py?
-  - [ ] `[Files]` Put all doc files (readme and updates) into a docs folder?
+  - [ ] `[Files]` `[Docs]` Put all doc files (readme and updates) into a docs folder?
   - [ ] `[Code]` `[QOL]` Redo all the path things to make them better lol
   - [ ] `[Code]` `[Tests]` Add tests
     - [X] ~~Correct files in correct places~~
@@ -46,11 +46,11 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [X] ~~Remove all references to heatmap stuff.~~
   - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets
-  - [ ] `[Sheets]` `[QOL]` It would be nice to add the team name to the number when pushing to sheets
+  - [ ] `[Sheets]` `[QOL]` `[Feature]` It would be nice to add the team name to the number when pushing to sheets
   - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
   - [ ] `[QOL]` `[Readme]` Redo the README.
-  - [ ] `[QOL]` Remove all unneccessary files
-    - [ ] Figure out what to do with viewdata.py
+  - [ ] `[QOL]` `[DeadCode]` Remove all unneccessary files
+    - [ ] `[DeadCode]` Figure out what to do with viewdata.py
     - [X] ~~Figure out where in the world OPR-m.npy comes from~~
     - [X] ~~Figure out if anything in the world uses OPR-m.npy~~
     - [ ] All opr/teamstats stuff
