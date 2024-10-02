@@ -34,6 +34,8 @@ def pretty_percent(lines_to_count,total_lines):
 path_to_directory = str(os.path.dirname(os.path.realpath(__file__)))
 
 # Get .gitignore files
+print(info_i()+" Getting .gitignore files...")
+
 with open(".gitignore","r") as ignore_file:
     ignore_list = [line for line in ignore_file]
 
@@ -72,8 +74,17 @@ for language in language_stats.keys():
 
 #endregion setup
 
+def pretty_percent_bars(percentage:float, total_chars:int =10)->str:
+    """ Note: takes in percentage as a float between 0-100 """
+    assert 0<=percentage
+    assert percentage<=100
+
+    result = "▰"*round((percentage/100)*total_chars)
+    result += "▱"*round(total_chars-len(result))
+    return result
 
 
+print(info_i()+" Filtering files and directories...")
 matches = []
 for root, dirnames, filenames in os.walk(path_to_directory):
     # Excluding directories/files from os.walk with help from unutbu on StackOverflow:
@@ -96,7 +107,7 @@ for root, dirnames, filenames in os.walk(path_to_directory):
 
 
 
-print(info_i()+f" Found {len(matches)} files in {path_to_directory}.")
+print(green_check()+f" Found {len(matches)} valid files in {path_to_directory}.")
 
 visual_counter = 1
 total_file_count = len(matches)
@@ -116,32 +127,38 @@ todos     = 0
 for file_path in matches:
     # display output
     print(info_i()+f" {visual_counter}/{total_file_count} - {file_path}        ",end='\r')
+
     with open(file_path, "r", encoding="utf8") as current_file:
         # Iterate over every line
         for line in current_file:
             try:
-                line = line.rstrip()
+                line = line.rstrip() # Remove trailing whitespace
 
+                # Remove indents so startswith detection works.
                 if line.startswith("    "):
                     lines_with_indents += 1
-                    # Remove the indents so startswith detection works.
                     while "    "==line[:3]:
                         line = line[4:]
                 
-                if line.startswith("#"):
-                    total_line_count +=1
+                total_line_count += 1
+
+                # Total line count for each language
+                for language in language_stats.keys():
+                    if file_path.endswith(tuple(language_stats[language]["valid extensions"])):
+                        language_stats[language]["lines"] += 1
+                        break
                 
-                else:
-                    total_line_count +=1
+                
+                if not(line.startswith("#")):
                     line_count_uncommented +=1
 
-                    if "print(" in line:
+                    if "print(" in line or "Write-Output" in line or line.startswith("echo "):
                         lines_with_print_statements+=1
-                    if "if " in line:
+                    if " if " in line or line.startswith("if "):
                         lines_with_if_statements+=1
-                    if "for " in line:
+                    if " for " in line or line.startswith("for "):
                         lines_with_for_statements+=1
-                    if "def " in line:
+                    if " def " in line or line.startswith("def "):
                         functions+=1
                     if line.startswith("class "):
                         classes+=1
@@ -161,13 +178,20 @@ print()
 print(green_check()+" Done!")
 print(green_check()+f" Read {total_file_count} files.")
 print(info_i()+f" Total lines: {total_line_count}")
-print(info_i()+f"     Non-comment lines: {line_count_uncommented} - {pretty_percent(line_count_uncommented,total_line_count)}% of all lines")
-print(info_i()+f"     lines with print: {lines_with_print_statements} - {pretty_percent(lines_with_print_statements,line_count_uncommented)}% of code")
-print(info_i()+f"     lines with 1 or more indents: {lines_with_indents} - {pretty_percent(lines_with_indents,line_count_uncommented)}% of code")
-print(info_i()+f"     for loops: {lines_with_for_statements}")
-print(info_i()+f"     functions: {functions}")
-print(info_i()+f"     classes: {classes}")
-print(info_i()+f"     todos: {todos}")
+print(info_i()+f"     Non-comment lines:  {line_count_uncommented:<12} {     pretty_percent_bars(100*line_count_uncommented/total_line_count, 12)} {       pretty_percent(line_count_uncommented,total_line_count)}% of all lines")
+print(info_i()+f"     Lines with output:  {lines_with_print_statements:<12} {pretty_percent_bars(100*lines_with_print_statements/line_count_uncommented,12)} {pretty_percent(lines_with_print_statements,line_count_uncommented)}% of code")
+print(info_i()+f"     Lines with indents: {lines_with_indents:<12} {pretty_percent_bars(100*lines_with_indents/line_count_uncommented,12)} {pretty_percent(lines_with_indents,line_count_uncommented)}% of code")
+print(info_i()+f"     For loops: {lines_with_for_statements}")
+print(info_i()+f"     Functions: {functions}")
+print(info_i()+f"     Classes:   {classes}")
+print(info_i()+f"     Todos:     {todos}")
+print(info_i())
+print(info_i()+" Lines by language")
+print(info_i()+f"     Language     : Lines")
+for language in language_stats.keys():
+    perc = pretty_percent(language_stats[language]['lines'],total_line_count)
+    print(info_i()+f"     {language:<13}: {language_stats[language]['lines']:<12} {pretty_percent_bars(perc, 12)} {perc}%")
+     
 print(green_check()+" Program complete.")
 #endregion results
 
