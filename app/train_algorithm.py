@@ -29,7 +29,7 @@ import os
 starttime = time.time()
 
 print('  - commonresources.py')
-from commonresources import PATH_TO_FTCAPI, PATH_TO_JOBLIB_CACHE, LATEST_VERSION, green_check, red_x, info_i, seconds_to_time
+from common_resources import PATH_TO_FTCAPI, PATH_TO_JOBLIB_CACHE, LATEST_VERSION, green_check, red_x, info_i, seconds_to_time
 print('                 Using version '+str(LATEST_VERSION))
 
 print('  - External modules:')

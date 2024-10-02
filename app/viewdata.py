@@ -7,7 +7,7 @@
 # for matplotlib plotting
 
 
-from commonresources import PATH_TO_FTCAPI, red_x, info_i, green_check, get_json
+from common_resources import PATH_TO_FTCAPI, red_x, info_i, green_check, get_json
 
 
 print(info_i()+' [viewdata.py] Importing')

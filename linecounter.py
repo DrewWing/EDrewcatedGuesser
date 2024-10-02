@@ -20,7 +20,7 @@ import sys
 sys.path.insert(1, 'app')
 
 
-from app.commonresources import info_i, red_x, green_check
+from common_resources import info_i, red_x, green_check
 
 
 print(info_i()+" linecounter.py by Drew Wingfield")

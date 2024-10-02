@@ -26,8 +26,8 @@ import os
 
 # Internal Imports
 import jsonparse
-from commonresources import PATH_TO_FTCAPI, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENTCODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
-from commonresources import log_error, green_check, info_i, red_x, byte_to_gb, seconds_to_time
+from common_resources import PATH_TO_FTCAPI, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENTCODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
+from common_resources import log_error, green_check, info_i, red_x, byte_to_gb, seconds_to_time
 from python_settings import PythonSettings
 
 settings = PythonSettings()

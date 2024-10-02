@@ -36,7 +36,7 @@ class importsTest(unittest.TestCase):
         sys.path.insert(1, 'app')
 
         try:
-            import commonresources
+            import common_resources
             import OPR
             import jsonparse
             import init_settings #TODO: this uses argparse, fix this test later

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     print('   [prepare-machinelearning.py] This script was called as __main__')
     print('         Importing...')
 
-from commonresources import PATH_TO_FTCAPI, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, get_json, red_x, green_check, info_i, byte_to_gb, seconds_to_time
+from common_resources import PATH_TO_FTCAPI, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, get_json, red_x, green_check, info_i, byte_to_gb, seconds_to_time
 
 
 from python_settings import PythonSettings

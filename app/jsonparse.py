@@ -15,7 +15,7 @@
 import sys
 import os
 
-from commonresources import log_error, green_check, info_i, red_x, get_json, PATH_TO_FTCAPI, accepted_match_types
+from common_resources import log_error, green_check, info_i, red_x, get_json, PATH_TO_FTCAPI, accepted_match_types
 
 from python_settings import PythonSettings
 settings = PythonSettings()

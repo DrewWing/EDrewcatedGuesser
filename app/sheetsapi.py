@@ -26,7 +26,7 @@ import pickle
 
 
 # Intraproject imports
-from commonresources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_ID, log_error
+from common_resources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_ID, log_error
 
 from python_settings import PythonSettings
 settings = PythonSettings()

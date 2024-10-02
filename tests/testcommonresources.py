@@ -7,7 +7,7 @@ import sys
 # caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.insert(1, 'app')
 
-import commonresources
+import common_resources
 
 class CommonResourcesTest(unittest.TestCase):
 
@@ -20,12 +20,12 @@ class CommonResourcesTest(unittest.TestCase):
 
     def test_slashes(self):
         """ Make sure that the paths don't contain both forwardslashes and backslashes """
-        self.assertFalse(self.string_contains_both_slashes(commonresources.PATH_TO_FTCAPI))
-        self.assertFalse(self.string_contains_both_slashes(commonresources.PATH_TO_JOBLIB_CACHE))
+        self.assertFalse(self.string_contains_both_slashes(common_resources.PATH_TO_FTCAPI))
+        self.assertFalse(self.string_contains_both_slashes(common_resources.PATH_TO_JOBLIB_CACHE))
     
     def test_byte_to_gb(self):
-        self.assertEqual(commonresources.byte_to_gb(1000000000),1)
-        self.assertEqual(commonresources.byte_to_gb(1234567890),1.2346) # rounds to 4 digits
+        self.assertEqual(common_resources.byte_to_gb(1000000000),1)
+        self.assertEqual(common_resources.byte_to_gb(1234567890),1.2346) # rounds to 4 digits
 
     def test_get_json(self):
         with open("get_json_test.json","w+") as file:
@@ -34,7 +34,7 @@ class CommonResourcesTest(unittest.TestCase):
                 )
         
         
-        data = commonresources.get_json("get_json_test.json")
+        data = common_resources.get_json("get_json_test.json")
         self.assertTrue(type(data)==type({'this is':'a dictionary'}))
         self.assertEqual(data,{"schedule":[{"description":"Semifinal 1 Match 1","field":"1","tournamentLevel":"SEMIFINAL"}]})
         os.remove("get_json_test.json")
