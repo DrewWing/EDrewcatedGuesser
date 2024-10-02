@@ -15,6 +15,7 @@ Items labeled `Critical` need to be fixed/completed before release.
 
 ### Other
   - [ ] `[Code]` Update the `__all__` variable in `commonresources.py`. Figure out if it's even needed.
+  - [ ] `[Code]` In the powershell script, warn user if `secrets.txt` does not exist.
   - [ ] `[Git]` Perhaps ignore all .log files?
   - [ ] `[ReadMe]` Add documentation about the venvSetup.ps1 script.
   - [ ] `[Code]` Remove the rankings_dataframe function in jsonparse, it seems to not be called anywhere
