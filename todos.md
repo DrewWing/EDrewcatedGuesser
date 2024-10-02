@@ -14,6 +14,7 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [X] ~~`[Critical]` `[Git]` `[External]` Fix the gitignore in all branches to ignore .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.~~
 
 ### Other
+  - [ ] `[Code]` Add markdown support for linecounter
   - [ ] `[Code]` Add feature of ftcapi.ps1 to detect if .venv was selected but no .venv exists, and asks the user whether they would like the script to automatically create the venv for them using the venv creation script.
   - [ ] `[Git]` Perhaps ignore all .log files?
   - [ ] `[ReadMe]` Add documentation about the venvSetup.ps1 script.
