@@ -192,7 +192,7 @@ if __name__ == "__main__":
         'sys.platform': sys.platform
     }
     for i in a.keys():
-        print(info_i()+f'      - {i}={a[i]} ({type(a[i])})')
+        print(info_i()+f'      - {i:<30} {str(type(a[i])):<15} = {a[i]}')
 
 
 
