@@ -1,4 +1,4 @@
-# FTCAPI V48.0 (Alpha)
+# EDrewcated Guesser V48.0 (Alpha)
 ## by Drew Wingfield
 This is the README file.
 
@@ -93,7 +93,7 @@ If you *are* retraining the algorithm, follow these steps.
 Though I wrote almost the entirety of the project by myself, I had some help. Below are some resources that I used (whether for copypasting code, general reference, or other research).
 
 This program uses the official FIRST API to get information on matches, schedules, and scores.
-You can find it [here](https://frc-events.firstinspires.org/services/API).
+You can find it [here](https://ftc-events.firstinspires.org/services/API).
 
 Thanks to [The Blue Alliance](https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/) for an overview of OPR and the math behind it.
 
@@ -114,15 +114,15 @@ I am not JGraph, this project is not by JGraph, and JGraph neither endorses me n
 
 This software uses the following external libraries:
 
- - Google API Python Client Framework: Copyright Google APIs. Licensed under Apache 2.0 license, see LICENSES.apache for details. \
-Website: https://github.com/googleapis/google-api-python-client?tab=readme-ov-file
+ - Google API Python Client Framework: Copyright Google APIs. Licensed under Apache 2.0 license, see [LICENSES/APACHE2.txt](LICENSES/APACHE2.txt) for details. \
+Website: https://github.com/googleapis/google-api-python-client
 
  - Matplotlib Framework: Copyright (c)
-2012- Matplotlib Development Team; All Rights Reserved. Licensed similar to the PSF license, see LICENSES.matplotlib for details. \
+2012- Matplotlib Development Team; All Rights Reserved. Licensed similar to the PSF license, see [LICENSES/MATPLOTLIB.txt](LICENSES/MATPLOTLIB.txt) for details. \
 Website: https://matplotlib.org/stable/
 
- - Pandas Framework: Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team. Licensed under a BSD 3-Clause license, see LICENSES.pandas for details. \
-Website: https://github.com/pandas-dev/pandas?tab=readme-ov-file
+ - Pandas Framework: Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team. Licensed under a BSD 3-Clause license, see [LICENSES/PANDAS.txt](LICENSES/PANDAS.txt) for details. \
+Website: https://github.com/pandas-dev/pandas
 
 
 
