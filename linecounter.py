@@ -143,8 +143,8 @@ all_languages = [
     Language("powershell",  [".ps1"], displayname="PowerShell", comment_multi_line_start="<#",comment_multi_line_end="#>"),
     Language("bash",        [".sh"],  displayname="BASH"),
     Language("markdown",    [".md"],  displayname="Markdown", comment_start=""),
-    Language("txt",         [".txt"], displayname="Plain Text", comment_start=""),
-    Language("config",      [".config"],  displayname="Configuration", comment_start=""),
+    #Language("txt",         [".txt"], displayname="Plain Text", comment_start=""),
+    #Language("config",      [".config"],  displayname="Configuration", comment_start=""),
 ]
 
 all_extensions = []
@@ -204,6 +204,7 @@ for file_path in matches:
 
 
 
+#region results
 total_line_count = 0
 line_count_uncommented = 0
 
@@ -218,7 +219,6 @@ for language in all_languages:
     lines_with_indents += language.lines_indented
     todos += language.todos
 
-#region results
 print()
 print(green_check()+" Done!")
 print(green_check()+f" Read {total_file_count} files.")
