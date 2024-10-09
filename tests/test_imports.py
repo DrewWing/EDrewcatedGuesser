@@ -40,7 +40,7 @@ class importsTest(unittest.TestCase):
             import OPR
             import json_parse
             import init_settings #TODO: this uses argparse, fix this test later
-            import sheetsapi #TODO: fix this one too
+            import sheets_api #TODO: fix this one too
         
         except ImportError as e:
             raise AssertionError(e)
