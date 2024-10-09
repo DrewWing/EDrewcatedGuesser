@@ -69,6 +69,8 @@ Use double quotes `"` except for certain situations where Python can't handle it
 
 Lines should be no longer than 5 billion characters long (haha TODO: decide this).
 
+Don't ever use `from some_package import *`.
+
 #### Indentation
 As per [PEP 8](https://peps.python.org/pep-0008/#indentation), there will be 4 spaces per indentation level. Resistance will not be tolerated.
 
