@@ -25,7 +25,7 @@ import sys
 import os
 
 # Internal Imports
-import jsonparse
+import json_parse
 from common_resources import PATH_TO_FTCAPI, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENTCODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
 from common_resources import log_error, green_check, info_i, red_x, byte_to_gb, seconds_to_time
 from python_settings import PythonSettings
@@ -655,7 +655,7 @@ if __name__ == '__main__':
             print(info_i())
 
         # Use all matches data (no specific_event)
-        jsonparse.prepare_opr_calculation()  # specific_event=eventcode)
+        json_parse.prepare_opr_calculation()  # specific_event=eventcode)
 
 
         # Load teams and matches from txt files
@@ -686,7 +686,7 @@ if __name__ == '__main__':
             print(info_i())
 
         # for the first one, use all matches data
-        jsonparse.prepare_opr_calculation(specific_event_teams=EVENTCODE)#specific_event=eventcode)
+        json_parse.prepare_opr_calculation(specific_event_teams=EVENTCODE)#specific_event=eventcode)
 
 
 
@@ -727,7 +727,7 @@ if __name__ == '__main__':
             print(info_i())
 
         # for the first one, use all matches data
-        jsonparse.prepare_opr_calculation(specific_event_teams=EVENTCODE)#specific_event=eventcode)
+        json_parse.prepare_opr_calculation(specific_event_teams=EVENTCODE)#specific_event=eventcode)
 
 
 
@@ -771,7 +771,7 @@ if __name__ == '__main__':
         #  - specific_event (list) - returns only the data pertaining to the specified event code.
         #  - specific_teams (list) - filters all matches by the given teams
         #  - specific_event_teams (str) - returns data only for all teams in specified event code.
-        jsonparse.prepare_opr_calculation(specific_event=EVENTCODE)
+        json_parse.prepare_opr_calculation(specific_event=EVENTCODE)
 
         teams   = loadTeamNumbers() # load teams from matches-per-team.csv
         matches = loadMatches(filter_by_teams=teams)

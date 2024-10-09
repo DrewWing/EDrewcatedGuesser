@@ -31,7 +31,7 @@ from common_resources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_I
 from python_settings import PythonSettings
 settings = PythonSettings()
 
-from jsonparse import *
+from json_parse import *
 
 
 # External imports

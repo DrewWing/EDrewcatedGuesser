@@ -32,7 +32,7 @@ if settings.debug_level>0:
 
 
 from OPR import loadMatches, filterMatchesByTeams, filter_dataframe_by_time, build_m, build_scores, calculate_opr
-import jsonparse  # For OPR calculation preparation
+import json_parse  # For OPR calculation preparation
 
 import os
 import sys
@@ -64,7 +64,7 @@ def dataframe_remove_zeroes(df: pd.DataFrame, column_names: list):
 #region OPR
 # For each match, calculate the stats of the match teams for all matches before the given match
 # and replace the match teams with their respective stats
-jsonparse.prepare_opr_calculation()  # Creates the all-matches.csv file
+json_parse.prepare_opr_calculation()  # Creates the all-matches.csv file
 all_matches_to_train_on = loadMatches()  # Gets the matches from the all-matches.csv file
 
 #print(all_matches_to_train_on)

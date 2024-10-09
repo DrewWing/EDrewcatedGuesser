@@ -38,7 +38,7 @@ class importsTest(unittest.TestCase):
         try:
             import common_resources
             import OPR
-            import jsonparse
+            import json_parse
             import init_settings #TODO: this uses argparse, fix this test later
             import sheetsapi #TODO: fix this one too
         
