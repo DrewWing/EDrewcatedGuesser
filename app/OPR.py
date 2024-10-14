@@ -99,9 +99,9 @@ def convertToList(statMatrix) -> list:
 
 def loadTeamNumbers() -> list:
     """
-    Loads teams from a csv file team-list-filtered.csv (created in jsonparse.py)
+    Loads teams from a csv file team_list_filtered.csv (created in jsonparse.py)
     """
-    return list(pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','team-list-filtered.csv'))['teamNumber'])
+    return list(pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','team_list_filtered.csv'))['teamNumber'])
 
 
 def filterMatchesByTeams(matches, teams: list):
@@ -117,14 +117,14 @@ def filterMatchesByTeams(matches, teams: list):
 
 def loadMatches(filter_by_teams: list = []):
     """
-    Returns a pandas object of the all-matches.csv file containing all matches.
-    \nRelies on generatedfiles/all-matches.csv
+    Returns a pandas object of the all_matches.csv file containing all matches.
+    \nRelies on generatedfiles/all_matches.csv
     \nParameters:
     \n\t filter_by_teams (list) - Filters the matches only including the team numbers in the list
     
     """
     #TODO: Update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-matches.csv')) # Get the csv data
+    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all_matches.csv')) # Get the csv data
 
     # Make the start time column use the datetime format
     all_matches['actualStartTime'] = pd.to_datetime(all_matches['actualStartTime'], format='mixed')
@@ -261,8 +261,8 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         print(M)
         print()
         if (settings.debug_level>3):
-            print(info_i()+'  Saving M to generatedfiles/M-debug.csv for debug purposes... (this could take a little bit if it is big)')
-            numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"generatedfiles","M-debug.csv"), M, delimiter=",")
+            print(info_i()+'  Saving M to generatedfiles/M_debug.csv for debug purposes... (this could take a little bit if it is big)')
+            numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"generatedfiles","M_debug.csv"), M, delimiter=",")
             print(green_check()+'  Saved.')
 
     return M
@@ -662,8 +662,8 @@ if __name__ == '__main__':
         if settings.debug_level>0:
             print(info_i()+" [OPRv4.py] Loading teams")
 
-        teams   = loadTeamNumbers()  # Uses team-list-filtered.csv (created in jsonparse)
-        matches = loadMatches()  # Uses all-matches.csv
+        teams   = loadTeamNumbers()  # Uses team_list_filtered.csv (created in jsonparse)
+        matches = loadMatches()  # Uses all_matches.csv
 
 
         if settings.debug_level>0:
@@ -672,7 +672,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-global-result-sorted.csv'),  
+            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr_global_result_sorted.csv'),  
             load_m=False
         )
 
@@ -707,7 +707,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-result-sorted.csv'),  
+            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr_result_sorted.csv'),  
             load_m=False
         )
 
@@ -746,7 +746,7 @@ if __name__ == '__main__':
 
         do_all_opr_stuff(
             matches=matches, 
-            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-recent-result-sorted.csv'), 
+            output_file_path=os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr_recent_result_sorted.csv'), 
             load_m=False,
             fallback="zeroes"
         )
@@ -773,7 +773,7 @@ if __name__ == '__main__':
         #  - specific_event_teams (str) - returns data only for all teams in specified event code.
         json_parse.prepare_opr_calculation(specific_event=EVENTCODE)
 
-        teams   = loadTeamNumbers() # load teams from matches-per-team.csv
+        teams   = loadTeamNumbers() # load teams from matches_per_team.csv
         matches = loadMatches(filter_by_teams=teams)
 
         if settings.debug_level>0:
@@ -785,7 +785,7 @@ if __name__ == '__main__':
         #print(matches)
         do_all_opr_stuff(
             matches = matches, 
-            output_file_path = os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr-event-result-sorted.csv'),  
+            output_file_path = os.path.join(PATH_TO_FTCAPI,'generatedfiles','opr','opr_event_result_sorted.csv'),  
             load_m  = False
         )
 
@@ -799,7 +799,7 @@ if __name__ == '__main__':
 
     if settings.debug_level>0:
         print(info_i()+f' [OPRv4.py] Total OPRv4 program took {seconds_to_time(time.time()-starttime)}')
-        print(green_check()+' [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheetsapi.py')
+        print(green_check()+' [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheets_api.py')
 
 
 

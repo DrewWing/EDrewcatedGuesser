@@ -197,14 +197,14 @@ function GetMatches {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventmatches.json"
+                    -OutFile "app/generatedfiles/eventdata/event_matches.json"
     #$response | ConvertTo-Json -Depth 4
     #echo "Response: "
     #echo "$response"
     #Invoke-WebRequest `
     #    "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
     #    -InformationAction SilentlyContinue -WarningAction Continue `
-    #    -OutFile "$pathtoftcapi/eventdata/eventmatches.json" `
+    #    -OutFile "$pathtoftcapi/eventdata/event_matches.json" `
     #    "-X" -Method Get `
     #    -Headers  "$AuthorizationHeader"
     #echo "First curl request complete!"
@@ -212,7 +212,7 @@ function GetMatches {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/teams?EventCode=$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventteams.json"
+                    -OutFile "app/generatedfiles/eventdata/event_teams.json"
 
     # Get the event as a whole and put it into opr/all-events/EVENTCODE (needed for event-only OPR calculation)
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
@@ -227,7 +227,7 @@ function GetRankings {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/rankings/$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventrankings.json"
+                    -OutFile "app/generatedfiles/eventdata/event_rankings.json"
 }
 
 
@@ -236,12 +236,12 @@ function GetSchedule {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/schedule/$($EventCode)?tournamentLevel=qual" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventschedule-qual.json"
+                    -OutFile "app/generatedfiles/eventdata/eventschedule_qual.json"
     
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/schedule/$($EventCode)?tournamentLevel=playoff" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventschedule-playoff.json"
+                    -OutFile "app/generatedfiles/eventdata/eventschedule_playoff.json"
 }
 
 
@@ -337,7 +337,7 @@ if (($help -eq $true) -or ($h -eq $true)) {
 if ($rankingsonly -eq $true) {
     Write-Output "  Only getting and pushing rankings data."
     GetRankings
-    python "$pathtoftcapi/sheetsapi.py" rankings
+    python "$pathtoftcapi/sheets_api.py" rankings
     return 0
 }
 

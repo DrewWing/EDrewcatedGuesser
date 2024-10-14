@@ -10,7 +10,7 @@ Honestly, this should be changed later but that's the way it is right now.
 ### Naming Files
 Category | Naming | Example |
 -|-|-
-Python | No uppercase. Underscores separate words if needed. | `python_settings.py`
+Python, CSV, Json | No uppercase. Underscores separate words if needed. | `python_settings.py`<br>`team_list_filtered.csv`
 Powershell | Camel Case, but first letter is lowercase. No word separators | `flushGeneratedFiles.ps1`
 Markdown | Camel Case | `StablePackageVersions.md`
 Trained ML Models | If using Grid Search, start with `gs`. Then an abbreviated version of the model type (first letter capitalized). | `gsNeigh.pkl` or `gsSVC.pkl`

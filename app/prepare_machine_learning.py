@@ -64,8 +64,8 @@ def dataframe_remove_zeroes(df: pd.DataFrame, column_names: list):
 #region OPR
 # For each match, calculate the stats of the match teams for all matches before the given match
 # and replace the match teams with their respective stats
-json_parse.prepare_opr_calculation()  # Creates the all-matches.csv file
-all_matches_to_train_on = loadMatches()  # Gets the matches from the all-matches.csv file
+json_parse.prepare_opr_calculation()  # Creates the all_matches.csv file
+all_matches_to_train_on = loadMatches()  # Gets the matches from the all_matches.csv file
 
 #print(all_matches_to_train_on)
 #print('\niterrows version:')
@@ -395,11 +395,11 @@ training_data_matches = dataframe_remove_zeroes(training_data_matches, ['redOPR'
 
 if settings.debug_level>0:
     print(info_i()+f' Training data matches end shape {training_data_matches.shape}')
-    print(info_i()+f' Now saving machine file as {os.path.join(PATH_TO_FTCAPI,"machinefile.csv")}')
+    print(info_i()+f' Now saving machine file as {os.path.join(PATH_TO_FTCAPI,"machine_file.csv")}')
 
-training_data_matches.to_csv(os.path.join(PATH_TO_FTCAPI,'machinefile.csv'), index=False)
+training_data_matches.to_csv(os.path.join(PATH_TO_FTCAPI,'machine_file.csv'), index=False)
 
-print(green_check()+' Saved to machinefile.csv.')
+print(green_check()+' Saved to machine_file.csv.')
 #endregion Saving
 
 

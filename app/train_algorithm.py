@@ -12,7 +12,7 @@
 print(' ml-test.py')
 print(' (c) 2024 Drew Wingfield, All Rights Reserved')
 print(' Also see the README.md file. and LICENSE.txt')
-print(' This script trains a few machine learning algorithms based on machinefile.csv')
+print(' This script trains a few machine learning algorithms based on machine_file.csv')
 print(' prepare-machinelearning.py should already be run to create that file.')
 print(' YOU SHOULD NOT DO THIS DURING AN EVENT! You either have the wrong script or are too late.')
 print(' Try looking at ftcapi.sh or ftcapi.ps1 instead.')
@@ -111,7 +111,7 @@ def describe_model(model, X_cat_test, Y_cat_test):
 print(info_i()+' Loading data...')
 
 
-pandasdata = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'machinefile.csv'), dtype={
+pandasdata = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'machine_file.csv'), dtype={
     'RedOPR' :np.longdouble, 'RedAutoOPR' :np.longdouble, 'RedCCWM' :np.longdouble, 
     'blueOPR':np.longdouble, 'blueAutoOPR':np.longdouble, 'blueCCWM':np.longdouble, 
     'recentRedOPR' :np.longdouble, 'recentRedAutoOPR' :np.longdouble, 'recentRedCCWM' :np.longdouble, 
@@ -120,7 +120,7 @@ pandasdata = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'machinefile.csv'), dtype={
     'whoWon':np.str_
     })
 
-print(green_check()+' Data successfully loaded from machinefile.csv')
+print(green_check()+' Data successfully loaded from machine_file.csv')
 print(info_i()+' Info:')
 print(info_i()+f'    pandasdata size: {pandasdata.size}')
 print(info_i()+f'    pandasdata shape: {pandasdata.shape}')

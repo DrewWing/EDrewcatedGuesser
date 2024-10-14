@@ -72,10 +72,10 @@ getmatches () {
     # Gets the list of matches and teams for the event and puts it in eventdata
 
     # Get the matches for the event
-    curl -S -s -o "$pathtoftcapi/eventdata/eventmatches.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/matches/$eventcode" -H  "accept: application/json" -H  "$authorizationheader"
+    curl -S -s -o "$pathtoftcapi/eventdata/event_matches.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/matches/$eventcode" -H  "accept: application/json" -H  "$authorizationheader"
     
     # Get the teams for the event
-    curl -S -s -o "$pathtoftcapi/eventdata/eventteams.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/teams?eventCode=$eventcode" -H  "accept: application/json" -H  "$authorizationheader"
+    curl -S -s -o "$pathtoftcapi/eventdata/event_teams.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/teams?eventCode=$eventcode" -H  "accept: application/json" -H  "$authorizationheader"
 
     # Get the event as a whole and put it into opr/all-events/EVENTCODE (needed for event-only OPR calculation)
     curl -s -S -o "$pathtoftcapi/opr/all-events/$eventcode.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/matches/$eventcode?" -H  "accept: application/json" -H  "$authorizationheader"
@@ -94,7 +94,7 @@ getscores () {
 
 getrankings () {
     # Gets the event rankings and saves it in eventdata
-    curl -S -s -o "$pathtoftcapi/eventdata/eventrankings.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/rankings/$eventcode" -H  "accept: application/json" -H "$authorizationheader"
+    curl -S -s -o "$pathtoftcapi/eventdata/event_rankings.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/rankings/$eventcode" -H  "accept: application/json" -H "$authorizationheader"
 }
 
 
@@ -105,8 +105,8 @@ getrankings () {
 
 getschedule () {
     # Gets the event match schedule and saves it in eventdata
-    curl -S -s -o "$pathtoftcapi/eventdata/eventschedule-qual.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/schedule/$eventcode?tournamentLevel=qual" -H  "accept: application/json" -H  "$authorizationheader"
-    curl -S -s -o "$pathtoftcapi/eventdata/eventschedule-playoff.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/schedule/$eventcode?tournamentLevel=playoff" -H  "accept: application/json" -H  "$authorizationheader"
+    curl -S -s -o "$pathtoftcapi/eventdata/eventschedule_qual.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/schedule/$eventcode?tournamentLevel=qual" -H  "accept: application/json" -H  "$authorizationheader"
+    curl -S -s -o "$pathtoftcapi/eventdata/eventschedule_playoff.json" -X GET "https://ftc-api.firstinspires.org/v2.0/2023/schedule/$eventcode?tournamentLevel=playoff" -H  "accept: application/json" -H  "$authorizationheader"
 }
 
 
@@ -133,7 +133,7 @@ cycle () {
         python3 "$pathtoftcapi/OPRv4.py" quiet # NOTE: Needs to be done before pushing matches
         # Pushing matches includes calculating predictions, which relies on OPR and recentOPR stats
         printstatus "Pushing team data...       │"
-        python3 "$pathtoftcapi/sheetsapi.py" teams quiet
+        python3 "$pathtoftcapi/sheets_api.py" teams quiet
 
     fi
     
@@ -142,7 +142,7 @@ cycle () {
     if [[ "$dryRun" = false ]] ; then
     
     # Push the matches and rankings data to the google sheet
-    python3 "$pathtoftcapi/sheetsapi.py" matches rankings quiet
+    python3 "$pathtoftcapi/sheets_api.py" matches rankings quiet
     
     
     fi

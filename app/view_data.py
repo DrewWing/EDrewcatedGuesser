@@ -45,7 +45,7 @@ def using_hist2d(ax, x, y, bins=(50, 50)):
 if do_first_map:
     print(info_i()+' Generating data')
     # Generate Data
-    allmatches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all-matches.csv'))
+    allmatches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,'generatedfiles','all_matches.csv'))
     
     allmatches.drop(
                 ['description'], 
@@ -106,9 +106,9 @@ if do_first_map:
 
 print(info_i()+' Generating data')
 # Generate Data
-#allmatches = pd.read_csv(PATH_TO_FTCAPI+'globaloprs/OPR-result-sorted.json')
+#allmatches = pd.read_csv(PATH_TO_FTCAPI+'globaloprs/OPR_result_sorted.json')
 #{"teamNumber":25218, "teamName":"Undefined", "OPR":172.40222517085803, "AutoOPR":56.822136784937285, "CCWM":109.1174444069353}, 
-rj = get_json(os.path.join(PATH_TO_FTCAPI,'globaloprs','OPR-result-sorted.json'))
+rj = get_json(os.path.join(PATH_TO_FTCAPI,'globaloprs','OPR_result_sorted.json'))
 rj_dic = {'teamNumber':[],'OPR':[],'AutoOPR':[],'CCWM':[]}
 
 for team in rj['matches']:
