@@ -2,6 +2,14 @@
 All of the informal rules for naming, whitespace, etc. for the entire project.
 Most of this is reminders for myself.
 
+## Git
+### Branches
+Branches should be named starting with `feat/`, `fix/`, or `dev/` (for features, hotfixes, and general development, respectively). They should then contain the brief description separated by dashes `-`. No capital letters. References to files should replace underscores with dashes.
+
+Ex: `feat/linecounter-language-support` \
+Ex: `fix/json-parse-encoding-syntax-bug`
+
+
 ## Directories and Files
 ### Naming Directories
 Directory names should be lowercase, without spaces, underscores, or dashes.
