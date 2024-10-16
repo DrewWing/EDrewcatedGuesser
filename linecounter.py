@@ -143,6 +143,12 @@ all_languages = [
     Language("powershell",  [".ps1"], displayname="PowerShell", comment_multi_line_start="<#",comment_multi_line_end="#>"),
     Language("bash",        [".sh"],  displayname="BASH"),
     Language("markdown",    [".md"],  displayname="Markdown", comment_start=""),
+    Language("c",    [".c"],  displayname="C", comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
+    Language("java",         [".java"], displayname="Java",        comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
+    Language("cplusplus",    [".cpp"],  displayname="C++",         comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
+    Language("csharp",       [".cs"],   displayname="C#",          comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
+    Language("javascript",   [".js"],   displayname="JavaScript",  comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
+    Language("yaml",         [".yaml"], displayname="YAML",        comment_start="#"),
     #Language("txt",         [".txt"], displayname="Plain Text", comment_start=""),
     #Language("config",      [".config"],  displayname="Configuration", comment_start=""),
 ]
@@ -212,7 +218,12 @@ lines_with_print_statements = 0
 lines_with_indents = 0
 todos     = 0
 
+used_languages = [] # Languages with one or more lines.
+
 for language in all_languages:
+    if language.lines > 0:
+        used_languages.append(language)
+    
     total_line_count += language.lines
     line_count_uncommented += language.lines_uncommented
     lines_with_print_statements += language.lines_output
@@ -233,7 +244,7 @@ print(info_i()+f"     Todos:     {todos}")
 print(info_i())
 print(info_i()+" Lines by language")
 print(info_i()+f"     Language     : Lines")
-for language in all_languages:
+for language in used_languages:
     perc = pretty_percent(language.lines,total_line_count)
     print(info_i()+f"     {language.displayname:<13}: {language.lines:<12} {pretty_percent_bars(perc, 12)} {perc}%")
      
