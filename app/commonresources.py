@@ -10,10 +10,12 @@
 # See the license in the LICENSE.txt file.
 
 __all__ = [
-    'get_json', 'log_error', 'byte_to_gb', 'seconds_to_time', 
-    'NUMBER_OF_DAYS_FOR_RECENT_OPR', 'DO_JOBLIB_MEMORY', 
-    'PATH_TO_FTCAPI', 'PATH_TO_JOBLIB_MEMORY', 'SERVICE_ACCOUNT_FILE', 
-    'SPREADSHEET_ID' 
+    'get_json', 'log_error', 'byte_to_gb', 'seconds_to_time', 'make_printable', 'Colors',
+    'green_check','red_x','blue_info'
+    'NUMBER_OF_DAYS_FOR_RECENT_OPR', 
+    'DO_JOBLIB_MEMORY', 'PATH_TO_JOBLIB_CACHE',
+    'PATH_TO_FTCAPI', 'SERVICE_ACCOUNT_FILE', 
+    'SPREADSHEET_ID', 'CRAPPY_LAPTOP'
 ]
 __version__ = '48.0 ALPHA'
 __author__ = 'Drew Wingfield'

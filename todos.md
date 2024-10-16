@@ -14,9 +14,9 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [X] ~~`[Critical]` `[Git]` `[External]` Fix the gitignore in all branches to ignore .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.~~
 
 ### Other
-  - [ ] `[Config]` Revamp the configuration/multiscript-variable situation
+  - [ ] `[Config]` Revamp the configuration and multiscript variable situation
     - [ ] `[Code]` `[Config]` Add an easily editable configuration file (yaml?)
-  - [ ] `[Code]` Update the `__all__` variable in `commonresources.py`. Figure out if it's even needed.
+  - [X] ~~`[Code]` Update the `__all__` variable in `commonresources.py`.~~
   - [ ] `[Code]` In the powershell script, warn user if `secrets.txt` does not exist.
   - [ ] `[Git]` Perhaps ignore all `.log` files in `.gitignore`?
   - [ ] `[ReadMe]` Add documentation about `venvSetup.ps1` script.
