@@ -16,8 +16,8 @@ import os
 # Add app to the path to prevent errors when commonresources tries to import python_settings
 # Taken from Cameron on StackOverflow: https://stackoverflow.com/a/4383597/25598210
 import sys
-# caution: path[0] is reserved for script path (or '' in REPL)
-sys.path.insert(1, 'app')
+# caution: path[0] is reserved for script path (or "" in REPL)
+sys.path.insert(1, "app")
 
 
 from common_resources import info_i, red_x, green_check
@@ -88,7 +88,7 @@ todos     = 0
 # Iterate over every file
 for file_path in matches:
     # display output
-    print(info_i()+f" {visual_counter}/{total_file_count} - {file_path}        ",end='\r')
+    print(info_i()+f" {visual_counter}/{total_file_count} - {file_path}        ",end="\r")
     with open(file_path, "r", encoding="utf8") as current_file:
         # Iterate over every line
         for line in current_file:

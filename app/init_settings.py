@@ -65,11 +65,11 @@ lines = [
 
 settings_path = os.path.join(path_to_ftcapi,"generatedfiles","settings.config")
 
-with open(settings_path, 'w+') as settings_file:
+with open(settings_path, "w+") as settings_file:
     settings_file.truncate()
     for line in lines:
         settings_file.write(line)
-        settings_file.write('\n')
+        settings_file.write("\n")
 
 
 

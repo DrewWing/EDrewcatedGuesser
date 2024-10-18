@@ -32,8 +32,8 @@ class importsTest(unittest.TestCase):
         # Add app to the path to prevent errors when commonresources tries to import python_settings
         # Taken from Cameron on StackOverflow: https://stackoverflow.com/a/4383597/25598210
         import sys
-        # caution: path[0] is reserved for script path (or '' in REPL)
-        sys.path.insert(1, 'app')
+        # caution: path[0] is reserved for script path (or "" in REPL)
+        sys.path.insert(1, "app")
 
         try:
             import common_resources
@@ -47,5 +47,5 @@ class importsTest(unittest.TestCase):
 
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

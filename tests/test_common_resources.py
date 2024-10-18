@@ -4,8 +4,8 @@ import os
 # Add app to the path to prevent errors when commonresources tries to import python_settings
 # Taken from Cameron on StackOverflow: https://stackoverflow.com/a/4383597/25598210
 import sys
-# caution: path[0] is reserved for script path (or '' in REPL)
-sys.path.insert(1, 'app')
+# caution: path[0] is reserved for script path (or "" in REPL)
+sys.path.insert(1, "app")
 
 import common_resources
 
@@ -35,9 +35,9 @@ class CommonResourcesTest(unittest.TestCase):
         
         
         data = common_resources.get_json("get_json_test.json")
-        self.assertTrue(type(data)==type({'this is':'a dictionary'}))
+        self.assertTrue(type(data)==type({"this is":"a dictionary"}))
         self.assertEqual(data,{"schedule":[{"description":"Semifinal 1 Match 1","field":"1","tournamentLevel":"SEMIFINAL"}]})
         os.remove("get_json_test.json")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

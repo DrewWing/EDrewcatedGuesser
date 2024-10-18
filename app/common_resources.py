@@ -16,13 +16,13 @@ See the license in the LICENSE.txt file.
 
 
 __all__ = [
-    'get_json', 'log_error', 'byte_to_gb', 'seconds_to_time', 
-    'NUMBER_OF_DAYS_FOR_RECENT_OPR', 'DO_JOBLIB_MEMORY', 
-    'PATH_TO_FTCAPI', 'PATH_TO_JOBLIB_MEMORY', 'SERVICE_ACCOUNT_FILE', 
-    'SPREADSHEET_ID' 
+    "get_json", "log_error", "byte_to_gb", "seconds_to_time", 
+    "NUMBER_OF_DAYS_FOR_RECENT_OPR", "DO_JOBLIB_MEMORY", 
+    "PATH_TO_FTCAPI", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
+    "SPREADSHEET_ID"
 ]
-__version__ = '48.0 ALPHA'
-__author__ = 'Drew Wingfield'
+__version__ = "48.0 ALPHA"
+__author__ = "Drew Wingfield"
 
 import sys
 import json
@@ -33,7 +33,7 @@ import pathlib
 from python_settings import PythonSettings
 global_settings = PythonSettings()
 
-slash = ('\\' if '\\' in global_settings.path_to_ftcapi else '/') # support both forwardslash and backslash type paths
+slash = ("\\" if "\\" in global_settings.path_to_ftcapi else "/") # support both forwardslash and backslash type paths
 
 PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
 
@@ -58,10 +58,10 @@ NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bu
 EVENTCODE = global_settings.event_code
 
 # TODO: make this and its correspondant in jsonparse all caps
-accepted_match_types = ['Qualifier', 'Championship','League Tournament', 'League Meet', 'Super Qualifier', 'FIRST Championship']
+accepted_match_types = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
 
 # If using the windows machine (more powerful)
-if 'win' in sys.platform:
+if "win" in sys.platform:
     CRAPPY_LAPTOP  = False  # if True, inserts many more garbage collections to preserve RAM
     # Whether or not to calculate OPR based on all matches globally
 
@@ -75,7 +75,7 @@ else:
 DO_JOBLIB_MEMORY = True  # Used to be True
 
 # used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
-SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + 'service-account-key-ftc-api-for-sheets-19d729dc80e8.json'  # TODO: Remove before publication
+SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + "service-account-key-ftc-api-for-sheets-19d729dc80e8.json"  # TODO: Remove before publication
 SPREADSHEET_ID = "1KIox_wRJ0QdoUhu2oH1j6Q2Cj-mTO0PEnwTQ97-7wqY" #TODO: change this every event.
 # A spreadsheet id is found in the URL of the given sheet:
 # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
@@ -87,17 +87,17 @@ def get_json(path: str):
     Returns the raw json for a given path.
     """
     try:
-        with open(path, 'r', encoding='utf-8-sig') as thefile:
+        with open(path, "r", encoding="utf-8-sig") as thefile:
             return json.load(thefile)  # output.json
     
     except Exception as e:
-        log_error( f'[commonresources.py][get_json] Some Error occured with getting json of path {path}.'
-                    + f' Usually caused by an empty or malformed file. Raising this to the console. Full error message: {e}'
+        log_error( f"[commonresources.py][get_json] Some Error occured with getting json of path {path}."
+                    + f" Usually caused by an empty or malformed file. Raising this to the console. Full error message: {e}"
         )
         raise e
     
     #except json.decoder.JSONDecodeError as e:
-    #    print(red_x()+'  get_json JSONDecodeError on path '+str(path))
+    #    print(red_x()+"  get_json JSONDecodeError on path "+str(path))
     #    print()
     #    raise e
 
@@ -138,13 +138,13 @@ def make_printable(s: str) -> str:
 
 
 def green_check() -> str:
-    return make_printable('['+Colors.LIGHT_GREEN+'✓'+Colors.END+']')
+    return make_printable("["+Colors.LIGHT_GREEN+"✓"+Colors.END+"]")
 
 def red_x() -> str:
-    return make_printable('['+Colors.RED+'X'+Colors.END+']')
+    return make_printable("["+Colors.RED+"X"+Colors.END+"]")
 
 def info_i() -> str:
-    return make_printable('['+Colors.BLUE+'i'+Colors.END+']')
+    return make_printable("["+Colors.BLUE+"i"+Colors.END+"]")
 #endregion color stuffs
 
 
@@ -158,7 +158,7 @@ def log_error(message: str, level="ERROR") -> None:
     Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
     """
     with open(os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"), "a") as myfile:
-        myfile.write(f'[{datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")}][{level}!] '+str(message)+'\n')
+        myfile.write(f"[{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}][{level}!] "+str(message)+"\n")
 
 
 def seconds_to_time(seconds, roundto=3) -> str:
@@ -169,36 +169,36 @@ def seconds_to_time(seconds, roundto=3) -> str:
     else:
         seconds_remainder = (int(round(seconds, roundto)) if roundto==0 else round(seconds, roundto))
 
-        return f'{seconds_remainder} seconds'
+        return f"{seconds_remainder} seconds"
 
 
     if minutes >= 60:
         hours = int(minutes//60)
         minutes = int(minutes- (hours*60))
-        return f'{hours} hours, {minutes} minutes, and {seconds_remainder} seconds'
+        return f"{hours} hours, {minutes} minutes, and {seconds_remainder} seconds"
 
     else:
-        return f'{minutes} minutes, {seconds_remainder} seconds'
+        return f"{minutes} minutes, {seconds_remainder} seconds"
     
 
 
 if __name__ == "__main__":
-    print(info_i()+'[commonresources] This file was called as __main__, which usually does not happen.')
-    print(info_i()+'    Displaying constants and their values:')
+    print(info_i()+"[commonresources] This file was called as __main__, which usually does not happen.")
+    print(info_i()+"    Displaying constants and their values:")
     a = {
-        'NUMBER_OF_DAYS_FOR_RECENT_OPR' : NUMBER_OF_DAYS_FOR_RECENT_OPR,
-        'EVENTCODE'       : EVENTCODE,
-        'PATH_TO_FTCAPI'  : PATH_TO_FTCAPI,
-        'CRAPPY_LAPTOP'   : CRAPPY_LAPTOP,
-        'DO_JOBLIB_MEMORY': DO_JOBLIB_MEMORY,
-        'PATH_TO_JOBLIB_CACHE'  : PATH_TO_JOBLIB_CACHE,
-        'SERVICE_ACCOUNT_FILE'  : SERVICE_ACCOUNT_FILE,
-        'SPREADSHEET_ID': SPREADSHEET_ID,
-        'sys.path'    : sys.path,
-        'sys.platform': sys.platform
+        "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
+        "EVENTCODE"       : EVENTCODE,
+        "PATH_TO_FTCAPI"  : PATH_TO_FTCAPI,
+        "CRAPPY_LAPTOP"   : CRAPPY_LAPTOP,
+        "DO_JOBLIB_MEMORY": DO_JOBLIB_MEMORY,
+        "PATH_TO_JOBLIB_CACHE"  : PATH_TO_JOBLIB_CACHE,
+        "SERVICE_ACCOUNT_FILE"  : SERVICE_ACCOUNT_FILE,
+        "SPREADSHEET_ID": SPREADSHEET_ID,
+        "sys.path"    : sys.path,
+        "sys.platform": sys.platform
     }
     for i in a.keys():
-        print(info_i()+f'      - {i}={a[i]} ({type(a[i])})')
+        print(info_i()+f"      - {i}={a[i]} ({type(a[i])})")
 
 
 
