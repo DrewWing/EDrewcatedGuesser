@@ -14,6 +14,7 @@ Items labeled `Critical` need to be fixed/completed before release.
   - [X] ~~`[Critical]` `[Git]` `[External]` Fix the gitignore in all branches to ignore .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.~~
 
 ### Other
+  - [ ] `[Code]` `[Tests]` Create script to update test pass/fail status in the `README.md` file.
   - [ ] `[Config]` Revamp the configuration and multiscript variable situation
     - [ ] `[Code]` `[Config]` Add an easily editable configuration file (yaml?)
   - [X] ~~`[Code]` Update the `__all__` variable in `commonresources.py`.~~
