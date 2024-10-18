@@ -25,22 +25,22 @@ class importsTest(unittest.TestCase):
             from googleapiclient.errors import HttpError
 
         except ImportError as e:
-            raise AssertionError(e)
+            raise AssertionError(e) # Error while importing builtins. Do you have the Venv setup correctly?
 
 
     def test_internal_imports(self):
         # Add app to the path to prevent errors when commonresources tries to import python_settings
         # Taken from Cameron on StackOverflow: https://stackoverflow.com/a/4383597/25598210
         import sys
-        # caution: path[0] is reserved for script path (or '' in REPL)
+        # Caution: path[0] is reserved for script path (or '' in REPL)
         sys.path.insert(1, 'app')
 
         try:
             import commonresources
             import OPR
             import jsonparse
-            import init_settings #TODO: this uses argparse, fix this test later
-            import sheetsapi #TODO: fix this one too
+            import init_settings #TODO: tThis uses argparse, fix this test later
+            import sheetsapi #TODO: Fix this one too
         
         except ImportError as e:
             raise AssertionError(e)

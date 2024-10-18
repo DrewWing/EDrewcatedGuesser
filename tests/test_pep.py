@@ -9,7 +9,7 @@ def remove_leading_indents(line):
 
     return line
 
-class pepTset(unittest.TestCase):
+class pepTest(unittest.TestCase):
 
     def setUp(self):
         pass
