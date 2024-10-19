@@ -13,15 +13,16 @@
 
 #region setup
 import os
+
 # Add app to the path to prevent errors when commonresources tries to import python_settings
 # Taken from Cameron on StackOverflow: https://stackoverflow.com/a/4383597/25598210
 import sys
 # caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.insert(1, 'app')
 
-
 from app.commonresources import info_i, red_x, green_check
 
+DO_GRAPH = True # Whether to use matplotlib to create a nested pie chart and save it to languages.png
 
 print(info_i()+" linecounter.py by Drew Wingfield")
 print(info_i()+" This is intended to be a temporary script and should be deleted before release.")
@@ -52,7 +53,7 @@ ignore_list.append(".git") # Ignore all git files
 # I made this dynamic so you can easily add more languages later. You're welcome.
 class Language():
     def __init__(self, name:str, extensions: list, 
-                 displayname:str=None,
+                 displayname:str=None, category:str="Code",
                  comment_start:str="#", comment_multi_line_start:str="", comment_multi_line_end:str="",
                  indent="    "):
         
@@ -60,6 +61,7 @@ class Language():
         self.name = name
         self.displayname = str(displayname if displayname!=None else name)
         self.extensions = extensions
+        self.category = category
         
         # Counter variables
         self.files = 0 # Total number of files of this language
@@ -142,15 +144,15 @@ all_languages = [
     Language("python",      [".py"],  displayname="Python"),
     Language("powershell",  [".ps1"], displayname="PowerShell", comment_multi_line_start="<#",comment_multi_line_end="#>"),
     Language("bash",        [".sh"],  displayname="BASH"),
-    Language("markdown",    [".md"],  displayname="Markdown", comment_start=""),
+    Language("markdown",    [".md"],  displayname="Markdown", category="Other", comment_start=""),
     Language("c",    [".c"],  displayname="C", comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
     Language("java",         [".java"], displayname="Java",        comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
     Language("cplusplus",    [".cpp"],  displayname="C++",         comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
     Language("csharp",       [".cs"],   displayname="C#",          comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
     Language("javascript",   [".js"],   displayname="JavaScript",  comment_start="//", comment_multi_line_start="/*", comment_multi_line_end="*/"),
-    Language("yaml",         [".yaml"], displayname="YAML",        comment_start="#"),
-    #Language("txt",         [".txt"], displayname="Plain Text", comment_start=""),
-    #Language("config",      [".config"],  displayname="Configuration", comment_start=""),
+    Language("yaml",         [".yaml"], displayname="YAML", category="Config", comment_start="#"),
+    Language("txt",         [".txt"], displayname="Plain Text", category="Other", comment_start=""),
+    Language("config",      [".config"],  displayname="Configuration", category="Config", comment_start=""),
 ]
 
 all_extensions = []
@@ -248,6 +250,57 @@ for language in used_languages:
     perc = pretty_percent(language.lines,total_line_count)
     print(info_i()+f"     {language.displayname:<13}: {language.lines:<12} {pretty_percent_bars(perc, 12)} {perc}%")
      
+
+#region graph
+if DO_GRAPH:
+    print(info_i()+" Generating graph for README.md")
+
+    # Do fancy stuff to generate graph
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    df = []
+    for lang in used_languages:
+        df.append([lang.displayname, lang.category, int(lang.lines)])
+
+    df = pd.DataFrame(df)
+    df.columns = ["Name", "Category", "Lines"]
+    outer = df.groupby("Category").sum()
+    outer.drop('Name', axis=1, inplace=True)
+
+    inner = df.groupby(["Category", "Name"]).sum()
+    inner_labels = inner.index.get_level_values(1)
+
+    # The below code was modified from an example found at https://matplotlib.org/stable/gallery/pie_and_polar_charts/nested_pie.html
+    fig, ax = plt.subplots(figsize=(8, 8))
+    size_outer = 1.2
+    size_inner = 1
+
+    # Outer pie
+    ax.pie(outer.values.flatten(), radius=size_outer,
+        labels=outer.index, labeldistance=1.1,
+        wedgeprops=dict(width=size_outer, edgecolor="w"),
+        textprops=dict(size=16))
+
+    # Inner pie
+    ax.pie(inner.values.flatten(), radius=size_inner, 
+        labels = inner_labels, labeldistance=0.6,
+        wedgeprops=dict(width=size_inner, edgecolor="w"),
+        textprops=dict(size=12))
+    
+    print(info_i()+" Graph created. Saving...")
+
+    ax.set(aspect="equal", title="Languages by lines")
+    #plt.show()
+
+    # Save the graph
+    fig.savefig('languages.png')
+
+    print(green_check()+" Graph saved as languages.png")
+
+#endregion graph
+
 print(green_check()+" Program complete.")
 #endregion results
 
