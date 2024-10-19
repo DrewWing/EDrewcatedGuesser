@@ -54,8 +54,8 @@ Items labeled `Critical` need to be fixed/completed before release.
     - [ ] Figure out what to do with viewdata.py
     - [X] ~~Figure out where in the world OPR-m.npy comes from~~
     - [X] ~~Figure out if anything in the world uses OPR-m.npy~~
-    - [ ] All opr/teamstats stuff
-    - [ ] All references to opr/teamstats stuff
+    - [X] ~~All opr/teamstats stuff~~
+    - [X] ~~All references to opr/teamstats stuff~~
   - [ ] `[Code QOL]` Making predictions work with both the EventMatches and EventSchedule classes (jsonparse)
     - and the implementation of the predictions in sheetsapi
     - and the processing of the data (getting recent OPRs, etc etc.)
