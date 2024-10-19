@@ -102,6 +102,7 @@ Note that all tasks should be tagged `[license]` and `[critical]`.
       scikit-learn==1.5.0
       ```
     - [ ] Figure out what pyarrow does and if it's used or needed
+    - [ ] Also figure out a way to cite/get license of the FTC API
 
 ### Other
   - [ ] `[Code]` Update the `__all__` variable in `commonresources.py`. Figure out if it's even needed.

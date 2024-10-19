@@ -2,12 +2,12 @@
 ## by Drew Wingfield
 This is the README file.
 
-DO NOT DISTRIBUTE!
 You may **not** earn money or monetize in any way from this program. It's not just my terms, it's also a part of the terms of using the official FTC API.
 
-**NOTE** that this is an alpha version still in "stealth," so please ignore any references to licenses, in code or on any documentation, except this paragraph. I'll get all that ironed out before I release this.  \
-Everything that I'm doing right now is unpublished, so you **may not** use it under any of these unpublished licenses. \
-I'm doing my best, just use whatever version is most current under its own license. It has many bugs and is not worth it.
+**NOTE** that this is an alpha version still in "stealth," so please ignore any other references to licensing, in code or on any documentation, except this paragraph. I'll get all that ironed out before I release this.  \
+All versions of this software (and all of their code, documentation, assets, and any other intellectual property they contain) before publication (TODO: insert range of versions here) are hereby licensed under the first published version (TODO: state here). The current version of this software is **unpublished**.
+
+I'm doing my best but am not a lawyer, please just use the latest published version under its own license.
 
 You can find the license [here](LICENSE.txt).
 The todo list is [here](todos.md)
