@@ -20,10 +20,14 @@ Category | Naming | Example |
 -|-|-
 Python, CSV, Json | No uppercase. Underscores separate words if needed. | `python_settings.py`<br>`team_list_filtered.csv`
 Powershell | Camel Case, but first letter is lowercase. No word separators | `flushGeneratedFiles.ps1`
-Markdown | Camel Case | `StablePackageVersions.md`
+Markdown* | Camel Case | `StablePackageVersions.md`
 Trained ML Models | If using Grid Search, start with `gs`. Then an abbreviated version of the model type (first letter capitalized). | `gsNeigh.pkl` or `gsSVC.pkl`
 
-Notable eceptions are the `README.md`, `LICENSE.txt`, and `todos.md` files.
+*Notable eceptions are the `README.md`, `LICENSE.txt`, and `todos.md` files.
+
+
+## Markdown Files
+All Markdown files and other documentation media should be in the `docs` folder (except `README.md` and licensing stuff).
 
 ## Python Code
 
