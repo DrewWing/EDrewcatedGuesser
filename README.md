@@ -23,21 +23,6 @@ Also see the [Updates](docs/Updates.md) page.
 ## Contributing
 Add some text here mentioning conventions, PR templates, etc etc. TODO.
 
-## Files, their Purpose, and their Interactions
-### Commmon Resources (`commonresources.py`)
-The place where most constants and commonly used functions are stored. Pretty much every other python file draws from this. \
-Some examples are `red_x`, `green_check`, `PATH_TO_FTCAPI`, `PATH_TO_JOBLIB_CACHE`, and `get_json`.
-
-### Json Parse (`jsonparse.py`)
-Documentation goes here!
-
-### Sheets API (`sheetsapi.py`)
-Documentation goes here!
-
-### OPR Event (`OPRv4.py`)
-Documentation goes here!
-
-
 
 ## Credits/Honorable Mentions
 Though I wrote almost the entirety of the project by myself, I had some help. Below are some resources that I used (whether for copypasting code, general reference, or other research).
