@@ -1,12 +1,12 @@
 # How to Set Up the Project
 
-# <p style="color:red"><u>**This Documentation is currently OUTDATED**</u></p>
+# <p style="color:orange"><u>**This Documentation is currently a WORK IN PROGRES**</u></p>
 
 ## Setting Up
 Please note that this software needs to be set up correctly to work.
 
 ### Venv
-First of all, you must set up a Virtual Environment via `venvSetup.ps1`. It will automatically create a Virtual Environment at `.venv` and install all required packages.
+First of all, you must set up a Virtual Environment and install the required packages. The script `venvSetup.ps1` automatically does this for you.
 
 > *Advanced*: You may change the location of the Virtual Environment with the `VenvName` flag.
 
@@ -22,7 +22,7 @@ Create a file called `secrets.txt` containing your FIRST API token. Format it as
 PersonalAccessToken=YOUR_TOKEN_GOES_HERE
 ```
 
-> *Advanced*: Any variables in `secrets.txt` will be written into `ftcapi.ps1`, <u>after argument parsing</u>. 
+> *Advanced*: Any variables in `secrets.txt` will be written into `ftcapi.ps1`, <u>after argument parsing</u> (will override arguments). 
 > This is a great way to semi-permanently set some arguments without passing them into the script every time. 
 
 ### Common Resources
