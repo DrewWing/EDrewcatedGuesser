@@ -25,6 +25,28 @@ PersonalAccessToken=YOUR_TOKEN_GOES_HERE
 > *Advanced*: Any variables in `secrets.txt` will be written into `ftcapi.ps1`, <u>after argument parsing</u> (will override arguments). 
 > This is a great way to semi-permanently set some arguments without passing them into the script every time. 
 
+
+
+### Google Cloud Service Worker
+You will need to create a Google Cloud project and service worker, and get a key.
+This Service Account will be the one pushing data to the Google Sheets. If you don't want to deal with the hell that is Google APIs, you can wait a bit for me to implement a non-google-sheets-pushing feature.
+
+
+#### Agree to Google Cloud's Terms
+Go to console.cloud.google.com and agree to their terms.
+
+<img src="images/GoogleCloudWelcome.png" />
+
+
+#### Create a Google Cloud Project.
+Go to cloud.google.com and create a google cloud project. TODO: add screenshots here.
+
+#### Create a Service Account
+
+#### Download the API Key
+Download the Service Account API key and modify `SERVICE_ACCOUNT_FILE` to match the file name.
+
+
 ### Common Resources
 Certain variables in commonresources.py need to be set up correctly;
  - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your service account authentication key is stored.

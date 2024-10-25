@@ -28,6 +28,7 @@ Trained ML Models | If using Grid Search, start with `gs`. Then an abbreviated v
 
 ## Markdown Files
 All Markdown files and other documentation media should be in the `docs` folder (except `README.md` and licensing stuff).
+Images relating to markdown files should be in `docs/images`.
 
 ## Python Code
 
