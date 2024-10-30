@@ -33,22 +33,60 @@ This Service Account will be the one pushing data to the Google Sheets. If you d
 
 
 #### Agree to Google Cloud's Terms
-Go to console.cloud.google.com and agree to their terms.
+Go to console.cloud.google.com and agree to their terms. You do *not* need to start any free trials, just ignore those messages when they pop up.
 
-<img src="images/GoogleCloudWelcome.png" />
+<img style="width:500px" src="images/GoogleCloudWelcome.png" />
+
 
 
 #### Create a Google Cloud Project.
-Go to cloud.google.com and create a google cloud project. TODO: add screenshots here.
+Click on `Select a Project` in the top left, then `Create New Project`.
+
+<!-- <img style="width:300px" src="images/GoogleCloudSelectAProject2.png"> -->
+
+
+Name your project something memorable, and <u>don't associate it with an organization.</u> Then hit `Create` and wait a second for it to load your new project.
+
+> Note: If you are having trouble creating the project or are getting permissions errors, make sure you are not using a school account.
+
+<!-- <img style="width:500px" src="images/GoogleCloudNewProject.png" /> -->
+
 
 #### Create a Service Account
+The last step should have loaded you into the dashboard. In the left pane, click on `IAM & Admin` -> `Service Accounts`, then `Create Service Account`.
+
+<img src="images/GoogleCloudCreateServiceAccount.png">
+Fill in the account name and description (optional). An ID will be automatically generated, but you can input it manually as well. This ID will be part of the email address of the service account. <br>
+My reccomondation is to name it something accurate like "SheetsWorker" or "GoogleSheetsData." Future you will thank you.
+
+After clicking `Continue`, you will select a role. Select `Basic` -> `Viewer`, then hit `Continue`.
+If you know what you're doing, you may grant users access to the service account, but otherwise just hit `Done`.
+
+
+
 
 #### Download the API Key
-Download the Service Account API key and modify `SERVICE_ACCOUNT_FILE` to match the file name.
+Create an API access key via `Keys` -> `Add Key` -> `Create New Key`. You want a `Json` type key.
 
+This will download a `.json` file, which you should rename to something convenient like `google-sheets-api-key.ignore.json` and place in the EDrewcated Guesser project folder.
+
+You should then modify `SERVICE_ACCOUNT_FILE` in `common_resources.py` to match the file name.
+
+> **Warning:** This API key should be kept secret and not shared.
+> People who have that key have access to your Google Drive and may mess stuff up. 
+
+If you're having trouble or need more reference, please also see https://stackoverflow.com/a/76838253.
 
 ### Common Resources
 Certain variables in commonresources.py need to be set up correctly;
- - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your service account authentication key is stored.
+ - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your Service Account authentication key is stored.
 
  - `SPREADSHEET_ID` (string) is the ID of the google spreadsheet you want to push data to, found in the URL of the spreadsheet; https://docs.google.com/spreadsheets/d/spreadsheet_id_goes_here/edit. Ex: `1MoOvAGpCF_dbo-verZvakOPCE2XJQi5IMG24vWRL64o`
+
+
+
+## Troubleshooting
+
+#### Google Cloud is giving me errors related to organizational settings
+Do not use a work or school account, as their organizational structure was probably set up a certain way that breaks things for this project. Use a personal Google account not managed by any organization.
+
