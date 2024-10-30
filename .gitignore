@@ -11,9 +11,6 @@ app/generatedfiles/
 .vscode/
 .venv/
 
-ftcapivenv/
-ftcapivenvwindows/
-.venv/
 venvSetup.log
 
-reqtest
+*.ignore.*
