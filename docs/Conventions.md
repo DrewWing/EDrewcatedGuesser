@@ -39,16 +39,20 @@ All python files should start with the following:
 ```python
 #
 # -*- coding: utf-8 -*-
-# Name of the File (Title Case)
+# Name of the File (Regular title case with spaces)
 # Started MM-DD-YYYY
 # by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
 #
 """
 A short description of what this script is and provides.
 
-This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
 See the documentation in the README.md file.
-See the license in the LICENSE.txt file.
 
 A longer description of the script goes here, if necessary.
 """
@@ -117,8 +121,9 @@ All PowerShell files should start with the following:
     AUTHOR: Drew Wingfield
     VERSION: <The current version of the program>
     COPYRIGHT: 
-        This script is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
-        Please see the license in the LICENSE.txt and documentation in the README.md file.
+        This script is part of Drew Wingfield's EDrewcated Guesser.
+        It is licensed under the license found at LICENSE.txt.
+        See the documentation in the README.md file.
 
 
 .PARAMETER <ParameterName>
@@ -147,5 +152,29 @@ All functions should be placed in a region titled `functions` or `Functions`.
 Everything else should be placed under a region titled `procedural` or `Procedural`.
 
 ## BASH Code
-Insert text here.
+
+#### Header
+All bash files should start with the following. Note the lack of a shebang as usually the Virtual Environment should already be activated.
+```bash
+#
+# -*- coding: utf-8 -*-
+# Name of the script (title case, with spaces)
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+# Description:
+# A description of the script
+#
+```
+
+
+## Other Code/resources
+All other code and resources must contain at the top (or close to the top) of the file the following:
+```
+This [script/document/file] is part of Drew Wingfield's EDrewcated Guesser. It is licensed under the license found at LICENSE.txt.
+See the license in the LICENSE.txt file.
+See the documentation in the README.md file.
+```
 
