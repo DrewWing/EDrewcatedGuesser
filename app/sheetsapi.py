@@ -173,7 +173,7 @@ def get_elims_matches(service, credentials):
     if settings.debug_level>1:
         print(info_i()+' [sheetsapi.py][get_elims_matches] Data recieved. Processing data...')
     
-    elims_match_teams = {'Red1':[],'Red2':[],'Blue1':[],'Blue2':[],}
+    elims_match_teams = {'Red1':[],'Red2':[],'Blue1':[],'Blue2':[]}
 
 
     for row in e:
