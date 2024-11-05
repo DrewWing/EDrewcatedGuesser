@@ -10,8 +10,9 @@
     AUTHOR: Drew Wingfield
     VERSION: 48.0
     COPYRIGHT: 
-        This script is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
-        Please see the license in the LICENSE.txt and documentation in the README.md file.
+        This script is part of Drew Wingfield's EDrewcated Guesser.
+        It is licensed under the license found at LICENSE.txt.
+        See the documentation in the README.md file.
 
 #>
 

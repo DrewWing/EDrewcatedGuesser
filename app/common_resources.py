@@ -1,16 +1,19 @@
 #
 # -*- coding: utf-8 -*-
-
 # Common Resources
 # Started 02-18-2024
 # by Drew Wingfield
 #
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
 """
-A set of common constants and functions for Drew Wingfield's FTCAPI program.
+A set of common constants and functions for Drew Wingfield's EDrewcated Guesser program.
 
-This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
 See the documentation in the README.md file.
-See the license in the LICENSE.txt file.
 
 """
 

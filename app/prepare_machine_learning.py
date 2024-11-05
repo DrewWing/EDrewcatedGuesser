@@ -1,9 +1,21 @@
 #
 # -*- coding: utf-8 -*-
-
-# Prepare-machinelearning.py
+# Prepare Machine Learning
 # Started 2024-02-14
 # by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Prepares data for machine learning algorithm training.
+
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+"""
 
 # To profile it, use:
 # scalene --profile-only OPRv4, jsonparse, prepare-machinelearning, commonresources  --json --outfile pythonprofile /home/wingfield/ftcapi-branch45-1/prepare-machinelearning.py

@@ -1,14 +1,23 @@
 #
 # -*- coding: utf-8 -*-
-# jsonparse
+# Json Parse
+# Started 2024-01-29
 # by Drew Wingfield
-# started 2024-01-29
-# (c) 2024 Drew Wingfield, All Rights Reserved
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+A library of functions mostly used for prepping for OPR calculation.
 
-# This was initially started as a program to parse json data, but now mostly serves as another library
-# of functions, the most used being preparing for OPR calculation.
-# Make sure to read the README.txt and the LICENSE.txt
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
 
+This was initially started as a program to parse json data, but now mostly serves as another library
+of functions, the most used being preparing for OPR calculation.
+"""
 
 
 #region Imports

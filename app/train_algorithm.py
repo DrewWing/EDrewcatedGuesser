@@ -1,12 +1,24 @@
 #
 # -*- coding: utf-8 -*-
-# ml-test.py
+# Train Algorithm
+# Started 2024-02-15
 # by Drew Wingfield
-# started 2024-02-15
 # 
-# Trains the machine learning algorithms that predict matches.
-# Please read the README.md file.
-# KNeighborsClassification working with gridsearchCV with help from https://www.datasklr.com/select-classification-methods/k-nearest-neighbors
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Trains the machine learning algorithms that predict matches.
+
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+KNeighborsClassification working with gridsearchCV with help from 
+https://www.datasklr.com/select-classification-methods/k-nearest-neighbors
+"""
+
 
 #region Imports
 print(" ml-test.py")

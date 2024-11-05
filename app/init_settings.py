@@ -3,15 +3,24 @@
 # init_settings.py
 # Started 2024/06/16
 # by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+A program that writes certain variables to a machine-readable file for other scripts in Drew Wingfield's FTCAPI program.
 
-# This file is a part of Drew's FTCAPI project, and
-# all code is under the license found at LICENSE.txt unless otherwise
-# specified.
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
 
-# Argument parsing with help from Michael Dorner on StackOverflow:
-# https://stackoverflow.com/questions/4033723/how-do-i-access-command-line-arguments
-# and the docs:
-# https://docs.python.org/3/library/argparse.html
+Argument parsing with help from Michael Dorner on StackOverflow:
+https://stackoverflow.com/questions/4033723/how-do-i-access-command-line-arguments
+and the docs:
+https://docs.python.org/3/library/argparse.html
+"""
+
 
 import argparse
 import os

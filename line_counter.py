@@ -1,15 +1,23 @@
 #
 # -*- coding: utf-8 -*-
-
-# Linecounter
+# Line Counter
 # Started 2024-06-29
 # by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Counts the lines of code in a directory
 
-# Description:
-# Counts the lines of code in a directory
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
 
-# recursively finding files with help from stackoverflow
-# https://stackoverflow.com/questions/2186525/how-to-use-to-find-files-recursively
+Recursively finding files with help from stackoverflow: 
+https://stackoverflow.com/questions/2186525/how-to-use-to-find-files-recursively
+"""
 
 import os
 

@@ -7,13 +7,13 @@
 """
 This script provides an interface for pulling and pushing data to/from a Google Sheets spreadsheet.
 
-This file is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
 See the documentation in the README.md file.
-See the license in the LICENSE.txt file.
 
 Lots of help from https://github.com/googleapis/google-api-python-client/blob/main/samples/service_account/tasks.py
     and https://developers.google.com/sheets/api/quickstart/python
-    as well as lots of documentation and random other stuff.
+    as well as lots of documentation.
 """
 
 

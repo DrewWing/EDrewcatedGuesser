@@ -12,8 +12,9 @@
     AUTHOR: Drew Wingfield
     VERSION: 48.0
     COPYRIGHT: 
-        This script is a part of Drew Wingfield's FTCAPI program (EDrewcated Guesser).
-        Please see the license in the LICENSE.txt and documentation in the README.md file.
+        This script is part of Drew Wingfield's EDrewcated Guesser.
+        It is licensed under the license found at LICENSE.txt.
+        See the documentation in the README.md file.
 
 .PARAMETER VenvName
             The (local) path to the directory of the Virtual Environment to use, as a string.
@@ -25,7 +26,7 @@
     Defaults to false
 
 .NOTES
-    Additional info.
+    Ascii text with the help of https://patorjk.com/software/taag/#p=display&f=Slant&t=Setting%20up...
 
 #>
 

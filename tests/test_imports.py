@@ -1,3 +1,24 @@
+#
+# -*- coding: utf-8 -*-
+# Test Imports
+# 
+# by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Provides unit tests for external and internal imports.
+
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+Unit tests for external imports include builtins as well as true externals 
+(pandas, googleapiclient, etc.). Unit tests for internal imports make suree
+that internal scripts can be imported correctly.
+"""
 
 import unittest
 

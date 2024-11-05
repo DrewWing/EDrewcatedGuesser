@@ -1,7 +1,22 @@
 #
+# -*- coding: utf-8 -*-
+# OPR
+# 
+# by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
 """
-OPRv4
+Calculates Offensive Power Rating (OPR), AutoOPR, and Calculated Contribution to Winning Margin (CCWM).
 
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+OPR = Offensive Power Rating
+CCWM = Calculated Contribution to Winning Margin
 Thanks to The Blue Alliance
     https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/
 
@@ -9,12 +24,6 @@ and owsorber (on Github)
     https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/
 
 for help with OPR calculation.
-
-You can see the license at LICENSE.txt
-Please also read the documentation in the README.md file.
-
-OPR = Offensive Power Rating
-CCWM = Calculated Contribution to Winning Margin
 """
 
 

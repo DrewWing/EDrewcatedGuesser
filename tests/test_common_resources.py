@@ -1,3 +1,22 @@
+#
+# -*- coding: utf-8 -*-
+# Test Common Resources
+# 
+# by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Provides unit tests validating functions and variables in common_resources.py
+
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+"""
+
 
 import unittest
 import os
