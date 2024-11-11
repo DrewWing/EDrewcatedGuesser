@@ -42,6 +42,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[OPR]` `[Accuracy]` Weird bug with some teams' recent OPR calculated as 0 for lower amounts of days (30)
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
   - [ ] `[Tests]` `[Argparse]` Import tests fail due to argparse.
+  - [X] ~~`[Code]` Line counter bug where gitignore items were not being ignored due to Windows using backslashes in their paths.~~
 
 ### Docs
   - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
