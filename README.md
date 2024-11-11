@@ -9,8 +9,16 @@ Everything that I'm doing right now is unpublished, so you **may not** use it un
 I'm doing my best, just use whatever version is most current under its own license. It has many bugs and is not worth it.
 
 You can find the license [here](LICENSE.txt).
-The todo list is [here](docs/todos.md)
+The todo list is [here](docs/todos.md).
 Also see the [Updates](docs/Updates.md) page.
+
+
+---
+## Language Stats:
+<img src="./languages.png" alt="A graph describing the current language composition." width="512"/> 
+<!-- Created by linecounter.py -->
+<br>
+
 
 ## Helpful Documentation Links
  - [How to Set Up the Project (Start Here!)](docs/Setup.md)

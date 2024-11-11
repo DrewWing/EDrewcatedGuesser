@@ -18,3 +18,4 @@
 
 Remove-Item app/generatedfiles -Exclude *.log -Recurse
 Remove-Item app/__pycache__ -Recurse
+Remove-Item app/tests/__pycache__ -Recurse
