@@ -45,9 +45,9 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 ### Docs
   - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
-  - [ ] `Docs` Reorganize this `todos.md` page and sort by category.
-  - [ ] `[ReadMe]` Add documentation about `venvSetup.ps1` script.
   - [ ] `[Critical]` `[Readme]` `[Docs]` Update Readme file instructions, file names, and directory names to match current ones.
+  - [ ] `[Critical]` `[ReadMe]` Add documentation about `venvSetup.ps1` script.
+  - ~~[X] `Docs` Reorganize this `todos.md` page and sort by category.~~
 
 
 ### Tests
@@ -66,11 +66,11 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[Files]` `[Critical]` Remove these files before release (dev tools or generally not needed)
     - [ ] all packages.txt
     - [ ] flushGeneratedFiles.ps1
-    - [ ] linecounter.py
-    - [ ] viewdata.py?
+    - [ ] line_counter.py
+    - [ ] view_data.py?
   - [ ] `[Files]` Rename scripts to match their function better and update all references to those scripts.
-  - [ ] `[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)
-  - [ ] `[Files]` `[Docs]` Put all doc files (readme and updates) into a docs folder?
+  - [X] ~~`[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)~~
+  - [X] ~~`[Files]` `[Docs]` Put all doc files (readme and updates) into a docs folder?~~
   - [X] ~~`[QOL]` `[Files]` Organize generated files into a single folder and update the .gitignore~~
   - [X] ~~Remove all references to heatmap stuff.~~
 
@@ -98,16 +98,16 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[Git]` Perhaps ignore all `.log` files in `.gitignore`?
   - [ ] `[Code]` `[DeadCode]` Remove the `rankings_dataframe` function in jsonparse, it seems to not be called anywhere
   - [ ] `[Code]` `[Feature]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
-  - [ ] `[Code]` Have a standard variable, class, and function naming system (camel case vs underscores vs etc.)
+  - [X] ~~`[Code]` Have a standard variable, class, and function naming system (camel case vs underscores vs etc.)~~
   - [ ] `[General]` Get a better Todo system (use a bug-tracking system?)
-  - [ ] `[Code]` `[QOL]` Redo all the path things to make them better lol
+  - [X] ~~`[Code]` `[QOL]` Redo all the path things to make them better lol~~
   - [X] ~~`[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable~~ (or automatic?)
   - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets
   - [ ] `[Sheets]` `[QOL]` `[Feature]` It would be nice to add the team name to the number when pushing to sheets
   - [ ] `[QOL]` `[Readme]` Redo the README.
   - [ ] `[QOL]` `[DeadCode]` Remove all unneccessary files
-    - [ ] `[DeadCode]` Figure out what to do with viewdata.py
+    - [ ] `[DeadCode]` Figure out what to do with view_data.py
     - [X] ~~Figure out where in the world OPR-m.npy comes from~~
     - [X] ~~Figure out if anything in the world uses OPR-m.npy~~
     - [X] ~~All opr/teamstats stuff~~
