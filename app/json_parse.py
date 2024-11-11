@@ -156,14 +156,14 @@ class EventMatches():
                 
                 self.matches_split.append(appendlist)
             except IndexError as e:
-                log_error(f"[jsonparse.py][EventMatches][__init__] An index error occured. Teams {match["teams"]}")
+                log_error(f"[jsonparse.py][EventMatches][__init__] An index error occured. Teams {match['teams']}")
                 log_error(f"    touornamentLevel: {match['tournamentLevel']}")
-                log_error(f"    actualStartTime: {match["actualStartTime"]}")
+                log_error(f"    actualStartTime: {match['actualStartTime']}")
                 log_error(f"    Error info: {e}")
                 print(red_x()+"\n\n  An index error was detected! Some useful info:")
                 print(red_x()+"    Teams:"+str(match["teams"]))
-                print(red_x()+"    tournamentLevel:"+str(match["tournamentLevel"]))
-                print(red_x()+"    actualStartTime:"+str(match["actualStartTime"]))
+                print(red_x()+"    tournamentLevel:"+str(match['tournamentLevel']))
+                print(red_x()+"    actualStartTime:"+str(match['actualStartTime']))
                 print("\n\n")
                 raise e
 
