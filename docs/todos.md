@@ -17,7 +17,6 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 4. Licensing
 
 ### December 2024
-**December 1st:** Hard deadline for new features. Any feature not functional is put on pause until post-release updates.
 
 #### Priorities During December
 1. Licensing
@@ -28,6 +27,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 3. Minor bugfixing
 4. polish
 
+**December 1st:** Hard deadline for new features. Any feature not functional is put on pause until post-release updates.
 **December 18th:** Train algorithm for current season. \
 **December 19th:** Soft deadline of no more commits. Upload project to GitHub and start setting up issue templates, etc. \
 **December 22nd:** Hard deadline of no commits (except to fix critical bugs). Attempt a fresh install, setup, and run. \
@@ -47,7 +47,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
   - [ ] `[Critical]` `[Readme]` `[Docs]` Update Readme file instructions, file names, and directory names to match current ones.
   - [ ] `[Critical]` `[ReadMe]` Add documentation about `venvSetup.ps1` script.
-  - ~~[X] `Docs` Reorganize this `todos.md` page and sort by category.~~
+  - [X] ~~`[Docs]` Reorganize this `todos.md` page and sort by category.~~
 
 
 ### Tests
