@@ -1,4 +1,23 @@
+#
+# -*- coding: utf-8 -*-
+# Test PEP
+# 
+# by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Provides unit tests for PEP style guides and conventions on Python scripts.
 
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+Unit tests for trailing commas, multiple imports in one line, and other PEP
+nonconformities as well as conventions for every Python script.
+"""
 
 
 import unittest
