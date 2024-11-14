@@ -22,6 +22,26 @@ nonconformities as well as conventions for every Python script.
 
 import unittest
 
+correct_python_header = [ # Starting lines of the python header. ~ANY~ can be replaced with anything.
+    "#\n",
+    "# -*- coding: utf-8 -*-\n",
+    "# ~ANY~\n", # Title of program
+    "# ~ANY~\n", # Started (date), or nothing if date unkown
+    "# by Drew Wingfield\n",
+    "#\n",
+    "# This script is part of Drew Wingfield's EDrewcated Guesser.\n",
+    "# It is licensed under the license found at LICENSE.txt.\n",
+    "# See the documentation in the README.md file.\n",
+    "#\n",
+    '"""\n',
+    "~ANY~\n", # Brief description.
+    "\n",
+    "This script is part of Drew Wingfield's EDrewcated Guesser.\n",
+    "It is licensed under the license found at LICENSE.txt.\n",
+    "See the documentation in the README.md file.\n",
+    "\n"
+]
+
 def remove_leading_indents(line):
     while "    "==line[:3]:
         line = line[4:]
@@ -57,7 +77,31 @@ class pepTest(unittest.TestCase):
                     except AssertionError as e:
                         raise AssertionError(f"PEP 8 nonconformity (importing more than one module in one line) at line {current_line} in file {file_path} \n Line: {line}")
 
-    
+    def single_file_header_test(self, file_path):
+        with open(file_path, "r", encoding="utf8") as current_file:
+            # Iterate over every line
+            current_line = 0
+            file_lines = current_file.readlines()
+
+            for correct_line in correct_python_header:
+                current_line += 1
+                line = file_lines[current_line-1]
+
+                line_is_correct = bool(correct_line == line)
+
+                if not(line_is_correct) and ("~ANY~" in correct_line):
+                    line_is_correct = bool(
+                            correct_line[:correct_line.index("~ANY~")]==line[:correct_line.index("~ANY~")]
+                        and correct_line[correct_line.index("~ANY~")+5:]==correct_line[correct_line.index("~ANY~")+5:]
+                        )
+                
+                # If an import is in the line and not a comment
+                try:
+                    assert line_is_correct # See the below error message for details.
+                    
+                except AssertionError as e:
+                    raise AssertionError(f"Header nonconformity at line {current_line} in file {file_path} \nHeader is {line.strip()} but should be {correct_line.strip()}")
+                
     def single_file_trailing_commas_test(self, file_path):
         with open(file_path, "r", encoding="utf8") as current_file:
             # Iterate over every line
@@ -94,6 +138,7 @@ class pepTest(unittest.TestCase):
         ignore_list = [line.replace("\n","").replace(".\\","") for line in ignore_list if line!="\n"]
         ignore_list = [line[:-1] if line[-1]=="/" else line for line in ignore_list]
         ignore_list += [".git"]
+        ignore_list = list(set(ignore_list)) # Remove duplicates
         #print(ignore_list) #DEBUG
 
         #all_files = [] #DEBUG
@@ -118,10 +163,12 @@ class pepTest(unittest.TestCase):
 
     def test_import_formats(self):
         self.test_python_files(test_function=self.single_file_import_format_test)
-    
 
     def test_trailing_commas(self):
         self.test_python_files(test_function=self.single_file_trailing_commas_test)
+
+    def test_headers(self):
+        self.test_python_files(test_function=self.single_file_header_test)
 
 if __name__ == '__main__':
     unittest.main()

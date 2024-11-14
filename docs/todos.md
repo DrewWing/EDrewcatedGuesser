@@ -55,6 +55,11 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[Code]` `[Tests]` Add tests
     - [X] ~~Correct files in correct places~~
     - [ ] Machine learning is recent to the correct season  year
+    - [ ] Conventions
+      - [ ] Proper header for all scripts
+        - [X] ~~Python~~
+        - [ ] Powershell
+        - [ ] BASH
 
 
 ### Config
