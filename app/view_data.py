@@ -1,10 +1,23 @@
-
-# view data
-# started March 1st, 2024
+#
+# -*- coding: utf-8 -*-
+# View Data
+# Started 03-01-2024
 # by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Organizes some data for viewing, unused and probably should be deleted.
 
-# with help from https://stackoverflow.com/questions/21654635/how-to-create-a-scatter-plot-by-category
-# for matplotlib plotting
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+With help from https://stackoverflow.com/questions/21654635/how-to-create-a-scatter-plot-by-category 
+for matplotlib plotting
+"""
 
 
 from common_resources import PATH_TO_FTCAPI, red_x, info_i, green_check, get_json
