@@ -35,9 +35,25 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 ## To-Do Items
 
+### GitHub
+  - [ ] Add name and description
+  - [ ] Add issue templates
+  - [ ] Transfer to-do list?
+    - [ ] Create Milestones
+    - [ ] Create and assign tags
+    - [ ] Create Issues
+  - [ ] Set up PR templates
+  - [ ] Set up public permissions (PR permissions)
+  - [ ] Create release (December 23rd)
+  - [ ] Publication (December 24th)
+    - [ ] Make repo public
+    - [ ] Update my website
+    - [ ] Announce release on all channels
+
+
 ### Bugs
   - [X] ~~`[Critical]` `[Git]` `[External]` Fix the gitignore in all branches to ignore .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.~~
-  - [ ] `[Powershell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
+  - [ ] `[PowerShell]` `[FTC API]` `[REST]` All teams in opr/all-teams are invalid API request messagees, due to the team # being put in as the event code.
     - [ ] Figure out where in the world these files keep coming from! (unused)
   - [ ] `[OPR]` `[Accuracy]` Weird bug with some teams' recent OPR calculated as 0 for lower amounts of days (30)
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
@@ -84,7 +100,8 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 ### Other
   - [ ] `[Code]` Make Google Sheets pushing optional, and add option for local spreadsheet
-  - [ ] `[Code]` Add markdown support for linecounter
+  - [ ] `[Code]` Add markdown support for line  counter
+  - [ ] `[Code]` Convert all Python scripts to be completely object-oriented, make master Python script replacing PowerShell/BASH scripts.
   - [ ] `[Code]` Add feature of ftcapi.ps1 to detect if .venv was selected but no .venv exists, and asks the user whether they would like the script to automatically create the venv for them using the venv creation script.
   - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and this file
     - [ ] Scripts in `app` folder
@@ -92,9 +109,9 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
     - [ ] `__init__.py`
   - [ ] `[OS Support]` `[Critical]` Linux support
     - [ ] Fix Linux BASH scripts
-    - [ ] Make sure everything works on linux
+    - [ ] Make sure everything works on Linux
   - [X] ~~`[Code]` Update the `__all__` variable in `commonresources.py`.~~
-  - [ ] `[Code]` In the powershell script, warn user if `secrets.txt` does not exist.
+  - [ ] `[Code]` In the PowerShell script, warn user if `secrets.txt` does not exist.
   - [ ] `[Git]` Perhaps ignore all `.log` files in `.gitignore`?
   - [ ] `[Code]` `[DeadCode]` Remove the `rankings_dataframe` function in jsonparse, it seems to not be called anywhere
   - [ ] `[Code]` `[Feature]` Add a write_json function in commonresources? (make write_needed_events in jsonparse less complex?)
@@ -102,7 +119,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[General]` Get a better Todo system (use a bug-tracking system?)
   - [X] ~~`[Code]` `[QOL]` Redo all the path things to make them better lol~~
   - [X] ~~`[QOL]` `[variables]` In ftcapiv4.ps1, make the season year an input variable~~ (or automatic?)
-  - [ ] `[QOL]` `[Code]` `[Arguments]` Make all python files use argparse
+  - [ ] `[QOL]` `[Code]` `[Arguments]` Make all Python files use argparse
   - [ ] `[Sheets]` `[Readme]` Add instruction for how to use the Google Sheets
   - [ ] `[Sheets]` `[QOL]` `[Feature]` It would be nice to add the team name to the number when pushing to sheets
   - [ ] `[QOL]` `[Readme]` Redo the README.
@@ -116,4 +133,4 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
     - and the implementation of the predictions in sheetsapi
     - and the processing of the data (getting recent OPRs, etc etc.)
   - [ ] `[QOL]` Adding a user interface?
-  - [ ] `[Code QOL]` Make all python files consistent with PEP 8 and PEP 257
+  - [ ] `[Code QOL]` Make all Python files consistent with PEP 8 and PEP 257
