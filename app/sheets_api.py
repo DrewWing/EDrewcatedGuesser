@@ -4,6 +4,10 @@
 # Started on an unmarked date
 # by Drew Wingfield
 #
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
 """
 This script provides an interface for pulling and pushing data to/from a Google Sheets spreadsheet.
 
