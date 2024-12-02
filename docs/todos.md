@@ -4,7 +4,7 @@ This is the `todos.md` file. For more information, please read the [Readme](READ
 Items labeled `Critical` need to be fixed/completed before release, and should be listed before non-critical items.
 
 ## Upcoming Timeline
-### November 2024
+<!-- ### November 2024
 Finish features for release, flesh out docs, possibly get ML algorithm training bugfree.
 
 #### Priorities During November
@@ -14,11 +14,11 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
    1. Project Setup
    2. Running the Project
    3. Training a New Algorithm (if implemented)
-4. Licensing
+4. Licensing -->
 
 ### December 2024
 
-#### Priorities During December
+#### Priorities
 1. Licensing
 2. Documentation
    1. Project Setup
@@ -27,10 +27,15 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 3. Minor bugfixing
 4. polish
 
+#### Deadlines
 **December 1st:** Hard deadline for new features. Any feature not functional is put on pause until post-release updates.
-**December 18th:** Train algorithm for current season. \
-**December 19th:** Soft deadline of no more commits. Upload project to GitHub and start setting up issue templates, etc. \
-**December 22nd:** Hard deadline of no commits (except to fix critical bugs). Attempt a fresh install, setup, and run. \
+
+**December 18th:** Train algorithm for current season.
+
+**December 19th:** Soft deadline of no more commits. Upload project to GitHub and start setting up issue templates, etc.
+
+**December 22nd:** Hard deadline of no commits (except to fix critical bugs). Attempt a fresh install, setup, and run.
+
 **December 24th:** Hard deadline of release.
 
 ## To-Do Items
