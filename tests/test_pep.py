@@ -29,17 +29,42 @@ correct_python_header = [ # Starting lines of the python header. ~ANY~ can be re
     "# ~ANY~\n", # Started (date), or nothing if date unkown
     "# by Drew Wingfield\n",
     "#\n",
-    "# This script is part of Drew Wingfield's EDrewcated Guesser.\n",
-    "# It is licensed under the license found at LICENSE.txt.\n",
+    "# Copyright (C) 2024, Drew Wingfield\n",
+    "#\n",
+    "# This script is part of EDrewcated Guesser by Drew Wingfield.\n",
+    "# EDrewcated Guesser is free software: you can redistribute it and/or modify it under \n",
+    "# the terms of the AGNU Affero General Public License as published by the Free Software \n",
+    "# Foundation, either version 3 of the License, or (at your option) any later version.\n",
+    "#\n",
+    "# EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY \n",
+    "# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR \n",
+    "# PURPOSE. See the AGNU Affero General Public License for more details.\n",
+    "#\n",
+    "# You should have received a copy of the AGNU Affero General Public License along with \n",
+    "# EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.\n",
+    "#\n",
     "# See the documentation in the README.md file.\n",
     "#\n",
     '"""\n',
-    "~ANY~\n", # Brief description.
+    "~ANY~\n", # Brief description of script
     "\n",
-    "This script is part of Drew Wingfield's EDrewcated Guesser.\n",
-    "It is licensed under the license found at LICENSE.txt.\n",
     "See the documentation in the README.md file.\n",
-    "\n"
+    "\n",
+    "Copyright (C) 2024, Drew Wingfield\n",
+    "\n",
+    "This script is part of EDrewcated Guesser by Drew Wingfield.\n",
+    "EDrewcated Guesser is free software: you can redistribute it and/or modify it under \n",
+    "the terms of the AGNU Affero General Public License as published by the Free Software \n",
+    "Foundation, either version 3 of the License, or (at your option) any later version.\n",
+    "\n",
+    "EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY \n",
+    "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR \n",
+    "PURPOSE. See the AGNU Affero General Public License for more details.\n",
+    "\n",
+    "You should have received a copy of the AGNU Affero General Public License along with \n",
+    "EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.\n",
+    "\n",
+    # Then a longer description of the script
 ]
 
 def remove_leading_indents(line):
@@ -100,7 +125,7 @@ class pepTest(unittest.TestCase):
                     assert line_is_correct # See the below error message for details.
                     
                 except AssertionError as e:
-                    raise AssertionError(f"Header nonconformity at line {current_line} in file {file_path} \nHeader is {line.strip()} but should be {correct_line.strip()}")
+                    raise AssertionError(f"Header nonconformity at line {current_line} in file {file_path} \nHeader is '{line.strip()}' but should be '{correct_line.strip()}'")
                 
     def single_file_trailing_commas_test(self, file_path):
         with open(file_path, "r", encoding="utf8") as current_file:
