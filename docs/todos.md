@@ -68,84 +68,14 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 ### Licensing and Attribution 
 Note that all tasks should be tagged `[license]` and `[critical]`.
-  - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and this file
+  - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and ReadMe
     - [ ] Scripts in `app` folder
     - [ ] `tests` folder
     - [ ] `__init__.py`
+    - [ ] Update tests for new license statement.
   
   - [ ] `[License]` `[Critical]` Make sure licensing is correct for all packages used.
-    - [ ] Update the `requirements.txt` to use only needed packages.
-    - [ ] Here is the output of `pipdeptree -fl`. Thanks whoever you are for the package, it really helps!
-      ```
-      google-api-python-client==2.146.0
-        google-api-core==2.20.0
-          google-auth==2.35.0
-            cachetools==5.5.0
-            pyasn1_modules==0.4.1
-              pyasn1==0.6.1
-            rsa==4.9
-              pyasn1==0.6.1
-          googleapis-common-protos==1.65.0
-            protobuf==5.28.2
-          proto-plus==1.24.0
-            protobuf==5.28.2
-          protobuf==5.28.2
-          requests==2.32.3
-            certifi==2024.8.30
-            charset-normalizer==3.3.2
-            idna==3.10
-            urllib3==2.2.3
-        google-auth==2.35.0
-          cachetools==5.5.0
-          pyasn1_modules==0.4.1
-            pyasn1==0.6.1
-          rsa==4.9
-            pyasn1==0.6.1
-        google-auth-httplib2==0.2.0
-          google-auth==2.35.0
-            cachetools==5.5.0
-            pyasn1_modules==0.4.1
-              pyasn1==0.6.1
-            rsa==4.9
-              pyasn1==0.6.1
-          httplib2==0.22.0
-            pyparsing==3.1.4
-        httplib2==0.22.0
-          pyparsing==3.1.4
-        uritemplate==4.1.1
-      matplotlib==3.9.2
-        contourpy==1.3.0
-          numpy==2.1.1
-        cycler==0.12.1
-        fonttools==4.54.0
-        kiwisolver==1.4.7
-        numpy==2.1.1
-        packaging==24.1
-        pillow==10.4.0
-        pyparsing==3.1.4
-        python-dateutil==2.9.0.post0
-          six==1.16.0
-      pandas==2.2.3
-        numpy==2.1.1
-        python-dateutil==2.9.0.post0
-          six==1.16.0
-        pytz==2024.2
-        tzdata==2024.2
-      pipdeptree==2.23.4
-        packaging==24.1
-        pip==24.2
-      pyarrow==17.0.0
-        numpy==2.1.1
-      scikit-learn==1.5.0
-        joblib==1.4.2
-        numpy==2.1.1
-        scipy==1.14.1
-          numpy==2.1.1
-        threadpoolctl==3.5.0
-      setuptools==65.5.0
-      ```
-
-      So overall, the packages that I need to explicitly cite are:
+    - [X] ~~Update the `requirements.txt` to use only needed packages~~
       ```
       google-api-python-client>=2.119.0
       matplotlib>=3.8.3
@@ -154,8 +84,16 @@ Note that all tasks should be tagged `[license]` and `[critical]`.
       pyarrow>=15.0.0 (really not sure what this does but it's in requirements so idk)
       scikit-learn==1.5.0
       ```
-    - [ ] Figure out what pyarrow does and if it's used or needed
-    - [ ] Also figure out a way to cite/get license of the FTC API
+
+    - [X] Also figure out a way to cite/get license of the FTC API
+    - [X] License every parent package used:
+      - [X] Google API Python Client
+      - [X] MatPlotLib
+      - [X] Numpy
+      - [X] Pandas
+      - [X] PyArrow
+        - [ ] What does it do? Is it needed?
+      - [X] Scikit-Learn
 
 
 ### Docs

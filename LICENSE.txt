@@ -1,2 +1,26 @@
-Copyright (c) 2024 Drew Wingfield, All Rights Reserved
+Copyright (C) 2024, Drew Wingfield
+
+EDrewcated Guesser is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program (in the COPYING file). If not, see <https://www.gnu.org/licenses/>.
+
+See the documentation in the README.md file.
+
+The EDrewcated Guesser project relies on several packages, which are each
+licensed under their own respective licenses;
+  - Google API Python Client (LICENSES/APACHE2.txt)
+  - MatPlotLib (LICENSES/MATPLOTLIB.txt)
+  - Numpy (LICENSES/NUMPY.txt)
+  - Pandas (LICENSES/PANDAS.txt)
+  - Pyarrow (LICENSES/APACHE2.txt)
+  - Scikit-Learn (LICENSES/SCIKIT-LEARN.txt)
 

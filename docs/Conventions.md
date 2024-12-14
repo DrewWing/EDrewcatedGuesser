@@ -23,7 +23,7 @@ Powershell | Camel Case, but first letter is lowercase. No word separators | `fl
 Markdown* | Camel Case | `StablePackageVersions.md`
 Trained ML Models | If using Grid Search, start with `gs`. Then an abbreviated version of the model type (first letter capitalized). | `gsNeigh.pkl` or `gsSVC.pkl`
 
-*Notable eceptions are the `README.md`, `LICENSE.txt`, and `todos.md` files.
+*Notable eceptions are the `README.md`, `COPYING`, `LICENSE.txt`, and `todos.md` files.
 
 
 ## Markdown Files
@@ -35,7 +35,7 @@ Images relating to markdown files should be in `docs/images`.
 ### Layout
 
 #### Header
-All python files should start with the following:
+All python files should use the UTF-8 encoding and start with the following:
 ```python
 #
 # -*- coding: utf-8 -*-
@@ -43,16 +43,41 @@ All python files should start with the following:
 # Started MM-DD-YYYY
 # by Drew Wingfield
 #
-# This script is part of Drew Wingfield's EDrewcated Guesser.
-# It is licensed under the license found at LICENSE.txt.
+# Copyright (C) 2024, Drew Wingfield
+#
+# This script is part of EDrewcated Guesser by Drew Wingfield.
+# EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+# the terms of the AGNU Affero General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+# PURPOSE. See the AGNU Affero General Public License for more details.
+#
+# You should have received a copy of the AGNU Affero General Public License along with 
+# EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+#
 # See the documentation in the README.md file.
 #
 """
 A short description of what this script is and provides.
 
-This script is part of Drew Wingfield's EDrewcated Guesser.
-It is licensed under the license found at LICENSE.txt.
 See the documentation in the README.md file.
+
+Copyright (C) 2024, Drew Wingfield
+
+This script is part of EDrewcated Guesser by Drew Wingfield.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+
 
 A longer description of the script goes here, if necessary.
 """
@@ -121,9 +146,19 @@ All PowerShell files should start with the following:
     AUTHOR: Drew Wingfield
     VERSION: <The current version of the program>
     COPYRIGHT: 
-        This script is part of Drew Wingfield's EDrewcated Guesser.
-        It is licensed under the license found at LICENSE.txt.
-        See the documentation in the README.md file.
+        Copyright (C) 2024, Drew Wingfield
+
+        This script is part of EDrewcated Guesser by Drew Wingfield.
+        EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+        the terms of the AGNU Affero General Public License as published by the Free Software 
+        Foundation, either version 3 of the License, or (at your option) any later version.
+
+        EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+        WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+        PURPOSE. See the AGNU Affero General Public License for more details.
+
+        You should have received a copy of the AGNU Affero General Public License along with 
+        EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 
 .PARAMETER <ParameterName>
@@ -160,8 +195,20 @@ All bash files should start with the following. Note the lack of a shebang as us
 # -*- coding: utf-8 -*-
 # Name of the script (title case, with spaces)
 #
-# This script is part of Drew Wingfield's EDrewcated Guesser.
-# It is licensed under the license found at LICENSE.txt.
+# Copyright (C) 2024, Drew Wingfield
+#
+# This script is part of EDrewcated Guesser by Drew Wingfield.
+# EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+# the terms of the AGNU Affero General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+# PURPOSE. See the AGNU Affero General Public License for more details.
+#
+# You should have received a copy of the AGNU Affero General Public License along with 
+# EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+#
 # See the documentation in the README.md file.
 #
 # Description:
@@ -171,10 +218,22 @@ All bash files should start with the following. Note the lack of a shebang as us
 
 
 ## Other Code/resources
-All other code and resources must contain at the top (or close to the top) of the file the following:
+All other code, resources, or other files must contain at the top (or close to the top) of the file the following:
 ```
-This [script/document/file] is part of Drew Wingfield's EDrewcated Guesser. It is licensed under the license found at LICENSE.txt.
-See the license in the LICENSE.txt file.
+Copyright (C) 2024, Drew Wingfield
+
+This [script/document/file] is part of EDrewcated Guesser by Drew Wingfield.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+
 See the documentation in the README.md file.
 ```
 

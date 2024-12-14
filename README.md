@@ -32,10 +32,16 @@ Also see the [Updates](docs/Updates.md) page.
 Add some text here mentioning conventions, PR templates, etc etc. TODO.
 
 
+## More documentation goes here!
+As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `app/generatedfiles/error.log` with a timestamp.
+
+Good luck debugging!
+
+
 ## Credits/Honorable Mentions
 Though I wrote almost the entirety of the project by myself, I had some help. Below are some resources that I used (whether for copypasting code, general reference, or other research).
 
-This program uses the official FIRST API to get information on matches, schedules, and scores.
+This program uses the official FIRST Tech Challenge API to get information on matches, schedules, and scores.
 You can find it [here](https://ftc-events.firstinspires.org/services/API).
 
 Thanks to [The Blue Alliance](https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/) for an overview of OPR and the math behind it.
@@ -67,13 +73,30 @@ Website: https://matplotlib.org/stable/
  - Pandas Framework: Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team. Licensed under a BSD 3-Clause license, see [LICENSES/PANDAS.txt](LICENSES/PANDAS.txt) for details. \
 Website: https://github.com/pandas-dev/pandas
 
+ - Scikit-Learn Framework: Copyright (c) 2011, Pedregosa et al. Licensed under a BSD 3-Clause license, see [LICENSES/SCIKIT-LEARN.txt](LICENSES/SCIKIT-LEARN.txt) for details. \
+Website: https://github.com/scikit-learn/scikit-learn
+
+ - PyArrow Framework: Copyright (c) 2024, Richardson N, Cook I, Crane N, Dunnington D, François R, Keane J, Moldovan-Grünfeld D, Ooms J, Wujciak-Jens J, Apache Arrow (2024). arrow: Integration to 'Apache' 'Arrow'. Licensed under Apache 2.0 license, see [LICENSES/APACHE2.txt](LICENSES/APACHE2.txt) for details. \
+Websites: https://github.com/apache/arrow/, https://arrow.apache.org/docs/r/.
 
 
+### EDrewcated Guesser License
+<img src="Docs/images/agplv3-with-text-162x68.png" alt="AGPL3 logo, Free as in Freedom." width="100"/> 
 
-## More documentation goes here!
-As always, this is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `app/generatedfiles/error.log` with a timestamp.
+Copyright (C) 2024, Drew Wingfield
 
-Good luck debugging!
+EDrewcated Guesser is licenced under the GNU Affero General Public License 
+as published by the Free Software Foundation, version 3.
 
-<br><br>
-All documentation and code is Copyright (c) 2024 Drew Wingfield unless otherwise mentioned. All rights reserved.
+EDrewcated Guesser is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program (in the COPPYING file). If not, see https://www.gnu.org/licenses/.
