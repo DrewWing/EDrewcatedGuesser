@@ -95,6 +95,9 @@ Copy [this spreadsheet](https://docs.google.com/spreadsheets/d/1VZYXmJQ7jPPnCTyC
 <img style="width:500px" src="images/GoogleSheetsShareWithServiceAccount.png">
 
 
+### Run the program
+By this point, the project should be correctly set up. Go on to [running the project](RunningTheProject.md) to run the project.
+
 
 ## Troubleshooting
 
