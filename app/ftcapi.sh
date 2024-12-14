@@ -5,6 +5,23 @@
 # by Drew Wingfield
 # started February 2024
 # forked from ftcapiv3 on Feb 26th, 2024
+#
+# Copyright (C) 2024, Drew Wingfield
+#
+# This script is part of EDrewcated Guesser by Drew Wingfield.
+# EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+# the terms of the AGNU Affero General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+# PURPOSE. See the AGNU Affero General Public License for more details.
+#
+# You should have received a copy of the AGNU Affero General Public License along with 
+# EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+#
+# See the documentation in the README.md file.
+#
 
 # This program uses the official FIRST API for match info
 # You can find more info on it here: https://frc-events.firstinspires.org/services/API

@@ -4,16 +4,40 @@
 # Started 2024/06/16
 # by Drew Wingfield
 #
-# This script is part of Drew Wingfield's EDrewcated Guesser.
-# It is licensed under the license found at LICENSE.txt.
+# Copyright (C) 2024, Drew Wingfield
+#
+# This script is part of EDrewcated Guesser by Drew Wingfield.
+# EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+# the terms of the AGNU Affero General Public License as published by the Free Software 
+# Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+# PURPOSE. See the AGNU Affero General Public License for more details.
+#
+# You should have received a copy of the AGNU Affero General Public License along with 
+# EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+#
 # See the documentation in the README.md file.
 #
 """
 A program that writes certain variables to a machine-readable file for other scripts in Drew Wingfield's FTCAPI program.
 
-This script is part of Drew Wingfield's EDrewcated Guesser.
-It is licensed under the license found at LICENSE.txt.
 See the documentation in the README.md file.
+
+Copyright (C) 2024, Drew Wingfield
+
+This script is part of EDrewcated Guesser by Drew Wingfield.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 Argument parsing with help from Michael Dorner on StackOverflow:
 https://stackoverflow.com/questions/4033723/how-do-i-access-command-line-arguments

@@ -12,9 +12,19 @@
     AUTHOR: Drew Wingfield
     VERSION: 48.0
     COPYRIGHT: 
-        This script is part of Drew Wingfield's EDrewcated Guesser.
-        It is licensed under the license found at LICENSE.txt.
-        See the documentation in the README.md file.
+        Copyright (C) 2024, Drew Wingfield
+
+        This script is part of EDrewcated Guesser by Drew Wingfield.
+        EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+        the terms of the AGNU Affero General Public License as published by the Free Software 
+        Foundation, either version 3 of the License, or (at your option) any later version.
+
+        EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+        WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+        PURPOSE. See the AGNU Affero General Public License for more details.
+
+        You should have received a copy of the AGNU Affero General Public License along with 
+        EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 .PARAMETER VenvName
             The (local) path to the directory of the Virtual Environment to use, as a string.
