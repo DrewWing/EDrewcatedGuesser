@@ -1,4 +1,21 @@
+#
+# -*- coding: utf-8 -*-
+# Correct Files
+# 
+# by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Provides unit tests validating file and script locations.
 
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+"""
 
 import unittest
 import os
@@ -42,5 +59,5 @@ class correctFileTest(unittest.TestCase):
 
 
     
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

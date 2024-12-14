@@ -1,17 +1,91 @@
+<#
+.SYNOPSIS
+    Gets match data from the FTC API, calculates statistics, and pushes data and predictions to the Google Sheets spreadsheet.
 
-# ftcapi.ps1
-# by Drew Wingfield
-# forked from ftcapiv4 on June 6th, 2024
-# because i guess i need to have windows support.
+.DESCRIPTION
+    Activates the Virtual Environment, gets content from the secrets.txt file.
+    Uses the FIRST Tech Challenge API to get a match schedule, match results, and rankings data for a certain event.
+    Then calls the python scripts to calculate the statistics. After that, it calls the python scripts to predict the match
+    outcomes and push the data to the Google Sheets spreadsheet.
+    Finally deactivates the Virtual Environment
+    
+    Forked from ftcapiv4.sh on June 6th, 2024
 
-# This program uses the official FIRST API for match info
-# You can find more info on it here: https://frc-events.firstinspires.org/services/API
+    AUTHOR: Drew Wingfield
+    VERSION: 48.0
+    COPYRIGHT: 
+        This script is part of Drew Wingfield's EDrewcated Guesser.
+        It is licensed under the license found at LICENSE.txt.
+        See the documentation in the README.md file.
 
-# Making REST API requests in Powershell with help from
-# https://www.reddit.com/r/PowerShell/comments/18dx1pp/intro_to_rest_api_with_powershell/
 
-# If you are having trouble with the virtualenvironment or python scripts just not running,
-# I suggest you check out https://stackoverflow.com/a/18713789
+.PARAMETER EventCode
+    A unique identifier for an FTC event, as a string. Usually relates to the region of the event.
+    For example:
+        "USTXCMPTESL" is the Texas Championship, Tesla division, in the United States.
+        "FTCCMP1FRAN" is the World Championship, Eliminations match 1, Franklin division.
+    
+    Defaults to "FTCCMP1FRAN"
+
+.PARAMETER DelaySeconds
+    The amount of seconds, as an integer, spent waiting between each cycle.
+    Defaults to 120
+
+.PARAMETER OneCycle
+    If true, do only one cycle of getting matches, calculating stats, and pushing data.
+    Defaults to false
+
+.PARAMETER DryRun
+    If true, do a dry run, where no scripts or API calls actually run, just the visual output. This is mainly a parameter for debug/development.
+    Defaults to false
+
+.PARAMETER rankingsonly
+    Get rankings data for event, then push rankings data to sheets. TODO: Revisit this parameter.
+    Defaults to false
+
+.PARAMETER ShowDebugText
+    Shows debug text relating to this script.
+    Defaults to false
+
+.PARAMETER NoAPICalls
+    If true, disables calls to the FTC API. This is mainly a parameter for debug use.
+    Defaults to false
+
+.PARAMETER FieldMode
+    Uses last calculations for global OPR stats, instead of calculating it. #TODO: Revisit this, find out whether it is needed or being used
+    Default false
+
+.PARAMETER DebugLevel
+    Debug level of python scripts, as an integer. Zero will produce no debug output,
+    and each rising number adds more debug print statements.
+    Defaults to 0
+
+.PARAMETER VenvDir
+    Uses the given path (local or absolute, as a string) for the Virutal Environment to use.
+    Defaults to ".venv"
+
+.PARAMETER SeasonYear
+    First year of the season, as a string or integer. For instance, the 2023-2024 school year is just "2023."
+    Defaults to "2023"
+
+.EXAMPLE
+    . ftcapi.ps1 -EventCode "FTCCMP1FRAN" -OneCycle -SeasonYear 2023
+
+.EXAMPLE
+    . ftcapi.ps1 -DelaySeconds 300 -VenvDir "C:\path_to_my_virtual_environment"
+
+
+.NOTES
+    This program uses the official FIRST Tech Challenge API for match info
+    You can find it here: https://ftc-events.firstinspires.org/services/API
+
+    Making REST API requests in Powershell with help from
+    https://www.reddit.com/r/PowerShell/comments/18dx1pp/intro_to_rest_api_with_powershell/
+
+    If you are having trouble with the virtualenvironment or python scripts just not running,
+    I suggest you check out https://stackoverflow.com/a/18713789
+
+#>
 
 
 #region setup
@@ -124,14 +198,14 @@ function GetMatches {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventmatches.json"
+                    -OutFile "app/generatedfiles/eventdata/event_matches.json"
     #$response | ConvertTo-Json -Depth 4
     #echo "Response: "
     #echo "$response"
     #Invoke-WebRequest `
     #    "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
     #    -InformationAction SilentlyContinue -WarningAction Continue `
-    #    -OutFile "$pathtoftcapi/eventdata/eventmatches.json" `
+    #    -OutFile "$pathtoftcapi/eventdata/event_matches.json" `
     #    "-X" -Method Get `
     #    -Headers  "$AuthorizationHeader"
     #echo "First curl request complete!"
@@ -139,7 +213,7 @@ function GetMatches {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/teams?EventCode=$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventteams.json"
+                    -OutFile "app/generatedfiles/eventdata/event_teams.json"
 
     # Get the event as a whole and put it into opr/all-events/EVENTCODE (needed for event-only OPR calculation)
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/matches/$EventCode" `
@@ -154,7 +228,7 @@ function GetRankings {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/rankings/$EventCode" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventrankings.json"
+                    -OutFile "app/generatedfiles/eventdata/event_rankings.json"
 }
 
 
@@ -163,12 +237,12 @@ function GetSchedule {
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/schedule/$($EventCode)?tournamentLevel=qual" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventschedule-qual.json"
+                    -OutFile "app/generatedfiles/eventdata/eventschedule_qual.json"
     
     Invoke-RestMethod -uri "https://ftc-api.firstinspires.org/v2.0/$SeasonYear/schedule/$($EventCode)?tournamentLevel=playoff" `
                     -Method Get -ContentType "application/json" `
                     -headers $AuthorizationHeader `
-                    -OutFile "app/generatedfiles/eventdata/eventschedule-playoff.json"
+                    -OutFile "app/generatedfiles/eventdata/eventschedule_playoff.json"
 }
 
 
@@ -264,7 +338,7 @@ if (($help -eq $true) -or ($h -eq $true)) {
 if ($rankingsonly -eq $true) {
     Write-Output "  Only getting and pushing rankings data."
     GetRankings
-    python "$pathtoftcapi/sheetsapi.py" rankings
+    python "$pathtoftcapi/sheets_api.py" rankings
     return 0
 }
 

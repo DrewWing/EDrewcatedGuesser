@@ -1,6 +1,5 @@
 # EDrewcated Guesser V48.0 (Alpha)
 ## by Drew Wingfield
-This is the README file.
 
 You may **not** earn money or monetize in any way from this program. It's not just my terms, it's also a part of the terms of using the official FTC API.
 
@@ -10,83 +9,27 @@ All versions of this software (and all of their code, documentation, assets, and
 I'm doing my best but am not a lawyer, please just use the latest published version under its own license.
 
 You can find the license [here](LICENSE.txt).
-The todo list is [here](todos.md)
-Also see the [Updates](Updates.md) page.
-
-## Running the Program
-### Windows
-Most of the time, you should be running the program `ftcapi.ps1`. \
-It is reccomended to use the `-h` argument to get familiar with the arguments.
+The todo list is [here](docs/todos.md).
+Also see the [Updates](docs/Updates.md) page.
 
 
-#### During Events
-During events, there are two really important parameters:
-   - `FieldMode`, a boolean which should be set to `True` during an event. See the below section for more info on what it does.
-   - `EventCode`, an alphanumeric code that FTC uses to keep track of their events. It is usually found in the URL of the ftc-events or ftc-scout website.
-
-Your typical configuration during an event with an event code of `FTCCMPFRAN1` is going to look something like this:
-```powershell
-. 'your_path_to_the_directory\ftcapi.ps1' -FieldMode $True -EventCode "FTCCMPFRAN1"
-```
-
-#### Between Events
-Between events, it's a good idea to rerun the program at least once with `FieldMode` set to `False`. This will enable updating the *global calculations* (more CPU taxing), which will be saved and used during the next event. It is reccomended to do this soon before the event (the `EventCode` doesn't matter for global statistics) to get the most up-to-date statistics on the teams.
-
-You can also add the flag `-OneCycle` to only perform one cycle and then terminate.
-
-A configuration between events might look something like this:
-```powershell
-. 'your_path_to_the_directory\ftcapi.ps1' -OneCycle -Fieldmode $False
-```
-
-### Linux
-**The current version of this program is broken, don't use it right now. It will be fixed... hopefully... sometime later...**
-To run the program after setting up the correct variables (see below), run the `ftcapi.sh` program, which kind of calls everything else. If you want to do anything other than the basics, you're going to have to dig a little deeper into the code. Use the `h` modifier to get the help menu.
-
-### MacOS
-Good luck haha. I've had enough trouble adding support for both Linux and Windows, so there's no way I'm going to spend another 2,000 hours attempting to add MacOS support.
-
-## Setting Up
-Please note that this software needs to be set up correctly to work. This should be configured automatically by `ftcapi.ps1` or `ftcapi.sh`.
-
-### Common Resources
-Certain variables in commonresources.py need to be set up correctly;
- - `EVENTCODE` (string) is configured before each event. It is the alphanumeric code that FTC uses to track their events. Ex: `USTXCMPTESL`
-
- - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your service account authentication key is stored.
-
- - `SPREADSHEET_ID` (string) is the ID of the google spreadsheet you want to push data to, found in the URL of the spreadsheet; https://docs.google.com/spreadsheets/d/spreadsheet_id_goes_here/edit. Ex: `1MoOvAGpCF_dbo-verZvakOPCE2XJQi5IMG24vWRL64o`
+---
+## Language Stats:
+<img src="./languages.png" alt="A graph describing the current language composition." width="512"/> 
+<!-- Created by linecounter.py -->
+<br>
 
 
-### The FTCAPI BASH Program
-In ftcapi.sh there are several necessary variables to configure;
- - `authorizationheader` (string) should be set to your authorization token for the FTC API. Ex: `"Authorization: Basic <your_token_goes_here>"`
-
- - `pathtoftcapi` should be similarly configured as in commonresources.py, except **without the trailing forwardslash.** Ex: `/home/wingfield/ftcapi-branch44-1`
-
- - `eventcode` (string) is configured before each event. It is the alphanumeric code that FTC uses to track their events. Ex: `USTXCMPTESL`
-
-## Files, their Purpose, and their Interactions
-### Commmon Resources (`commonresources.py`)
-The place where most constants and commonly used functions are stored. Pretty much every other python file draws from this. \
-Some examples are `red_x`, `green_check`, `PATH_TO_FTCAPI`, `PATH_TO_JOBLIB_CACHE`, and `get_json`.
-
-### Json Parse (`jsonparse.py`)
-Documentation goes here!
-
-### Sheets API (`sheetsapi.py`)
-Documentation goes here!
-
-### OPR Event (`OPRv4.py`)
-Documentation goes here!
+## Helpful Documentation Links
+ - [How to Set Up the Project (Start Here!)](docs/Setup.md)
+ - [Running the program](docs/RunningTheProject.md)
+   - During an event
+   - Outside of an event
+ - [Machine Learning Guide (advanced)](docs/MachineLearningGuide.md)
 
 
-## Machine Learning program.
-The machine learning algorithm is just fine on its own, and you should not retrain it unless you know what you are doing. \
-If you *are* retraining the algorithm, follow these steps.
-1. Run `update-dataset-global.sh` to gather the data (uses `opr/all-events`).
-2. Run `prepare-machinelearning.py` to process the data (creates `machinefile.csv`).
-3. Actually train the algorithm by running the `ml-test.py` program (uses `machinefile.csv`).
+## Contributing
+Add some text here mentioning conventions, PR templates, etc etc. TODO.
 
 
 ## Credits/Honorable Mentions

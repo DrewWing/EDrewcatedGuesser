@@ -3,10 +3,20 @@
 # __init__.py
 # Started 2024/08/20
 # by Drew Wingfield
+#
+# This script is part of Drew Wingfield's EDrewcated Guesser.
+# It is licensed under the license found at LICENSE.txt.
+# See the documentation in the README.md file.
+#
+"""
+Makes the required directories for the project.
 
-# This file is a part of Drew's FTCAPI project, and
-# all code is under the license found at LICENSE.txt unless otherwise
-# specified. See the README.md for more details.
+This script is part of Drew Wingfield's EDrewcated Guesser.
+It is licensed under the license found at LICENSE.txt.
+See the documentation in the README.md file.
+
+"""
+
 
 
 import os
