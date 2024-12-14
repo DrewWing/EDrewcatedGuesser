@@ -51,6 +51,8 @@ with open(".gitignore","r") as ignore_file:
 
 ignore_list = [line.replace("\n","") for line in ignore_list if line!="\n"]
 ignore_list = [line[:-1] if line[-1]=="/" else line for line in ignore_list]
+# Add duplicates of all items with backslashes for Windows support
+ignore_list += [line.replace("/","\\") for line in ignore_list] 
 
 # print("Ignore list:")
 # for i in ignore_list:
@@ -179,27 +181,37 @@ def pretty_percent_bars(percentage:float, total_chars:int =10)->str:
     result += "▱"*round(total_chars-len(result))
     return result
 
+def is_ignored(root:str, ignore_list:list)->bool:
+    for ignore_path in ignore_list:
+        if ignore_path in root:
+            return True
+        
+    return False
+
 
 print(info_i()+" Filtering files and directories...")
 matches = []
 for root, dirnames, filenames in os.walk(path_to_directory):
     # Excluding directories/files from os.walk with help from unutbu on StackOverflow:
     # https://stackoverflow.com/a/19859907/25598210
-    # print("BEFORE")
-    # print(f"root: {root}")
-    # print(f"dirnames: {dirnames}")
-    # print(f"filenames: {filenames}")
-    
-    dirnames[:] = [d for d in dirnames if d not in ignore_list]
-    filenames[:] = [f for f in filenames if f not in ignore_list]
-    # print("AFTER")
-    # print(f"root: {root}")
-    # print(f"dirnames: {dirnames}")
-    # print(f"filenames: {filenames}")
+    if not (is_ignored(root, ignore_list)):
+        # print(info_i()+" BEFORE") #DEBUG
+        # print(info_i()+f"    root: {root}")
+        # print(info_i()+f"    dirnames: {dirnames}")
+        # print(info_i()+f"    filenames: {filenames}")
+        dirnames[: ] = [d for d in dirnames if not is_ignored(d, ignore_list)]
+        filenames[:] = [f for f in filenames if not is_ignored(f, ignore_list)]
+        # print(info_i()+" AFTER") #DEBUG
+        # print(info_i()+f"    root: {root}")
+        # print(info_i()+f"    dirnames: {dirnames}")
+        # print(info_i()+f"    filenames: {filenames}")
 
-    for filename in filenames:
-        if filename.endswith(tuple(all_extensions)):
-            matches.append(os.path.join(root, filename))
+        for filename in filenames:
+            if filename.endswith(tuple(all_extensions)):
+                matches.append(os.path.join(root, filename))
+    
+    #else: #DEBUG
+    #    print(info_i()+f"Ignored root {root}")
 
 
 

@@ -64,6 +64,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
   - [ ] `[Tests]` `[Argparse]` Import tests fail due to argparse.
   - [ ] `[Sheets]` Implement version checking in Google Sheet (make sure sheet template is compatible with current software version)
+  - [X] ~~`[Code]` Line counter bug where gitignore items were not being ignored due to Windows using backslashes in their paths.~~
 
 ### Docs
   - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
