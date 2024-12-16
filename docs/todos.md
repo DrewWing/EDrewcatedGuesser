@@ -57,6 +57,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] Set up PR templates
   - [ ] Set up public permissions (PR permissions)
   - [ ] Create release (December 23rd)
+    - [ ] Add to changelog
   - [ ] Publication (December 24th)
     - [ ] Make repo public
     - [ ] Update my website
