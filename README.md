@@ -56,7 +56,7 @@ The Google Sheets API was implemented with lots of help from [their sample progr
 
 Thanks to viniciusarrud on GitHub in [this Joblib issue](https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714) for a solution to a particular bug involving pathing on Windows.
 
-The diagram `FTCAPI file diagram.drawio` (soon to be exported into an image and put in this doc) was generated using [Drawio](https://app.diagrams.net/) [24.7.7], made by JGraph, https://github.com/jgraph/drawio. \
+The diagram `FTCAPI file diagram.drawio` (soon to be exported into an image and put in the docs) was generated using [Drawio](https://app.diagrams.net/) [24.7.7], made by JGraph, https://github.com/jgraph/drawio. \
 I am not JGraph, this project is not by JGraph, and JGraph neither endorses me nor this project.
 
 ### External libraries

@@ -23,7 +23,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 2. Documentation
    1. Project Setup
    2. Running the Project
-   3. Training a New Algorithm (if implemented)
+   3. ~~Training a New Algorithm~~ (did not meet feature deadline, pushed back to post-release)
 3. Minor bugfixing
 4. polish
 
@@ -37,6 +37,13 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 **December 22nd:** Hard deadline of no commits (except to fix critical bugs). Attempt a fresh install, setup, and run.
 
 **December 24th:** Hard deadline of release.
+
+
+### Post-Release
+1. Re-evaluate priorities
+2. Make algorithm training usable
+3. Fix bugs
+
 
 ## To-Do Items
 
@@ -64,6 +71,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
     - Probably due to the team not playing matches within the last 30 days - fix and just replace with their respective all-time OPRs insted (requires re-training of machine learning algorithms)
   - [ ] `[Tests]` `[Argparse]` Import tests fail due to argparse.
   - [ ] `[Sheets]` Implement version checking in Google Sheet (make sure sheet template is compatible with current software version)
+  - [X] ~~`[Code]` Line counter bug where gitignore items were not being ignored due to Windows using backslashes in their paths.~~
 
 
 ### Licensing and Attribution 
@@ -97,9 +105,10 @@ Note that all tasks should be tagged `[license]` and `[critical]`.
 
 
 ### Docs
-  - [ ] `[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)
-  - [ ] `[Critical]` `[Readme]` `[Docs]` Update Readme file instructions, file names, and directory names to match current ones.
-  - [ ] `[Critical]` `[ReadMe]` Add documentation about `venvSetup.ps1` script.
+  - [X] ~~`[Critical]` `[Readme]` Add instructions to creating secrets.txt to the readme (authorizationheader needs to be no spaces or quotes)~~
+  - [X] ~~`[Critical]` `[Readme]` `[Docs]` Update Readme file instructions, file names, and directory names to match current ones.~~
+  - [ ] `[Critical]` `[Readme]` `[Docs]` Update Readme file to add contribution guidelines.
+  - [X] ~~`[Critical]` `[ReadMe]` Add documentation about `venvSetup.ps1` script.~~
   - [X] ~~`[Docs]` Reorganize this `todos.md` page and sort by category.~~
 
 
