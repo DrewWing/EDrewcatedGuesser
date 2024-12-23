@@ -85,17 +85,13 @@ Websites: https://github.com/apache/arrow/, https://arrow.apache.org/docs/r/.
 
 
 ### EDrewcated Guesser License
-<img src="Docs/images/agplv3-with-text-162x68.png" alt="AGPL3 logo, Free as in Freedom." width="100"/> 
+<img src="https://www.gnu.org/graphics/agplv3-with-text-162x68.png" alt="AGPL3 logo, Free as in Freedom." width="120"/> 
 
 Copyright (C) 2024, Drew Wingfield
 
-EDrewcated Guesser is licenced under the GNU Affero General Public License 
-as published by the Free Software Foundation, version 3.
+EDrewcated Guesser is licenced under the GNU Affero General Public License as published by the Free Software Foundation, version 3.
 
-EDrewcated Guesser is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 EDrewcated Guesser is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -104,3 +100,8 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program (in the COPPYING file). If not, see https://www.gnu.org/licenses/.
+
+
+No Large Language Models (LLMs), chatbots, or any other so-called "AI" tools were used to code, write, or otherwise create resources for EDrewcated Guesser. Apart from a few (cited) snippets from StackOverflow (and a few other places), EDrewcated Guesser was created by hand, from scratch.
+
+No Texas A&M University resources were used in the creation of EDrewcated Guesser.
