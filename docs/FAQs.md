@@ -1,5 +1,12 @@
 # Frequently Asked Questions
 
+## Why the name EDrewcated Guesser?
+This project started out as a simple scouting spreadsheet for team #12928, the LightSaders. It originally attempted to "guess" the outcome of matches based on the collective OPR of each team. Since my name is Drew, "EDrewcated Guesser" came pretty naturally.
+
+Of course this program is much more advanced. It calculates several timelines of each team's OPR, AutoOPR, and CCWM, and uses two separate machine learning algorithms (some might call this AI, but I don't) to predict matches with great accuracy.
+
+It also takes care of fetching and filling out the match schedule for you, which is an absolute pain to enter manually.
+
 
 ## I'm a noob and don't know what any of this means!
 A basic understanding of the command line is required to set up and run this project (PowerShell if on Windows, and BASH if on most Linux distros).

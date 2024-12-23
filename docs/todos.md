@@ -48,7 +48,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 ## To-Do Items
 
 ### GitHub
-  - [ ] Add name and description
+  - [X] ~~Add name and description~~
   - [ ] Add issue templates
   - [ ] Transfer to-do list?
     - [ ] Create Milestones
@@ -57,7 +57,9 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] Set up PR templates
   - [ ] Set up public permissions (PR permissions)
   - [ ] Create release (December 23rd)
+    - [ ] Switch all version references to new version
     - [ ] Add to changelog
+    - [ ] Commit using new version tag
   - [ ] Publication (December 24th)
     - [ ] Make repo public
     - [ ] Update my website
@@ -77,13 +79,13 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 ### Licensing and Attribution 
 Note that all tasks should be tagged `[license]` and `[critical]`.
-  - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and ReadMe
-    - [ ] Scripts in `app` folder
-    - [ ] `tests` folder
-    - [ ] `__init__.py`
-    - [ ] Update tests for new license statement.
+  - [X] ~~`[License]` `[Critical]` Update all files to include a reference to the license and ReadMe~~
+    - [X] ~~Scripts in `app` folder~~
+    - [X] ~~`tests` folder~~
+    - [X] ~~`__init__.py`~~
+    - [X] ~~Update tests for new license statement.~~
   
-  - [ ] `[License]` `[Critical]` Make sure licensing is correct for all packages used.
+  - [X] ~~`[License]` `[Critical]` Make sure licensing is correct for all packages used.~~
     - [X] ~~Update the `requirements.txt` to use only needed packages~~
       ```
       google-api-python-client>=2.119.0
@@ -156,11 +158,7 @@ Note that all tasks should be tagged `[license]` and `[critical]`.
   - [ ] `[Code]` Add markdown support for line  counter
   - [ ] `[Code]` Convert all Python scripts to be completely object-oriented, make master Python script replacing PowerShell/BASH scripts.
   - [ ] `[Code]` Add feature of ftcapi.ps1 to detect if .venv was selected but no .venv exists, and asks the user whether they would like the script to automatically create the venv for them using the venv creation script.
-  - [ ] `[License]` `[Critical]` Update all files to include a reference to the license and this file
-    - [ ] Scripts in `app` folder
-    - [ ] `tests` folder
-    - [ ] `__init__.py`
-  - [ ] `[OS Support]` `[Critical]` Linux support
+  - [ ] `[OS Support]` `[Future]` Linux support
     - [ ] Fix Linux BASH scripts
     - [ ] Make sure everything works on Linux
   - [X] ~~`[Code]` Update the `__all__` variable in `commonresources.py`.~~

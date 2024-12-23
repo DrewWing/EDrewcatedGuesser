@@ -2,7 +2,16 @@
 by Drew Wingfield
 
 ## About
-TODO: Put a sentence or two here generally describing the project.
+The EDrewcated Guesser software is aimed at real-time prediction of match outcomes for FIRST Tech Challenge using machine learning algorithms.
+
+Simply put, this software:
+  - Runs on your computer or laptop (Windows only at the moment), 
+  - Fetches live team and match data from the FTC API, 
+  - Calculates statistics such as OPR and CCWM, 
+  - Predicts match outcomes, and 
+  - Pushes the statistics and predictions to a Google Sheets spreadsheet.
+
+This software is a CLI intended for advanced users. If you don't know you way around the command line or aren't willing to set up a Google Cloud project, this software is not for you.
 
 You can find the license statement [here](LICENSE.txt) (The full GNU Affero General Public License is [here](COPYING)).
 The todo list is [here](docs/todos.md).
