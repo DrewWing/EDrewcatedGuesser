@@ -1,7 +1,7 @@
 # To-Dos
 This is the `todos.md` file. For more information, please read the [Readme](README.md).
 
-Items labeled `Critical` need to be fixed/completed before release, and should be listed before non-critical items.
+Items labeled `Critical` need to be fixed/completed before the next release, and should be listed before non-critical items.
 
 ## Upcoming Timeline
 <!-- ### November 2024
@@ -16,7 +16,7 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
    3. Training a New Algorithm (if implemented)
 4. Licensing -->
 
-### December 2024
+<!-- ### December 2024
 
 #### Priorities
 1. Licensing
@@ -36,7 +36,14 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 **December 22nd:** Hard deadline of no commits (except to fix critical bugs). Attempt a fresh install, setup, and run.
 
-**December 24th:** Hard deadline of release.
+**December 24th:** Hard deadline of release. -->
+
+
+### Release items
+  - [ ] Set up GitHub stuff
+  - [ ] Clone repo to new folder, run setup from scratch and verify it works
+  - [ ] Reread all documentation
+  - [ ] Release
 
 
 ### Post-Release
@@ -49,18 +56,18 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
 
 ### GitHub
   - [X] ~~Add name and description~~
-  - [ ] Add issue templates
+  - [X] ~~Add issue templates~~
   - [ ] Transfer to-do list?
-    - [ ] Create Milestones
-    - [ ] Create and assign tags
+    - [X] ~~Create Milestones~~
+    - [X] ~~Create and assign tags~~
     - [ ] Create Issues
   - [ ] Set up PR templates
   - [ ] Set up public permissions (PR permissions)
-  - [ ] Create release (December 23rd)
+  - [ ] Create release (December 24th)
     - [ ] Switch all version references to new version
     - [ ] Add to changelog
     - [ ] Commit using new version tag
-  - [ ] Publication (December 24th)
+  - [ ] Publication (December 25th)
     - [ ] Make repo public
     - [ ] Update my website
     - [ ] Announce release on all channels
@@ -134,11 +141,11 @@ Note that all tasks should be tagged `[license]` and `[critical]`.
 
 
 ### Files
-  - [ ] `[Files]` `[Critical]` Remove these files before release (dev tools or generally not needed)
-    - [ ] all packages.txt
-    - [ ] flushGeneratedFiles.ps1
-    - [ ] line_counter.py
-    - [ ] view_data.py?
+  - [ ] ~~`[Files]` `[WontFix]` Remove these files before release (dev tools or generally not needed)~~
+    - [ ] ~~all packages.txt~~
+    - [ ] ~~flushGeneratedFiles.ps1~~
+    - [ ] ~~line_counter.py~~
+    - [ ] ~~view_data.py?~~
   - [ ] `[Files]` Rename scripts to match their function better and update all references to those scripts.
   - [X] ~~`[Files]` Rename ml-test.py to something else more descriptive (and excluding the - symbol)~~
   - [X] ~~`[Files]` `[Docs]` Put all doc files (readme and updates) into a docs folder?~~
