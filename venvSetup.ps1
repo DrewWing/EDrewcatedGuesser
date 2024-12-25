@@ -10,7 +10,7 @@
     Created on September 20th, 2024
 
     AUTHOR: Drew Wingfield
-    VERSION: 48.0
+    VERSION: 49.0
     COPYRIGHT: 
         Copyright (C) 2024, Drew Wingfield
 

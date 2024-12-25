@@ -1,6 +1,6 @@
 # Stable Package Versions
 This is a list of the packages and their versions in the latest
-stable release (48.0). If you are running into problems with certain packages, these versions are guaranteed to work better.*
+stable release (49.0 Beta). If you are running into problems with certain packages, these versions are guaranteed to work better.*
 
 <!-- Copyright (C) 2024, Drew Wingfield
 

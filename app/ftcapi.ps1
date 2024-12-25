@@ -12,7 +12,7 @@
     Forked from ftcapiv4.sh on June 6th, 2024
 
     AUTHOR: Drew Wingfield
-    VERSION: 48.0
+    VERSION: 49.0
     COPYRIGHT: 
         Copyright (C) 2024, Drew Wingfield
 
@@ -115,7 +115,7 @@ param (
     [int]$SeasonYear = "2023" # First year of the season. For instance, the 2023-2024 school year is just "2023"
 )
 
-$version="48.0 Alpha"
+$version="49.0 Alpha"
 
 $currentLocation=Get-Location # The current location, should be the working directory
 

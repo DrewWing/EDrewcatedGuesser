@@ -18,6 +18,56 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 See the documentation in the README.md file. -->
 
+## 49.0 Beta
+December 25th, 2024
+#### Overview
+First version released to public.
+
+Many fixes, a license, revamped docs, and a better file system.
+
+#### Fixed Bugs
+  - Gitignore in all branches not ignoring .venv/ folder. Otherwise, VS Code says too many changes and won't show the git changes for any other branch.
+  - Line counter bug where gitignore items were not being ignored due to Windows using backslashes in their paths.
+  - Fixed a lot of bugs with bad pathing (now using `os.path.join` to navigate to specific folders)
+
+#### Files
+  - Renamed `ml-test.py` to `train_algorithm.py`
+  - Put all docs in the `docs` folder
+  - Add a generated files folder
+
+#### Licensing and Attribution
+  - Added the license
+  - Referenced licenses for all parent packages used
+  - Updated conventions, tests, and scripts to include license in header
+
+#### Docs
+  - Added instructions to creating secrets.txt to the ReadMe.
+  - Updated ReadMe
+    - Updated file instructions, file names, and directory names to match current ones.
+    - Added link to contribution guidelines.
+  - Added contribution guidelines
+  - Added setup docs
+  - Added running the project docs
+  - Added FAQs
+  - Added Conventions page
+    - Create standard variable naming, file naming, and code conventions
+  - Reorganized this `todos.md` page and sorted by category.
+
+#### Tests
+  - Added tests for new license headers in Python files
+  - Added tests for correct files in correct places
+
+
+#### Other
+  - Removed references to heatmap stuff (unused)
+  - Updated the `__all__` variable in `commonresources.py`
+  - Made the season year an input variable
+  - Uploaded to GitHub
+    - Added name and description
+    - Added issue and feature request templates
+    - Added milestones
+    - Added tags
+
 ## 48.0 Alpha
 August 24th, 2024
 #### Overview
