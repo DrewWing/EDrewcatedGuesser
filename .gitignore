@@ -9,6 +9,8 @@ __pycache__/
 app/generatedfiles/
 
 .vscode/
+.vs/
+
 .venv/
 
 venvSetup.log
