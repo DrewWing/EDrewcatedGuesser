@@ -1,6 +1,22 @@
 # Updates
 
-Remember to check out the [README](README.md) file
+Remember to check out the [README](README.md) file.
+
+<!-- Copyright (C) 2024, Drew Wingfield
+
+This document is part of EDrewcated Guesser by Drew Wingfield, found at https://github.com/DrewWing/EDrewcatedGuesser.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+
+See the documentation in the README.md file. -->
 
 ## 48.0 Alpha
 August 24th, 2024

@@ -1,0 +1,12 @@
+EDrewcated Guesser Contribution Guide
+
+
+As I am still pretty new at authoring an open-source project, I may be missing some things here.
+
+If you find a bug, have gone through documentation and the FAQs, and have not found it in the GitHub Issues or todos.md file, please submit a bug report in GitHub using the template.
+
+If you'd like to contribute, feel free to make a fork of the project and open a PR when you're ready. I may be busy with school, so only ping me if it's been at least a week and I haven't responded.
+
+Please see the docs/Conventions.md file for the style guide and more information on contributing.
+
+I am planning on adding a PR template soon.

@@ -2,6 +2,22 @@
 This is a list of the packages and their versions in the latest
 stable release (48.0). If you are running into problems with certain packages, these versions are guaranteed to work better.*
 
+<!-- Copyright (C) 2024, Drew Wingfield
+
+This document is part of EDrewcated Guesser by Drew Wingfield, found at https://github.com/DrewWing/EDrewcatedGuesser.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+
+See the documentation in the README.md file. -->
+
 Pip version 24.0
 
 Package                  | Version |

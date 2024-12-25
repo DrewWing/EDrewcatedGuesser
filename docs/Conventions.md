@@ -1,6 +1,21 @@
 # Conventions
 All of the informal rules for naming, whitespace, etc. for the entire project.
-Most of this is reminders for myself.
+
+<!-- Copyright (C) 2024, Drew Wingfield
+
+This document is part of EDrewcated Guesser by Drew Wingfield, found at https://github.com/DrewWing/EDrewcatedGuesser.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+
+See the documentation in the README.md file. -->
 
 ## Git
 ### Branches
@@ -18,12 +33,12 @@ Honestly, this should be changed later but that's the way it is right now.
 ### Naming Files
 Category | Naming | Example |
 -|-|-
-Python, CSV, Json | No uppercase. Underscores separate words if needed. | `python_settings.py`<br>`team_list_filtered.csv`
-Powershell | Camel Case, but first letter is lowercase. No word separators | `flushGeneratedFiles.ps1`
-Markdown* | Camel Case | `StablePackageVersions.md`
-Trained ML Models | If using Grid Search, start with `gs`. Then an abbreviated version of the model type (first letter capitalized). | `gsNeigh.pkl` or `gsSVC.pkl`
+Python, CSV, Json   | No uppercase. Underscores separate words if needed. | `python_settings.py`<br>`team_list_filtered.csv`
+Powershell          | Camel Case, but first letter is lowercase. No word separators | `flushGeneratedFiles.ps1`
+Markdown*           | Camel Case | `StablePackageVersions.md`
+Trained ML Models   | If using Grid Search, start with `gs`. Then an abbreviated version of the model type (first letter capitalized). | `gsNeigh.pkl` or `gsSVC.pkl`
 
-*Notable eceptions are the `README.md`, `COPYING`, `LICENSE.txt`, and `todos.md` files.
+*Notable eceptions are the `README.md`, `COPYING`, `LICENSE.txt`, `todos.md`, and files in `.github`.
 
 
 ## Markdown Files
@@ -84,7 +99,7 @@ A longer description of the script goes here, if necessary.
 ```
 Notice that this header does not contain a shebang, as all Python scripts should be run under the Virtual Environment (usually `.venv`).
 
-I'm working on learning the [docstrings](https://peps.python.org/pep-0257/) and will update this when I finish.
+<!-- I'm working on learning the [docstrings](https://peps.python.org/pep-0257/) and will update this when I finish. -->
 
 #### Imports
 All imports should be within a region defined by `#region <region name>` and `#endregion <region name>`. They should further be categorized by builtins, files from this project, then external modules. \
@@ -100,7 +115,7 @@ Functions should come next. They may be in their own region, or split up into su
 Classes can be before or after functions, they just have to be organized and in their own region.
 
 #### Procedural Code
-Code that is procedural in the script should be under the `Procedural` region. Code should be made as object-oriented as possible. Calling code via an `if __name__ == "__main__"` conditional is reccomended, allowing for other scripts to import parts of the given script without tons of code run every time.
+Code that is procedural in the script should be under the `Procedural` region. Code should be made as object-oriented as possible. Calling code via an `if __name__ == "__main__"` conditional is recommended, allowing for other scripts to import parts of the given script without tons of code run every time.
 
 ---
 
@@ -109,7 +124,7 @@ Generally just please adhere to [PEP 8](https://peps.python.org/pep-0008).
 
 Use double quotes `"` except for certain situations where Python can't handle it (strings within f-strings).
 
-Lines should be no longer than 5 billion characters long (haha TODO: decide this).
+Prioritize readability over short line length.
 
 Don't ever use `from some_package import *`.
 
@@ -118,13 +133,13 @@ As per [PEP 8](https://peps.python.org/pep-0008/#indentation), there will be 4 s
 
 
 #### Comments
-Comments should be capitalized properly and have a space between the # and the comment.\
+Comments should be capitalized properly and have a space between the # and the comment. \
 Example:
 ```python
 # Add the timestamp to the begining of the data
 data_to_push = add_timestamp(data_to_push)
 ```
-Exceptions are TODOs. Comments that are to-do should start with ```TODO: ``` immediately after the # sign.
+Exceptions are TODOs. Comments that are to-do should start with `#TODO: `(note the lack of space after `#`).
 
 
 ## PowerShell Code
@@ -218,11 +233,11 @@ All bash files should start with the following. Note the lack of a shebang as us
 
 
 ## Other Code/resources
-All other code, resources, or other files must contain at the top (or close to the top) of the file the following:
+All other code, resources, or other files must (if possible) contain at the top (or close to the top) of the file the following:
 ```
 Copyright (C) 2024, Drew Wingfield
 
-This [script/document/file] is part of EDrewcated Guesser by Drew Wingfield.
+This [script/document/file] is part of EDrewcated Guesser by Drew Wingfield, found at https://github.com/DrewWing/EDrewcatedGuesser.
 EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
 the terms of the AGNU Affero General Public License as published by the Free Software 
 Foundation, either version 3 of the License, or (at your option) any later version.

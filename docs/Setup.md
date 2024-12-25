@@ -1,9 +1,25 @@
 # How to Set Up the Project
 
-# <p style="color:orange"><u>**This Documentation is currently a WORK IN PROGRESS**</u></p>
+<!-- Copyright (C) 2024, Drew Wingfield
+
+This document is part of EDrewcated Guesser by Drew Wingfield, found at https://github.com/DrewWing/EDrewcatedGuesser.
+EDrewcated Guesser is free software: you can redistribute it and/or modify it under 
+the terms of the AGNU Affero General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later version.
+
+EDrewcated Guesser is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE. See the AGNU Affero General Public License for more details.
+
+You should have received a copy of the AGNU Affero General Public License along with 
+EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
+
+See the documentation in the README.md file. -->
+
+# <p style="color:orange"><u>**Note: This Documentation is currently a WORK IN PROGRESS**</u></p>
 
 ## Setting Up
-Please note that this software needs to be set up correctly to work. If any of the steps are followed incorrectly, this software may fail. If you run into any trouble, see the FAQs and the [Troubleshooting section](#Troubleshooting) below.
+Please note that this software needs to be set up correctly to work. If any of the steps are followed incorrectly, this software may fail. If you run into any trouble, see the [FAQs](FAQs.md) and the [Troubleshooting section](#Troubleshooting) below.
 
 ### Venv
 First of all, you must set up a Virtual Environment and install the required packages. The script `venvSetup.ps1` automatically does this for you.
@@ -57,7 +73,7 @@ The last step should have loaded you into the dashboard. In the left pane, click
 
 <img src="images/GoogleCloudCreateServiceAccount.png">
 Fill in the account name and description (optional). An ID will be automatically generated, but you can input it manually as well. This ID will be part of the email address of the service account. <br>
-My reccomondation is to name it something accurate like "SheetsWorker" or "GoogleSheetsData." Future you will thank you.
+It is recommended to name it something accurate such as "SheetsWorker" or "GoogleSheetsData." Future you will thank you.
 
 After clicking `Continue`, you will select a role. Select `Basic` -> `Viewer`, then hit `Continue`.
 If you know what you're doing, you may grant users access to the service account, but otherwise just hit `Done`.
@@ -69,22 +85,10 @@ If you know what you're doing, you may grant users access to the service account
 Create an API access key via `Keys` -> `Add Key` -> `Create New Key`. You want a `Json` type key.
 
 This will download a `.json` file, which you should rename to something convenient like `google-sheets-api-key.ignore.json` and place in the EDrewcated Guesser project folder.
-
-You should then modify `SERVICE_ACCOUNT_FILE` in `common_resources.py` to match the file name. <!-- TODO: update this when it's changed to being in secrets.txt  -->
-
 > **Warning:** This API key should be kept secret and not shared.
 > People who have that key have access to your Google Sheets and may mess stuff up. 
 
-
----
-
-### Common Resources
-<!-- TODO: Update this when it's changed to secrets.txt -->
-Certain variables in commonresources.py need to be set up correctly;
- - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your Service Account authentication key is stored.
-
- - `SPREADSHEET_ID` (string) is the ID of the google spreadsheet you want to push data to, found in the URL of the spreadsheet; https://docs.google.com/spreadsheets/d/spreadsheet_id_goes_here/edit. Ex: `1VZYXmJQ7jPPnCTyCnhFSYAuuTAymZbRimxe0GQYx_L4`
-
+You should then modify `SERVICE_ACCOUNT_FILE` in `common_resources.py` to match the new json file name. <!-- TODO: update this when it's changed to being in secrets.txt  -->
 
 ---
 
@@ -93,6 +97,15 @@ Copy [this spreadsheet](https://docs.google.com/spreadsheets/d/1VZYXmJQ7jPPnCTyC
 
 <img style="width:500px" src="images/GoogleCloudServiceAccountEmail.png">
 <img style="width:500px" src="images/GoogleSheetsShareWithServiceAccount.png">
+
+
+### Common Resources
+<!-- TODO: Update this when it's changed to secrets.txt -->
+Certain variables in commonresources.py need to be set up correctly;
+ - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your Service Account authentication key is stored. You should have set this already.
+
+ - `SPREADSHEET_ID` (string) is the ID of the google spreadsheet you want to push data to, found in the URL of the spreadsheet; https://docs.google.com/spreadsheets/d/spreadsheet_id_goes_here/edit. Ex: `1VZYXmJQ7jPPnCTyCnhFSYAuuTAymZbRimxe0GQYx_L4`
+  You should set this to your spreadsheet now.
 
 
 ### Run the program

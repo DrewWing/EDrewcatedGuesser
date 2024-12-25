@@ -103,8 +103,8 @@ else:
 DO_JOBLIB_MEMORY = True  # Used to be True
 
 # used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
-SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + "service-account-key-ftc-api-for-sheets-19d729dc80e8.json"  # TODO: Remove before publication
-SPREADSHEET_ID = "1KIox_wRJ0QdoUhu2oH1j6Q2Cj-mTO0PEnwTQ97-7wqY" #TODO: change this every event.
+SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + "YOUR_SERVICE_ACCOUNT_KEY_FILE_HERE.json"
+SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE"
 # A spreadsheet id is found in the URL of the given sheet:
 # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
 
