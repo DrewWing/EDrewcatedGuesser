@@ -49,10 +49,7 @@ import sys
 import os
 
 from common_resources import log_error, green_check, info_i, red_x, get_json, PATH_TO_FTCAPI, accepted_match_types
-
-from python_settings import PythonSettings
-settings = PythonSettings()
-
+from common_resources import DEBUG_LEVEL
 
 try:
     import pandas as pd
@@ -73,7 +70,7 @@ def get_team_stats(team_number) -> dict:
       - opr/opr_result_sorted.csv 
     """
     team_stats = {}
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+f"         [jsonparse.py][get_team_stats] Getting team stats for team #{team_number}")
     
     all_oprs = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"), index_col=False)
@@ -197,7 +194,7 @@ class EventMatches():
     
     def make_dataframe(self) -> pd.DataFrame:
         
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"         [jsonparse.py][EventMatches][make_dataframe] Making the dataframe with proper format (for the predictors)")
         # we need a dataframe with columns
         #redOPR,redAutoOPR,redCCWM,blueOPR,blueAutoOPR,blueCCWM,recentredOPR,recentredAutoOPR,recentredCCWM,recentblueOPR,recentblueAutoOPR,recentblueCCWM
@@ -240,7 +237,7 @@ class EventMatches():
 
         # Matchdata needs to be some kind of dataframe containing all matches in the given EventMatches object, 
         # and their respective calculated OPR, CCWM, AutoOPR, recentOPR, recentCCWM, and recentAutoOPR for each team
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"     [jsonparse.py][EventMatches][predict_outcomes] Predicting outcomes of matches for this EventMatches object.")
         
         matchdata = self.make_dataframe() # TODO: create a dataframe out of the matches
@@ -249,7 +246,7 @@ class EventMatches():
         #[["redOPR","redAutoOPR","redCCWM","blueOPR","blueAutoOPR","blueCCWM", "recentredOPR","recentredAutoOPR","recentredCCWM", "recentblueOPR", "recentblueAutoOPR", "recentblueCCWM"]]
         
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"     [jsonparse.py][EventMatches][predict_outcomes] Match data formatted. Now doing the actual predictions")
 
         predictions_per_predictor = []
@@ -261,10 +258,10 @@ class EventMatches():
             
             except ValueError as e:
                 log_error("[jsonparse.py][EventMatches][predict_outcomes] Match data is probably empty. This is NORMAL if no matches have been played. Full error info:"+str(e), level="WARN")
-                if settings.debug_level>0:
+                if DEBUG_LEVEL>0:
                     print(info_i()+" [jsonparse.py][EventMatches][predict_outcomes] Value error - This is NORMAL and fine if no matches played.")
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"     [jsonparse.py][EventMatches][predict_outcomes] Outcomes predicted. Returning results.")
 
         if inplace:
@@ -353,7 +350,7 @@ class EventSchedule():
 
     def make_dataframe(self):
         
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"         [jsonparse.py][EventSchedule][make_dataframe] Making the dataframe with proper format (for the predictors)")
         # we need a dataframe with columns
         #redOPR,redAutoOPR,redCCWM,blueOPR,blueAutoOPR,blueCCWM,recentredOPR,recentredAutoOPR,recentredCCWM,recentblueOPR,recentblueAutoOPR,recentblueCCWM
@@ -366,7 +363,7 @@ class EventSchedule():
         }
         counter = 0
         for match in self.matches_split:
-            if settings.debug_level > 3:
+            if DEBUG_LEVEL > 3:
                 print(f"counter: {counter}") #TODO remove
                 counter += 1
 
@@ -389,7 +386,7 @@ class EventSchedule():
             dic_thing["recentblueAutoOPR"].append( blue1["AutoOPR"] + blue2["recentAutoOPR"])
             dic_thing["recentblueCCWM"].append(    blue1["recentCCWM"] + blue2["recentCCWM"])
 
-        if settings.debug_level>3:
+        if DEBUG_LEVEL>3:
             print(info_i()+" dic_thing:")
             print(pd.DataFrame(dic_thing))
         
@@ -404,12 +401,12 @@ class EventSchedule():
         """
 
         # matchdata needs to be some kind of dataframe containing all matches in the given EventMatches object, and their respective calculated OPR, CCWM, AutoOPR, recentOPR, recentCCWM, and recentAutoOPR for each team
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"     [jsonparse.py][EventSchedule][predict_outcomes] Predicting outcomes of matches for this EventMatches object.")
         
         matchdata = self.make_dataframe()
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"     [jsonparse.py][EventSchedule][predict_outcomes] Match data formatted. Now doing the actual predictions")
 
         predictions_per_predictor = []
@@ -422,10 +419,10 @@ class EventSchedule():
             except ValueError as e:
                 if level!="playoff":
                     log_error("[jsonparse.py][EventSchedule][predict_outcomes] ValueError - Match data is probably empty. This is normal if no matches have been played. Full error info:"+str(e), level="WARN")
-                    if settings.debug_level>0:
+                    if DEBUG_LEVEL>0:
                         print(info_i()+" [jsonparse.py][EventSchedule][predict_outcomes] Value error - This is normal and fine if no matches played.")
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"     [jsonparse.py][EventSchedule][predict_outcomes] Outcomes predicted. Returning results.")
 
         if inplace:
@@ -778,33 +775,33 @@ def prepare_opr_calculation(
     specific_event_teams_list = []
 
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [jsonparse.py][prepare_opr_calculation] Starting to prepare opr calculation.")
         print(info_i()+"        specific_event="+str(specific_event))
         print(info_i()+"        specific_teams="+str(specific_teams))
         print(info_i()+"        specific_event_teams="+str(specific_event_teams))
-        print(info_i()+"        settings.debug_level="+str(settings.debug_level))
+        print(info_i()+"        DEBUG_LEVEL="+str(DEBUG_LEVEL))
 
 
     
     if specific_teams != None:
         specific_teams = [ str(i) for i in specific_teams]
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+"    [prepare_opr_calculation] Getting teams...")
     
     if specific_event==None:
         path_list = [ os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all-events", j) for j in [i for i in os.listdir(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all-events"))]]
 
     elif specific_event=="RECENT":
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             # event_matches.json is updated in ftcapiv3.sh, during the getmatches
             print(info_i() + "    [prepare_opr_calculation] Iterating through only event in event_matches.json")
         path_list = [os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_matches.json")]
         l = 1
     
     else:
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i() + "    [prepare_opr_calculation] Iterating through only one event with code "+str(specific_event))
         path_list = [os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events",str(specific_event).upper()+".json")]
         l = 1
@@ -817,7 +814,7 @@ def prepare_opr_calculation(
 
         eventcounter += 1
 
-        if settings.debug_level>2:
+        if DEBUG_LEVEL>2:
             print(green_check()+f"    Event {eventcounter}/{l} - {eventfilename}",end="            \r")
 
         #open the file json & extract matches from the event
@@ -885,7 +882,7 @@ def prepare_opr_calculation(
                 if (team["teamNumber"] not in specific_event_teams_list):
                     specific_event_teams_list.append(team["teamNumber"])
 
-                    if settings.debug_level>2:
+                    if DEBUG_LEVEL>2:
                         print(info_i()+"    Adding team #"+str(team["teamNumber"]))
         
         except Exception as e:
@@ -895,7 +892,7 @@ def prepare_opr_calculation(
     
 
     
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print("\n"+info_i()+"    Formatting matches_per_team_dic")
         print(info_i()+"    len(matches_per_team_dic.keys()): "+str(len(matches_per_team_dic.keys())))
     
@@ -910,7 +907,7 @@ def prepare_opr_calculation(
             matches_per_team_for_pandas["matches"].append(matches_per_team_dic[team])
 
     
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Creating pandas dataframe from matches_per_team_dic")
         print(info_i()+"    len(matches_per_team_for_pandas[\'teamNumber\']): "+str(len(matches_per_team_for_pandas["teamNumber"])))
         print(info_i()+"      specific_event_teams: "+str(specific_event_teams))
@@ -919,36 +916,36 @@ def prepare_opr_calculation(
     matches_per_team = pd.DataFrame(matches_per_team_for_pandas)
     
     if (specific_event_teams != None):
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"    Filtering pandas dataframe matches_per_team for only the teams in specific_event_teams_list")
             print(info_i()+"    Start shape of matches_per_team: "+str(matches_per_team.shape))
         
         matches_per_team = matches_per_team[matches_per_team["teamNumber"].isin( specific_event_teams_list)]
     
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    End shape of matches_per_team: "+str(matches_per_team.shape))
     
     #print(matches_per_team)
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(green_check()+"    Teams assembled. Writing all matches per team to file generatedfiles/matches_per_team.csv...       ") #TODO: Replace with actual path from os.join
     
     matches_per_team.to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","matches_per_team.csv"), index=False)
 
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(green_check()+"    Teams assembled. Writing all team numbers to file generatedfiles/team_list_filtered.csv...       ")
     
     matches_per_team["teamNumber"].to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","team_list_filtered.csv"), index=False)
 
     
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Creating pandas dataframe from all_matches_dic")
     
     all_matches_pd = pd.DataFrame(all_matches_dic)
 
     if specific_event_teams != None:
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"    Filtering pandas dataframe from all_matches_dic by teams in specific_event_teams_list")
             print(info_i()+"    Start shape of all_matches_pd: "+str(all_matches_pd.shape))
         
@@ -958,19 +955,19 @@ def prepare_opr_calculation(
             all_matches_pd["Blue1"].isin(specific_event_teams_list) |
             all_matches_pd["Blue2"].isin(specific_event_teams_list)
         ]
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"    End shape of all_matches_pd: "+str(all_matches_pd.shape))
             print(info_i()+"    Sorting pandas dataframe by actualStartTime")
             
     all_matches_pd.sort_values(by="actualStartTime", inplace=True)
     #print(all_matches_pd)
     
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(green_check()+"    Matches assembled. Writing all teams to file generatedfiles/all_matches.csv...       ")
     
     all_matches_pd.to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","all_matches.csv"), index=False)
 
-    if settings.debug_level>2:
+    if DEBUG_LEVEL>2:
         print(green_check()+f"    Wrote about {len(pd.unique(all_matches_pd['Red1']))} (unique in Red1) of teams out of {matchcounter} matches (matchcounter).")
         print(info_i()+f" [jsonparse.py][prepare_opr_calculation] Size of the actual all_matches_pd written: {all_matches_pd.size}")
         print(info_i()+f" [jsonparse.py][prepare_opr_calculation] Shape of the actual all_matches_pd written: {all_matches_pd.shape}")

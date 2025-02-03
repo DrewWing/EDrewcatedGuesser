@@ -29,14 +29,6 @@
         EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 
-.PARAMETER EventCode
-    A unique identifier for an FTC event, as a string. Usually relates to the region of the event.
-    For example:
-        "USTXCMPTESL" is the Texas Championship, Tesla division, in the United States.
-        "FTCCMP1FRAN" is the World Championship, Eliminations match 1, Franklin division.
-    
-    Defaults to "FTCCMP1FRAN"
-
 .PARAMETER DelaySeconds
     The amount of seconds, as an integer, spent waiting between each cycle.
     Defaults to 120
@@ -61,25 +53,12 @@
     If true, disables calls to the FTC API. This is mainly a parameter for debug use.
     Defaults to false
 
-.PARAMETER FieldMode
-    Uses last calculations for global OPR stats, instead of calculating it. #TODO: Revisit this, find out whether it is needed or being used
-    Default false
-
-.PARAMETER DebugLevel
-    Debug level of python scripts, as an integer. Zero will produce no debug output,
-    and each rising number adds more debug print statements.
-    Defaults to 0
-
 .PARAMETER VenvDir
     Uses the given path (local or absolute, as a string) for the Virutal Environment to use.
     Defaults to ".venv"
 
-.PARAMETER SeasonYear
-    First year of the season, as a string or integer. For instance, the 2023-2024 school year is just "2023."
-    Defaults to "2023"
-
 .EXAMPLE
-    . ftcapi.ps1 -EventCode "FTCCMP1FRAN" -OneCycle -SeasonYear 2023
+    . ftcapi.ps1 -OneCycle
 
 .EXAMPLE
     . ftcapi.ps1 -DelaySeconds 300 -VenvDir "C:\path_to_my_virtual_environment"
@@ -100,7 +79,6 @@
 
 #region setup
 param (
-    [string]$EventCode = "FTCCMP1FRAN", # FTCCMP1 !!! REMEMBER TO ALSO CHANGE IT IN COMMONRESOURCES.PY !!! - "USTXCMPTESL" for testing
     [float]$Delayseconds = 120,
     [switch]$help = $false,
     [switch]$h = $false,
@@ -109,10 +87,7 @@ param (
     [switch]$rankingsonly = $false,
     [switch]$ShowDebugText = $false,
     [switch]$NoApiCalls = $false,
-    [bool]$FieldMode = $true,
-    [int]$DebugLevel = 0, # Debug level of python scripts
-    [string]$VenvDir = ".venv", # The directory of virtual environment to use
-    [int]$SeasonYear = "2023" # First year of the season. For instance, the 2023-2024 school year is just "2023"
+    [string]$VenvDir = ".venv" # The directory of virtual environment to use
 )
 
 $version="49.0 Alpha"
@@ -125,7 +100,7 @@ if ($ShowDebugText -eq $true) {
     Write-Output "Now initializing correct directories"
 }
 
-python ".\__init__.py"
+python ".\__init__.py" # Creates required directories
 
 if ($ShowDebugText -eq $true) {
     Write-Output "Directories initialized. Now activating virtual environment."
@@ -134,8 +109,6 @@ if ($ShowDebugText -eq $true) {
 
 # Activate the virtual environment where we installed the required python packages (mostly google sheets api stuff).
 . "$VenvDir\scripts\activate.ps1" # NOTE: this is a windows-specific venv because of weird bugs in the other one.
-
-python "app/init_settings.py" -EventCode "$EventCode" -DebugLevel "$DebugLevel" -FieldMode "$FieldMode"
 
 if ($ShowDebugText -eq $true) {
     Write-Output "Virtual Environment activated. Starting..."

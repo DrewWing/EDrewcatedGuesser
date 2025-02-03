@@ -55,9 +55,7 @@ import pickle
 
 # Intraproject imports
 from common_resources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_ID, log_error
-
-from python_settings import PythonSettings
-settings = PythonSettings()
+from common_resources import DEBUG_LEVEL
 
 from json_parse import *
 
@@ -116,12 +114,12 @@ def build_credentials(credentials=None):
     Arguments:
     credentials -- Any existing credentials (default: None)
     """
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"[sheetsapi.py] [build_credentials] Starting to build credentials.")
     
     if not credentials or not credentials.valid:
         if credentials and credentials.expired and credentials.refresh_token:
-            if settings.debug_level>1:
+            if DEBUG_LEVEL>1:
                 print("[sheetsapi.py] [build_credentials] Credentials are expired. Refreshing.")
             
             log_error("[sheetsapi.py][build_credentials] I raised a UserWarning because Request() is not defined and I'm not sure why. This has to do with google api credentials validation. Please do not ignore this error.")
@@ -129,7 +127,7 @@ def build_credentials(credentials=None):
             #credentials.refresh(Request())
         
         else:
-            if settings.debug_level>1:
+            if DEBUG_LEVEL>1:
                 print(info_i()+"[sheetsapi.py] [build_credentials] Credentials are nonexistent. Using the service account file")
             
             
@@ -150,7 +148,7 @@ def build_credentials(credentials=None):
         #with open("token.json", "w") as token:
         #    token.write(creds.to_json())
 
-    elif settings.debug_level>1:
+    elif DEBUG_LEVEL>1:
         print(info_i()+"[sheetsapi.py] [build_credentials] Credentials already exist and are valid. Returning current credentials.")
 
     return credentials
@@ -175,7 +173,7 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
     range -- A string containing the range of cells to pull data from
     credentials -- Credentials built using the build_credentials() function
     """
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+f" [sheetsapi.py] [get_data] Getting data from range {range}...")
 
     try:
@@ -190,7 +188,7 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
         values = result.get("values", [])
 
         if not values:
-            if settings.debug_level>0:
+            if DEBUG_LEVEL>0:
                 print(info_i()+" [sheetsapi.py] [get_data] No data found. Returning None.")
 
             return None
@@ -203,7 +201,7 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
     except HttpError as err:
         log_error("[sheetsapi.py][get_data] HttpError while calling the Sheets API. Full Error: "+str(err))
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(red_x()+"[sheetsapi.py] [get_data] HTTPError occured! Printing error info...")
         print(err)
         raise err
@@ -218,12 +216,12 @@ def get_elims_matches(service, credentials):
     service -- A service object built via build()
     credentials -- Credentials built using the build_credentials() function
     """
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [sheetsapi.py][get_elims_matches] Getting matches in the elims combinations.")
     
     elims_data_raw = get_data(service, sheetid=SPREADSHEET_ID, range=MATCHES_READ_ELIMS_RANGE, credentials=credentials)
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py][get_elims_matches] Data recieved. Processing data...")
     
     elims_match_teams = {"Red1":[],"Red2":[],"Blue1":[],"Blue2":[]}
@@ -245,7 +243,7 @@ def get_elims_matches(service, credentials):
 
     elims_match_teams = pd.DataFrame(elims_match_teams)
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py][get_elims_matches] Data processed. and dataframed.")
         #print(elims_match_teams)
     
@@ -327,7 +325,7 @@ def push_data(service, sheetid: str, range: str, credentials, data):
         ]
     ]
     """
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py] [push_data] Pushing data to range {}...".format(range))
     
     try:
@@ -351,7 +349,7 @@ def push_data(service, sheetid: str, range: str, credentials, data):
             )
             .execute()
         )
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(f"{info_i()}     {result.get('updatedCells')} cells updated.")
         
         return result
@@ -360,7 +358,7 @@ def push_data(service, sheetid: str, range: str, credentials, data):
         log_error(f"[sheetsapi.py][push_data] Some HttpError occured! range={range}, sheetid={sheetid}, service={service}, Full error info:{error}")
         print(red_x()+" [sheetsapi.py][push_data] An error occurred!")
         print(red_x()+"    Some info:")
-        print(red_x()+"    debug_level:"+str(settings.debug_level))
+        print(red_x()+"    debug_level:"+str(DEBUG_LEVEL))
         print(red_x()+"    range:"+str(range))
         print(red_x()+"    sheetid:"+str(sheetid))
         print(red_x()+"    service:"+str(service))
@@ -398,10 +396,10 @@ def push_matches(service):
     service -- A service object built via build()
     """
     
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [sheetsapi.py][push_matches] Pushing matches data to sheets")
         
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"     Uses:")
         print(info_i()+"       - eventdata/event_matches.json")
         print(info_i()+"       - eventdata/eventschedule_qual.json")
@@ -424,7 +422,7 @@ def push_matches(service):
     predictors = [gsNeigh, gsSVC]
 
     # Predict the outcomes of the matches
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py][push_matches] Predicting matches.")
 
     event_object.predict_outcomes(          predictors=predictors, inplace=True)
@@ -437,7 +435,7 @@ def push_matches(service):
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push)
     
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" Pushing data")
 
     
@@ -447,7 +445,7 @@ def push_matches(service):
         data_to_push
     )
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(green_check()+" [sheetsapi.py] Done pushing matches data!")
 
 
@@ -461,10 +459,10 @@ def push_teams(service):
     Arguments:
     service -- A service object built via build()
     """
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [sheetsapi.py] Pushing teams data to sheets")
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Uses:")
         print(info_i()+"      - opr_result_sorted.csv")
         print(info_i()+"      - opr_recent_result_sorted.csv")
@@ -472,7 +470,7 @@ def push_teams(service):
     #
     # Write season-long OPR data
     #
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Writing season-long OPR data")
         
     write_to_range = TEAMS_WRITE_RANGE
@@ -481,7 +479,7 @@ def push_teams(service):
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Pushing data")
         
     # Push the data
@@ -494,7 +492,7 @@ def push_teams(service):
     #
     # Write event OPR data
     #
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Writing event OPR data")
         
     write_to_range = TEAMS_EVENT_WRITE_RANGE
@@ -502,12 +500,12 @@ def push_teams(service):
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Pushing data")
         
     # Push the data
     if len(data_to_push)==1:
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+"    There is no data for the event OPR! Pushing a timestamp with a message.")
             log_error("[sheetsapi.py][push_teams] No data exists for event OPR. This is normal if no match scores are out.",level="Info")
         data_to_push.append(["Event has no OPR data","Event has probably not started yet."])
@@ -521,7 +519,7 @@ def push_teams(service):
     #
     # Write recent OPR data
     #
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Writing recent OPR  data")
         
     write_to_range = TEAMS_RECENT_WRITE_RANGE
@@ -529,7 +527,7 @@ def push_teams(service):
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Pushing data")
     
     # push the data
@@ -538,7 +536,7 @@ def push_teams(service):
         data_to_push
     )
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(green_check()+" [sheetsapi.py] done pushing teams data!")
 
 
@@ -553,9 +551,9 @@ def push_rankings(service):
     Arguments:
     service -- A service object built via build()
     """
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [sheetsapi.py] Pushing rankings data to sheets")
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Uses:")
         print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.json"))
         print(info_i()+"    Creates:")
@@ -564,7 +562,7 @@ def push_rankings(service):
     #
     # Write event ranking data
     #
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Writing event ranking data")
         
     # from jsonparse, save the rankings dataframe as a csv
@@ -597,7 +595,7 @@ def push_rankings(service):
     
     
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Pushing data")
         
     # push the data
@@ -607,7 +605,7 @@ def push_rankings(service):
     )
 
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(green_check()+" [sheetsapi.py] done pushing rankings data!")
 
 
@@ -615,7 +613,7 @@ def push_elims_predictions(service):
     """
     Pushes the predictions for the elims based on the input predictions (DataFrame).
     """
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [sheetsapi.py][push_elims_predictions] Pushing elims prediction data to sheets.")
     
     # get the data
@@ -654,7 +652,7 @@ def push_elims_predictions(service):
          }
         )
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py][push_elims_predictions] Elims matches data recieved. Now loading models.")
 
     with open(os.path.join(PATH_TO_FTCAPI,"gsNeigh.pkl"), "rb") as f:
@@ -666,7 +664,7 @@ def push_elims_predictions(service):
     predictors = [gsNeigh, gsSVC]
 
     # Predict the outcomes of the matches
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py][push_elims_predictions] Predicting matches.")
 
     #     "schedule": [
@@ -707,7 +705,7 @@ def push_elims_predictions(service):
         for column in row:
             print(column, end=" | ")
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" Pushing data")
 
     #
@@ -722,7 +720,7 @@ def push_elims_predictions(service):
         data_to_push
     )
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(green_check()+" [sheetsapi.py] Done pushing matches data!")
 
 

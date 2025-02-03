@@ -58,15 +58,25 @@ import datetime
 import os
 import pathlib
 
-from python_settings import PythonSettings
-global_settings = PythonSettings()
+from dotenv import load_dotenv
 
-slash = ("\\" if "\\" in global_settings.path_to_ftcapi else "/") # support both forwardslash and backslash type paths
+load_dotenv() # Load the environment variables
 
-PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
 
-#region joblibpath
-PATH_TO_JOBLIB_CACHE = os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib")
+# Environment Variables
+PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", None) # The absolute path to the "app" directory within this project.
+DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
+EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
+FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
+
+# Google Sheets stuff
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI[:-4] + "ServiceAccountKey.json") # Used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
+SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID", "<placeholder Google Sheets Spreadsheet ID>") # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
+
+
+#region Joblib
+DO_JOBLIB_MEMORY = os.getenv("DO_JOBLIB_MEMORY", "True").lower() == "true"  # Used to be True
+PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib"))
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
@@ -79,34 +89,24 @@ if os.name == "nt":
     else:
         PATH_TO_JOBLIB_CACHE = "\\\\?\\" + PATH_TO_JOBLIB_CACHE
 
-#endregion joblibpath
+#endregion Joblib
 
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
-EVENTCODE = global_settings.event_code
 
 # TODO: make this and its correspondant in jsonparse all caps
 accepted_match_types = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
 
+# This is kind of dead code and needs to be replaced.
 # If using the windows machine (more powerful)
 if "win" in sys.platform:
     CRAPPY_LAPTOP  = False  # if True, inserts many more garbage collections to preserve RAM
     # Whether or not to calculate OPR based on all matches globally
 
-# Otherwise, assume we're using a less powerful linux machine
+# Otherwise, assume we're using a less powerful machine
 else:
     CRAPPY_LAPTOP  = True
     # Whether or not to calculate OPR based on all matches globally
-
-
-# whether or not to memorize functions using joblib.memory
-DO_JOBLIB_MEMORY = True  # Used to be True
-
-# used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
-SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + "YOUR_SERVICE_ACCOUNT_KEY_FILE_HERE.json"
-SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE"
-# A spreadsheet id is found in the URL of the given sheet:
-# https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
 
 
 
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     print(info_i()+"    Displaying constants and their values:")
     a = {
         "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
-        "EVENTCODE"       : EVENTCODE,
+        "EVENTCODE"       : EVENT_CODE,
         "PATH_TO_FTCAPI"  : PATH_TO_FTCAPI,
         "CRAPPY_LAPTOP"   : CRAPPY_LAPTOP,
         "DO_JOBLIB_MEMORY": DO_JOBLIB_MEMORY,

@@ -59,14 +59,12 @@ import os
 
 # Internal Imports
 import json_parse
-from common_resources import PATH_TO_FTCAPI, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENTCODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
+from common_resources import PATH_TO_FTCAPI, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENT_CODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY
+from common_resources import DEBUG_LEVEL, FIELD_MODE
 from common_resources import log_error, green_check, info_i, red_x, byte_to_gb, seconds_to_time
-from python_settings import PythonSettings
-
-settings = PythonSettings()
 
 
-if (settings.debug_level > 1):
+if (DEBUG_LEVEL > 1):
     print(green_check()+" [OPRv4.py] Internal and builtin imports complete")
     print(info_i()+"    Now importing external imports (pandas, numpy, joblib)")
 
@@ -90,13 +88,13 @@ try:
     if DO_JOBLIB_MEMORY:
         memory = joblib.Memory(PATH_TO_JOBLIB_CACHE, verbose=0)
 
-        if settings.debug_level > 0:
+        if DEBUG_LEVEL > 0:
             print(info_i()+f" [OPRv4py] Joblib memory set up (path {PATH_TO_JOBLIB_CACHE})")
     
     else:
         memory = None
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+f" [OPRv4py] Joblib memory disabled (DO_JOBLIB_MEMORY=False)")
     
 
@@ -114,12 +112,12 @@ except Exception as e:
 #endregion joblib
 
 
-if settings.debug_level>0:
+if DEBUG_LEVEL>0:
     print(green_check()+" [OPRv4.py] All imports successful.")
-    print(info_i()+f" [OPRv4.py] field_mode is {settings.field_mode}. Global calcs will {'' if (settings.field_mode) else 'NOT '}be run.")
+    print(info_i()+f" [OPRv4.py] field_mode is {FIELD_MODE}. Global calcs will {'' if (FIELD_MODE) else 'NOT '}be run.")
 
 
-if __name__ == "__main__" and settings.debug_level>0:
+if __name__ == "__main__" and DEBUG_LEVEL>0:
     print(info_i()+" [OPRv4.py] This program was called as __main__")
 
 
@@ -210,30 +208,30 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
     and each column representing a team. Ones for teams that participate, zeroes
     for teams that don't.
     """
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+" [OPRv4] Building Matrix M for teams in alliances.")
     
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+" [OPRv4][build_m] Arguments to build_m:")
         print(info_i()+"     load_m:"+str(load_m))
         print(info_i()+"     matches:\n"+str(matches))
-        print(info_i()+"     settings.debug_level:"+str(settings.debug_level))
+        print(info_i()+"     DEBUG_LEVEL:"+str(DEBUG_LEVEL))
         print(info_i()+"     teams:"+str(teams))
 
     if load_m:
-        if (settings.debug_level>1):
+        if (DEBUG_LEVEL>1):
             print(info_i()+" [OPRv4][build_m]  Loading matrix from file, not building it.")
             
         M = numpy.load(os.path.join(PATH_TO_FTCAPI,"generatedfiles","OPR-m.npy"))
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(green_check()+" [OPRv4][build_m]  Matrix M successfully loaded from file OPR-m.npy")
 
     else:
         #TODO: Possibly redo this section to make it one line?
         # Maybe create a dataframe full of zeroes and somehow one-line
         # add ones where applicable? Look into this.
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+" [OPRv4][build_m] load_m is false; manually building the matrix M.")
         
         M = []
@@ -243,7 +241,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         #for match in matches:
         for row in matches.itertuples(index=False):
             # Display progress
-            if (settings.debug_level>0) and (counter%10==0):
+            if (DEBUG_LEVEL>0) and (counter%10==0):
                 print(info_i() + f"    Match {counter}/{total_l}    {round(100*(counter/total_l), 2)}%   ", end="\r")
             counter += 1
             
@@ -270,7 +268,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         b  =None
         
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print() # add a linebreak to offset the \r printed in progress
         
         # Only enable for heavy debug - will spit out lots of stuff on the terminal
@@ -281,7 +279,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         # Matricize
         M = numpy.matrix(M, dtype=numpy.ubyte) # type uint8, Unsigned 8-bit integer (0-255)
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(info_i()+"M after matricizing:")
             print(M)
         
@@ -289,11 +287,11 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         # save the matrix to a file for later loading
         numpy.save(os.path.join(PATH_TO_FTCAPI,"generatedfiles","OPR-m"),M)
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         print(info_i()+"  M:")
         print(M)
         print()
-        if (settings.debug_level>3):
+        if (DEBUG_LEVEL>3):
             print(info_i()+"  Saving M to generatedfiles/M_debug.csv for debug purposes... (this could take a little bit if it is big)")
             numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"generatedfiles","M_debug.csv"), M, delimiter=",")
             print(green_check()+"  Saved.")
@@ -361,20 +359,20 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
     
     Inspired by this guide for OPR calculation: https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/
     """
-    if (settings.debug_level>0):
+    if (DEBUG_LEVEL>0):
         print(info_i()+"  [OPRv4.py][calculate_opr] Getting OPRs, Autos, and CCWMs")
     
-        if (settings.debug_level>1):
+        if (DEBUG_LEVEL>1):
             print(info_i()+"        Getting OPRs")
     
     OPRs = numpy.linalg.lstsq(M, Scores, rcond=None)[0]
 
-    if (settings.debug_level>1):
+    if (DEBUG_LEVEL>1):
         print(info_i()+"        Getting Autos")
     
     AUTOs = numpy.linalg.lstsq(M, Autos, rcond=None)[0]
 
-    if (settings.debug_level>1):
+    if (DEBUG_LEVEL>1):
         print(info_i()+"        Getting CCWMs")
 
     CCWMs = numpy.linalg.lstsq(M, Margins, rcond=None)[0]
@@ -387,11 +385,11 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     Takes the list of teams and the statistics dataframes and sorts all by OPR.
     Returns a sorted results pandas DataFame object.
     """
-    if (settings.debug_level>0):
+    if (DEBUG_LEVEL>0):
         print(info_i()+" [OPRv4][create_and_sort_stats] Sorting reuslts...")
 
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         print(info_i()+" [OPRv4][create_and_sort_stats] Creating sorted_results_pd")
     
         print(info_i()+"    Sizes of lists:")
@@ -411,7 +409,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         })
 
     except Exception as e:
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print(red_x()+" [OPRv4][create_and_sort_stats] Exception occured. Printing info for debug:")
             print("teamsList:"+str(teamsList))
             print("OPR:"+str(convertToList(OPRs)))
@@ -429,20 +427,20 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         log_error("    length of CCWMs: "+str(len(convertToList(CCWMs))))
         raise e
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         print(info_i()+"  | Stripping column strings of sorted_results_pd")
 
     # Strip the columns. Really I'm not sure why I do this but I found it somewhere
     # and they told me to do it, and it supposedly stops a few things from breaking.
     sorted_results_pd.columns=sorted_results_pd.columns.str.strip()
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         print(info_i()+"  | Sorting sorted_results_pd")
 
     # Actually sort the pandas results
     sorted_results_pd.sort_values(by="OPR", ascending=False, inplace=True)
 
-    if settings.debug_level>2:
+    if DEBUG_LEVEL>2:
         print(info_i()+"  | Done sorting sorted_results_pd. Now removing brackets.")
     # Remove the extra brackets
     try:
@@ -464,7 +462,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         log_error("                                        matches: "+str(matches))
         log_error("                                        teamsList: "+str(teamsList))
 
-        if settings.debug_level>1:
+        if DEBUG_LEVEL>1:
             print("[OPRv4][create_and_sort_stats] Exception occured while processing sorted_results_pd. Displaying debug info:")
             print("sorted_results_pd:")
             print(sorted_results_pd)
@@ -477,7 +475,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         print("\n\n\n\nn\n\n\n\n\n\n")
         raise e
         
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(green_check()+"  | create_and_sort_stats is done. Now returning sorted_results_pd")
 
     return sorted_results_pd
@@ -490,19 +488,19 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
     returns an error.
     """
     # Build M
-    if (DO_JOBLIB_MEMORY and settings.debug_level>0):
+    if (DO_JOBLIB_MEMORY and DEBUG_LEVEL>0):
         print(info_i()+"    build_m.check_call_in_cache (will func use joblib cache?) = "+str(build_m.check_call_in_cache(load_m, matches, teams=loadTeamNumbers())))
 
     M = build_m(load_m, matches, teams=loadTeamNumbers()) # Type numpy.matrix with ones and zeroes
 
-    if (settings.debug_level>0):
+    if (DEBUG_LEVEL>0):
         print()
         print(info_i()+" [OPRv4][do_all_opr_stuff]   Building Scores")
 
     # Build scores
     Scores, Autos, Margins = build_scores(matches)
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         print(green_check()+" [OPRv4][do_all_opr_stuff]  Scores, Autos, and Margins calculated. Displaying below:")
         print(info_i()+"Scores")
         print(Scores)
@@ -514,7 +512,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
         print(Margins)
         print()
 
-    if (settings.debug_level>1):
+    if (DEBUG_LEVEL>1):
         print(info_i()+" [OPRv4][do_all_opr_stuff] Debug info:")
         print(info_i()+"    M type: "+str(type(M)))
         print(info_i()+"    M:")
@@ -530,15 +528,15 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
     
     # This is the real intense operation...
     # Actually calculate the OPR
-    if (DO_JOBLIB_MEMORY and settings.debug_level>0):
+    if (DO_JOBLIB_MEMORY and DEBUG_LEVEL>0):
         print(info_i()+"    calculate_opr.check_call_in_cache (will func use joblib cache?) = "+str(calculate_opr.check_call_in_cache(M, Scores, Autos, Margins)))
 
     OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins)
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(green_check()+" Raw OPRs, AUTOs, and CCWMS calculated.")
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         print(green_check()+"  Displaying raw ones below:")
         print(info_i()+"OPRs")
         print(OPRs)
@@ -568,7 +566,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
             used_fallback = True
             CCWMs = numpy.zeros((len(teamsList), 1))
         
-        if (settings.debug_level>2) and (used_fallback):
+        if (DEBUG_LEVEL>2) and (used_fallback):
             print(green_check()+"  Fallback to zeroes used. Displaying new ones below:")
             print(info_i()+f"OPRs (shape {OPRs.shape})")
             print(OPRs)
@@ -580,7 +578,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
             print(CCWMs)
             print()
 
-    if settings.debug_level>1:
+    if DEBUG_LEVEL>1:
         print(info_i()+"    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)")
 
     OPRs  = OPRs.round(14)
@@ -588,7 +586,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
     CCWMs = CCWMs.round(14)
 
 
-    if (DO_JOBLIB_MEMORY and settings.debug_level>0):
+    if (DO_JOBLIB_MEMORY and DEBUG_LEVEL>0):
         print(info_i()+" create_and_sort_stats.check_call_in_cache (will func use joblib cache?) = "+str(create_and_sort_stats.check_call_in_cache(teamsList, OPRs, AUTOs, CCWMs)))
     
     
@@ -596,12 +594,12 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
     sorted_results_pd = create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs)
     
     # Now write to the csv file
-    if (settings.debug_level>0):
+    if (DEBUG_LEVEL>0):
         print(info_i()+f" Writing to the pandas csv file {output_file_path}...")
     
     sorted_results_pd.to_csv(output_file_path, index=False)
 
-    if (settings.debug_level>0):
+    if (DEBUG_LEVEL>0):
         print(green_check()+f" Saved to the csv file.")
 
 #endregion functions
@@ -613,7 +611,7 @@ if __name__ == "__main__":
     # any func that deals in files shouldn't be cached.
     if (DO_JOBLIB_MEMORY):
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" [OPRv4] DO_JOBLIB_MEMORY is True. Caching calculate_opr, build_m, and build_scores.")
 
         calculate_opr = memory.cache(calculate_opr)
@@ -621,11 +619,11 @@ if __name__ == "__main__":
         build_scores  = memory.cache(build_scores)
         create_and_sort_stats = memory.cache(create_and_sort_stats)
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(green_check()+" [OPRv4] Memory successfully cached.")
 
 
-    elif settings.debug_level>0:
+    elif DEBUG_LEVEL>0:
         print(info_i()+" [OPRv4] NOT doing joblib memory caching - the respective variable in commonresources is False.")
     #endregion Joblib memory
 
@@ -634,7 +632,7 @@ if __name__ == "__main__":
     # While in "field_mode" (during an event), global calcs take waaay to long.
     # We instead assume that the person was smart and ran a global calc session
     # very recently before the event, and use the previous global stats.
-    if settings.field_mode:
+    if FIELD_MODE:
         do_opr_for_all_time = True
         do_opr_event_only   = True
         do_opr_recent       = True
@@ -681,25 +679,25 @@ if __name__ == "__main__":
 
     if do_opr_global:
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" OPRv4.py")
             print(info_i()+"  --  --  --  --  --  --  --  --  --")
             print(info_i()+" Preparing for OPR calculation for global...")
             print(info_i())
 
         # Use all matches data (no specific_event)
-        json_parse.prepare_opr_calculation()  # specific_event=eventcode)
+        json_parse.prepare_opr_calculation()  # specific_event=event_code)
 
 
         # Load teams and matches from txt files
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" [OPRv4.py] Loading teams")
 
         teams   = loadTeamNumbers()  # Uses team_list_filtered.csv (created in jsonparse)
         matches = loadMatches()  # Uses all_matches.csv
 
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+"    Number of teams:"+str(len(teams)))
             print(info_i()+"    Calculating global OPR for all matches.")
 
@@ -712,19 +710,19 @@ if __name__ == "__main__":
 
 
     if do_opr_for_all_time:
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" OPRv4.py")
             print(info_i()+"  --  --  --  --  --  --  --  --  --")
             print(info_i()+" Preparing for OPR calculation (all-time OPR for teams in given event only)...")
             print(info_i())
 
         # for the first one, use all matches data
-        json_parse.prepare_opr_calculation(specific_event_teams=EVENTCODE)#specific_event=eventcode)
+        json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)#specific_event=event_code)
 
 
 
         # Load teams and matches from txt files
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" 1 Loading teams")
 
         teams   = loadTeamNumbers()
@@ -734,7 +732,7 @@ if __name__ == "__main__":
         matches = loadMatches(filter_by_teams=teams)
 
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+"Number of teams:"+str(len(teams)))
             print(info_i()+"Calculating all-time OPR for all matches.")
 
@@ -750,22 +748,22 @@ if __name__ == "__main__":
     # Now calculate RECENT OPR
     #
     #
-    #eventcode=sys.argv[-1]
+    #event_code=sys.argv[-1]
 
     if do_opr_recent:
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" OPRv4.py")
             print(info_i()+"  --  --  --  --  --  --  --  --  --")
             print(info_i()+" Preparing for OPR calculation recent only...")
             print(info_i())
 
         # for the first one, use all matches data
-        json_parse.prepare_opr_calculation(specific_event_teams=EVENTCODE)#specific_event=eventcode)
+        json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)#specific_event=event_code)
 
 
 
         # Load teams and matches from txt files
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" 1 Loading teams")
 
         teams   = loadTeamNumbers()
@@ -773,7 +771,7 @@ if __name__ == "__main__":
 
 
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+" Number of teams:"+str(len(teams)))
             print(info_i()+" Calculating recent OPR for all matches.")
 
@@ -791,11 +789,11 @@ if __name__ == "__main__":
     #
     if do_opr_event_only:
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             #print(green_check()+"Calculated OPR for all matches.")
             
             print(info_i()+"  --  --  --  --  --  --  --  --  --")
-            print(info_i()+" Preparing for OPR calculation with specific event code "+str(EVENTCODE))
+            print(info_i()+" Preparing for OPR calculation with specific event code "+str(EVENT_CODE))
             print(info_i()+" ")
 
 
@@ -804,12 +802,12 @@ if __name__ == "__main__":
         #  - specific_event (list) - returns only the data pertaining to the specified event code.
         #  - specific_teams (list) - filters all matches by the given teams
         #  - specific_event_teams (str) - returns data only for all teams in specified event code.
-        json_parse.prepare_opr_calculation(specific_event=EVENTCODE)
+        json_parse.prepare_opr_calculation(specific_event=EVENT_CODE)
 
         teams   = loadTeamNumbers() # load teams from matches_per_team.csv
         matches = loadMatches(filter_by_teams=teams)
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(info_i()+"Calculating OPR for matches within event...")
             print(info_i()+" 1 Loading teams")
         
@@ -822,7 +820,7 @@ if __name__ == "__main__":
             load_m  = False
         )
 
-        if settings.debug_level>0:
+        if DEBUG_LEVEL>0:
             print(green_check()+"Calculated OPR for event only.")
 
 
@@ -830,7 +828,7 @@ if __name__ == "__main__":
 
 
 
-    if settings.debug_level>0:
+    if DEBUG_LEVEL>0:
         print(info_i()+f" [OPRv4.py] Total OPRv4 program took {seconds_to_time(time.time()-starttime)}")
         print(green_check()+" [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheets_api.py")
 
