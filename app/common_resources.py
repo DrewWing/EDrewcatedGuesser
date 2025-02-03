@@ -68,6 +68,7 @@ PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", None) # The absolute path to the "app
 DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
 EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
 FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
+SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
 
 # Google Sheets stuff
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI[:-4] + "ServiceAccountKey.json") # Used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)

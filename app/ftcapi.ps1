@@ -94,6 +94,10 @@ $version="49.0 Alpha"
 
 $currentLocation=Get-Location # The current location, should be the working directory
 
+if ($DryRun -eq $true) {
+    Write-Output "DryRun is true."
+}
+
 if ($ShowDebugText -eq $true) {
     Write-Output "User parameters collected."
     Write-Output "Current location $currentLocation"
@@ -135,7 +139,6 @@ $AuthorizationHeader = @{authorization = "Basic $PersonalAccessToken"}
 if (($ShowDebugText -eq $true) -or ($true -eq $true)){
     Write-Output "Initial variables set."
     Write-Output "PersonalAccessToken is $PersonalAccessToken"
-    Write-Output "FieldMode is $FieldMode"
 }
 #endregion setup
 
@@ -297,7 +300,6 @@ function DisplayHelp {
     Write-Output "  DryRun        Do a dry run, where nothing actually runs, just the visual output (for debug/testing)."
     Write-Output "  NoAPICalls    Disables calls to the FTC API (for debug)."
     Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts. The info printed increases with the number."
-    Write-Output "  FieldMode <bool>  Default true, uses last calculations for global OPR stats, instead of calculating it."
     Write-Output "  VenvDir <str>     Uses the given path (local or absolute) for the parent directory of the used Virutal Environment."
     Write-Output "  SeasonYear <int>  First year of the season. For instance, the 2023-2024 school year is just '2023'"
 
