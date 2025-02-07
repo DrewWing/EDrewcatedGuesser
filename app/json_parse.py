@@ -674,16 +674,16 @@ def write_needed_events(season_events, texasonly=False):
 
 def write_needed_teams(use_opr=False):
     """
-    Gathers all the team IDs from ftcapi/all-events
+    Gathers all the team IDs from ftcapi/all_events
     and writes them to a file for later processing
     """
     allteams = []
     counter  = 0
     eventcounter = 0
     if (not use_opr):
-        thepath = os.path.join(PATH_TO_FTCAPI,"generatedfiles","all-events")
+        thepath = os.path.join(PATH_TO_FTCAPI,"generatedfiles","all_events")
     else:
-        thepath = os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all-events")
+        thepath = os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events")
     
     l=len(os.listdir(thepath))
 
@@ -751,7 +751,7 @@ def prepare_opr_calculation(
     """
     Prepares the OPR calculation and writes to all_matches.csv and matches_per_team.csv
     
-    Draws from opr/all-events (created when curling in the BASH/Powershell script)
+    Draws from opr/all_events (created when curling in the BASH/Powershell script)
     
     Arguments:
       - specific_event (str) - returns only the data pertaining to the specified event code.
@@ -761,10 +761,14 @@ def prepare_opr_calculation(
     
     matchcounter  = 0
     eventcounter  = 0
-    l=len(os.listdir(
-        (
-            os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all-events"))
-        ))
+    try:
+        l=len(os.listdir(
+            (
+                os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events"))
+            ))
+    except FileNotFoundError as e:
+        log_error("[json_parse.py][prepare_opr_calculation] generatedfiles/opr/all_events directory does not exist!",level="WARNING")
+        print(red_x()+"Warning: generatedfiles/opr/all_events directory does not exist.")
 
     matches_per_team_dic = {}
     all_matches_dic = {
@@ -791,7 +795,7 @@ def prepare_opr_calculation(
         print(info_i()+"    [prepare_opr_calculation] Getting teams...")
     
     if specific_event==None:
-        path_list = [ os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all-events", j) for j in [i for i in os.listdir(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all-events"))]]
+        path_list = [ os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events", j) for j in [i for i in os.listdir(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events"))]]
 
     elif specific_event=="RECENT":
         if DEBUG_LEVEL>0:

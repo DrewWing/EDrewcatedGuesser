@@ -172,7 +172,6 @@ def loadMatches(filter_by_teams: list = []):
     return all_matches
 
 
-
 def filter_dataframe_by_time(df: pd.DataFrame, days_before_now=None, start_date=None, end_date=None, days_before_end_date=None) -> pd.DataFrame:
     """
     Filters dataframe by time. Profided dataframe must have datetime column labeled as actualStartTime.
@@ -194,6 +193,31 @@ def filter_dataframe_by_time(df: pd.DataFrame, days_before_now=None, start_date=
     
     return df
 
+
+def cache_heavy_functions(
+        memory:joblib.Memory, 
+        calculate_opr_f, 
+        build_m_f, 
+        build_scores_f, 
+        create_and_sort_stats_f):
+    """
+    Turns all heavy functions into joblib memorized functions.
+    NOTE that memorized functions will not read or write to files, so
+    any func that deals in files shouldn't be cached.
+    Returns cached func versions of calculate_opr, build_m, build_scores, create_and_sort_stats
+    """
+    if DEBUG_LEVEL>0:
+        print(info_i()+" [OPRv4] DO_JOBLIB_MEMORY is True. Caching calculate_opr, build_m, and build_scores.")
+
+    calculate_opr_r = memory.cache(calculate_opr_f)
+    build_m_r       = memory.cache(build_m_f)
+    build_scores_r  = memory.cache(build_scores_f)
+    create_and_sort_stats_r = memory.cache(create_and_sort_stats_f)
+
+    if DEBUG_LEVEL>0:
+        print(green_check()+" [OPRv4] Memory successfully cached.")
+    
+    return calculate_opr_r, build_m_r, build_scores_r, create_and_sort_stats_r
 #endregion utils
 
 """ 
@@ -459,15 +483,15 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     except Exception as e:
         log_error("[OPRv4][create_and_sort_stats] Some other error occured while processing sorted_results_pd. Full error message: "+str(e))
         log_error("                                        sorted_results_pd: "+str(sorted_results_pd))
-        log_error("                                        matches: "+str(matches))
+        #log_error("                                        matches: "+str(matches))
         log_error("                                        teamsList: "+str(teamsList))
 
         if DEBUG_LEVEL>1:
             print("[OPRv4][create_and_sort_stats] Exception occured while processing sorted_results_pd. Displaying debug info:")
             print("sorted_results_pd:")
             print(sorted_results_pd)
-            print("matches:")
-            print(matches)
+            #print("matches:")
+            #print(matches)
         
         else:
             print("[OPRv4][create_and_sort_stats] Exception occured while processing sorted_results_pd. Set debug_level to 2 or more for full debug info.")
@@ -481,7 +505,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     return sorted_results_pd
 
 
-def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False, fallback=None):
+def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=loadTeamNumbers(), load_m=False, fallback=None):
     """
     Calculates OPR based on input matches (from load_matches), and saves the sorted results to the output filepath (csv).
     If fallback is set to the string 'zeroes', and there are empty dataframes, it will fill them with zeroes. Otherwise, it
@@ -491,7 +515,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
     if (DO_JOBLIB_MEMORY and DEBUG_LEVEL>0):
         print(info_i()+"    build_m.check_call_in_cache (will func use joblib cache?) = "+str(build_m.check_call_in_cache(load_m, matches, teams=loadTeamNumbers())))
 
-    M = build_m(load_m, matches, teams=loadTeamNumbers()) # Type numpy.matrix with ones and zeroes
+    M = build_m(load_m, matches, teams=teams) # Type numpy.matrix with ones and zeroes
 
     if (DEBUG_LEVEL>0):
         print()
@@ -548,7 +572,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
         print(CCWMs)
         print()
     
-    # Create the unsorted list of teams
+    # Initialize the unsorted list of teams
     teamsList = list(teams)
 
     if fallback=="zeroes":
@@ -604,24 +628,20 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, load_m=False,
 
 #endregion functions
 
-if __name__ == "__main__":
+def master_function(memory=memory):
+    global calculate_opr, build_m, build_scores, create_and_sort_stats
     #region Joblib memory
     # Turn all heavy functions into joblib memorized functions
     # NOTE that memorized functions will not read or write to files, so
     # any func that deals in files shouldn't be cached.
     if (DO_JOBLIB_MEMORY):
-
-        if DEBUG_LEVEL>0:
-            print(info_i()+" [OPRv4] DO_JOBLIB_MEMORY is True. Caching calculate_opr, build_m, and build_scores.")
-
-        calculate_opr = memory.cache(calculate_opr)
-        build_m       = memory.cache(build_m)
-        build_scores  = memory.cache(build_scores)
-        create_and_sort_stats = memory.cache(create_and_sort_stats)
-
-        if DEBUG_LEVEL>0:
-            print(green_check()+" [OPRv4] Memory successfully cached.")
-
+        calculate_opr, build_m, build_scores, create_and_sort_stats = cache_heavy_functions(
+            memory=memory,
+            calculate_opr_f=calculate_opr,
+            build_m_f=build_m,
+            build_scores_f=build_scores,
+            create_and_sort_stats_f=create_and_sort_stats
+        ) # Doesn't work non-locally
 
     elif DEBUG_LEVEL>0:
         print(info_i()+" [OPRv4] NOT doing joblib memory caching - the respective variable in commonresources is False.")
@@ -702,7 +722,8 @@ if __name__ == "__main__":
             print(info_i()+"    Calculating global OPR for all matches.")
 
         do_all_opr_stuff(
-            matches=matches, 
+            matches=matches,
+            teams=teams, 
             output_file_path=os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_global_result_sorted.csv"),  
             load_m=False
         )
@@ -737,7 +758,8 @@ if __name__ == "__main__":
             print(info_i()+"Calculating all-time OPR for all matches.")
 
         do_all_opr_stuff(
-            matches=matches, 
+            matches=matches,
+            teams=teams,
             output_file_path=os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"),  
             load_m=False
         )
@@ -776,7 +798,8 @@ if __name__ == "__main__":
             print(info_i()+" Calculating recent OPR for all matches.")
 
         do_all_opr_stuff(
-            matches=matches, 
+            matches=matches,
+            teams=teams,
             output_file_path=os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_recent_result_sorted.csv"), 
             load_m=False,
             fallback="zeroes"
@@ -815,7 +838,8 @@ if __name__ == "__main__":
         #print("matches by recent:")
         #print(matches)
         do_all_opr_stuff(
-            matches = matches, 
+            matches = matches,
+            teams=teams,
             output_file_path = os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_event_result_sorted.csv"),  
             load_m  = False
         )
@@ -825,14 +849,15 @@ if __name__ == "__main__":
 
 
 
-
-
-
     if DEBUG_LEVEL>0:
         print(info_i()+f" [OPRv4.py] Total OPRv4 program took {seconds_to_time(time.time()-starttime)}")
         print(green_check()+" [OPRv4.py] Done!    Next probable step: to push the data to the sheets via sheets_api.py")
 
 
+if __name__ == "__main__":
+    master_function()
 
+elif DEBUG_LEVEL>0:
+    print(green_check()+"[OPR.py] Setup complete.")
 
 # -- End of file --

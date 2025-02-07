@@ -156,14 +156,14 @@ def get_matches ():
     save_response(response, "generatedfiles/eventdata/event_teams.json")
 
 
-    # Get the event as a whole and put it into opr/all-events/EVENTCODE (needed for event-only OPR calculation)
+    # Get the event as a whole and put it into opr/all_events/EVENTCODE (needed for event-only OPR calculation)
     response = requests.get(
         url=f"https://ftc-api.firstinspires.org/v2.0/{SEASON_YEAR}/matches/{EVENT_CODE}",
         headers=AUTHORIZATION_HEADER
     )
 
     #TODO: Detect invalid data and bad status codes and such.
-    save_response(response, f"generatedfiles/opr/all-events/{EVENT_CODE.replace('/','_')}.json")
+    save_response(response, f"generatedfiles/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
     
 
 
@@ -229,10 +229,15 @@ def cycle():
         print(info_i()+"  (Disabled because DRY_RUN is True)")
 
     else:
-        #TODO: Run OPR stuff here (basic OPR program)
-        raise NotImplementedError("TODO")
-
-        print(green_check()+"OPRs calculated.")
+        print(info_i()+"[__main__] Setting up OPR calculation...")
+        import OPR as opr_module
+        
+        print(info_i()+"[__main__] Performing OPR calculation...")
+        opr_module.master_function()        
+        print(green_check()+"[__main__] OPR calculations commplete.")
+        print(info_i()+"Deleting unused funtions")
+        del opr_module
+        print(green_check()+"Unused functions deleted.")
 
     if not DISABLE_API_CALLS:
         print(info_i()+"Pushing team data... ")
