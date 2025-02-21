@@ -233,15 +233,22 @@ deb_h = logging.FileHandler(
 deb_h.setLevel(logging.DEBUG)
 
 # Create formatters
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter("{asctime} | {name} | {levelname:9} | {message}",style="{")
+
+
 if DO_COLOR:
     console_formatter = logging.Formatter(
-        Colors.DARK_GRAY
-        + "%(asctime)s"
-        + Colors.DARK_GRAY 
-        + " - "
-        + Colors.END
-        + "%(name)s - %(levelname)s - %(message)s")
+        ""
+            + Colors.GREEN
+            + "{asctime}"+ Colors.DARK_GRAY +" | "
+            + Colors.BLUE
+            + "{name}" + Colors.DARK_GRAY
+            + " | " + Colors.PURPLE
+            + "{levelname}"+Colors.DARK_GRAY+" | "+Colors.END
+            + "{message}", 
+        style="{",
+        datefmt="%H:%M:%S"
+        )
 else:
     console_formatter = formatter
 
@@ -262,7 +269,7 @@ logger.addHandler(deb_h)
 
 if __name__ == "__main__":
     logger.warning("common_resources.py was called as __main__, which should not happen!")
-    logger.info("    Displaying constants and their values:")
+    logger.info("Displaying constants and their values:")
     a = {
         "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         "EVENTCODE"       : EVENT_CODE,
@@ -276,7 +283,7 @@ if __name__ == "__main__":
         "sys.platform": sys.platform
     }
     for i in a.keys():
-        logger.info(info_i()+f"      - {i:<30} {str(type(a[i])):<15} = {a[i]}")
+        logger.info(f"  - {i:<30} {str(type(a[i])):<15} = {a[i]}")
 
 
 
