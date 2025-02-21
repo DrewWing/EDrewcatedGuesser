@@ -58,8 +58,9 @@ import datetime
 import os
 import pathlib
 
-from dotenv import load_dotenv
+import logging
 
+from dotenv import load_dotenv
 load_dotenv() # Load the environment variables
 
 
@@ -69,6 +70,7 @@ DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
 EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
 FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
 SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
+DO_COLOR    = os.getenv("DO_COLOR","true").lower() == "true"
 
 # Google Sheets stuff
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI[:-4] + "ServiceAccountKey.json") # Used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
@@ -108,7 +110,6 @@ if "win" in sys.platform:
 else:
     CRAPPY_LAPTOP  = True
     # Whether or not to calculate OPR based on all matches globally
-
 
 
 def get_json(path: str):
@@ -182,14 +183,6 @@ def byte_to_gb(bytes) -> float:
     return round((bytes / (10**9)), 4)
 
 
-def log_error(message: str, level="ERROR") -> None:
-    """
-    Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
-    """
-    with open(os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"), "a") as myfile:
-        myfile.write(f"[{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}][{level}!] "+str(message)+"\n")
-
-
 def seconds_to_time(seconds, roundto=3) -> str:
     
     minutes = int(seconds//60)
@@ -208,12 +201,68 @@ def seconds_to_time(seconds, roundto=3) -> str:
 
     else:
         return f"{minutes} minutes, {seconds_remainder} seconds"
-    
+
+
+
+#region Logging
+# With help from 
+# https://docs.python.org/3/howto/logging.html#logging-basic-tutorial
+# and https://stackoverflow.com/a/57205433/25598210
+# for logging
+
+# Set some settings for optimization and speed
+logging.logThreads = False
+
+
+# create logger
+logger = logging.getLogger("common_resources")
+logger.setLevel(logging.DEBUG)
+
+# create console handler
+cons_h = logging.StreamHandler()
+cons_h.setLevel(logging.INFO)
+
+# Create Error handler
+err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
+err_h.setLevel(logging.WARNING)
+
+# Create debug handler (overwrites to new file)
+deb_h = logging.FileHandler(
+    filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
+    mode="w")
+deb_h.setLevel(logging.DEBUG)
+
+# Create formatters
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+if DO_COLOR:
+    console_formatter = logging.Formatter(
+        Colors.DARK_GRAY
+        + "%(asctime)s"
+        + Colors.DARK_GRAY 
+        + " - "
+        + Colors.END
+        + "%(name)s - %(levelname)s - %(message)s")
+else:
+    console_formatter = formatter
+
+# Add formatters
+cons_h.setFormatter(console_formatter)
+err_h.setFormatter(formatter)
+deb_h.setFormatter(formatter)
+
+# Add handlers to logger
+logger.addHandler(cons_h)
+logger.addHandler(err_h)
+logger.addHandler(deb_h)
+
+#endregion Logging
+
+
 
 
 if __name__ == "__main__":
-    print(info_i()+"[commonresources] This file was called as __main__, which usually does not happen.")
-    print(info_i()+"    Displaying constants and their values:")
+    logger.warning("common_resources.py was called as __main__, which should not happen!")
+    logger.info("    Displaying constants and their values:")
     a = {
         "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         "EVENTCODE"       : EVENT_CODE,
@@ -227,7 +276,7 @@ if __name__ == "__main__":
         "sys.platform": sys.platform
     }
     for i in a.keys():
-        print(info_i()+f"      - {i:<30} {str(type(a[i])):<15} = {a[i]}")
+        logger.info(info_i()+f"      - {i:<30} {str(type(a[i])):<15} = {a[i]}")
 
 
 
