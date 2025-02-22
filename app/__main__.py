@@ -144,7 +144,6 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, "generatedfiles/eventdata/event_matches.json")
 
 
@@ -154,7 +153,6 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, "generatedfiles/eventdata/event_teams.json")
 
 
@@ -164,7 +162,6 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
     
 
@@ -176,7 +173,6 @@ def get_rankings():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/eventdata/event_rankings.json")
     
 
@@ -189,7 +185,6 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/eventdata/eventschedule_qual.json")
 
     # Playoffs
@@ -198,7 +193,6 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/eventdata/eventschedule_playoff.json")
 
 
@@ -227,8 +221,7 @@ def cycle():
 
     print(info_i()+"Calculating OPRs... ")
     
-    if True: #TODO: re-enable this
-        #if DRY_RUN:
+    if DRY_RUN:
         print(info_i()+"  (Disabled because DRY_RUN is True)")
 
     else:
