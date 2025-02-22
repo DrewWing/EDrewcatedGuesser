@@ -45,6 +45,7 @@ Replaces the old PowerShell and BASH scripts.
 
 # Standard Imports
 import os
+import sys
 import datetime
 import time
 import json
@@ -257,49 +258,18 @@ def cycle():
     last_update_display = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-
-# function DisplayHelp {
-#     # Display Help
-#     Write-Output "FTCAPI v$Version"
-#     Write-Output "by Drew Wingfield"
-#     Write-Output "  - Make sure to see the documentation in the README.md file"
-#     Write-Output "  - This program uses the official FIRST API for match info"
-#     Write-Output "    You can find it here: https://ftc-events.firstinspires.org/services/API"
-#     Write-Output ""
-#     Write-Output "Syntax: "
-#     Write-Output "  . ftcapifinal.sh -EventCode FTCCMP1FRAN"
-#     Write-Output "Parameters: "
-#     Write-Output "  EventCode [string] Use a specific event code"
-#     Write-Output "  h     Print this Help."
-#     Write-Output "  help  Print this Help."
-#     #printf "  T     Update the team stats. \n"
-#     Write-Output "  OneCycle      Do only one cycle of getting matches, calculating stats, and pushing data."
-#     Write-Output "  RankingsOnly  Get rankings data for event, then push rankings data to sheets."
-#     Write-Output "  DryRun        Do a dry run, where nothing actually runs, just the visual output (for debug/testing)."
-#     Write-Output "  NoAPICalls    Disables calls to the FTC API (for debug)."
-#     Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts. The info printed increases with the number."
-#     Write-Output "  VenvDir <str>     Uses the given path (local or absolute) for the parent directory of the used Virutal Environment."
-#     Write-Output "  SeasonYear <int>  First year of the season. For instance, the 2023-2024 school year is just '2023'"
-
-    #printf "V     Print software version and exit. \n\n"
-
-
 #endregion functions
 
-#region procedural
-# if (($help -eq $true) -or ($h -eq $true)) {
-#     DisplayHelp
-#     return 0
-# }
-
-
-# if ($rankingsonly -eq $true) {
-#     Write-Output "  Only getting and pushing rankings data."
-#     GetRankings
-#     python "$pathtoftcapi/sheets_api.py" rankings
-#     return 0
-# }
-
+# Display help
+if "help" in [arg.lower().replace("-","") for arg in sys.argv]:
+    print(f"EDrewcated Guesser v{__version__}")
+    print(f" by Drew Wingfield")
+    print( "This project can be found at https://github.com/DrewWing/EDrewcatedGuesser")
+    print( "For more information, please consult the README.md page.")
+    print( "Syntax:")
+    print( "    python3 app/__main__.py")
+    print( "This script takes no arguments, and instead uses environment variables.")
+    exit()
 
 
 if ONE_CYCLE_ONLY:
