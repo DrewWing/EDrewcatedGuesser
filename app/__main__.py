@@ -56,6 +56,7 @@ from dotenv import load_dotenv
 # Local Imports
 from common_resources import PATH_TO_FTCAPI, EVENT_CODE, SEASON_YEAR, log_error, green_check, red_x, info_i
 from common_resources import DEBUG_LEVEL, __version__
+import sheets_api
 
 
 #region setup
@@ -65,6 +66,7 @@ DELAY_SECONDS   = int(os.getenv("DELAY_SECONDS", 120)) # Seconds between each cy
 ONE_CYCLE_ONLY  = os.getenv("ONE_CYCLE_ONLY", "False").lower() == "true" # Bool, if true only does one cycle
 DRY_RUN         = os.getenv("DRY_RUN","False").lower() == "true"
 DISABLE_API_CALLS       = os.getenv("DISABLE_API_CALLS","False").lower() == "true"
+DISABLE_FTC_API_CALLS   = os.getenv("DISABLE_FTC_API_CALLS","False").lower() == "true"
 AUTHORIZATION_HEADER    = {"authorization":"Basic "+os.getenv("PERSONAL_ACCESS_TOKEN", "<placeholder personal access token>")}
 
 last_update = 0
@@ -208,7 +210,7 @@ def cycle():
 
     time.sleep(0.1)
 
-    if not DISABLE_API_CALLS:
+    if not(DISABLE_API_CALLS) and not(DISABLE_FTC_API_CALLS):
         print(info_i()+"Getting FTC Event data 1/3 - Matches")
         if not DRY_RUN: get_matches()
         
@@ -225,7 +227,8 @@ def cycle():
 
     print(info_i()+"Calculating OPRs... ")
     
-    if DRY_RUN:
+    if True: #TODO: re-enable this
+        #if DRY_RUN:
         print(info_i()+"  (Disabled because DRY_RUN is True)")
 
     else:
@@ -244,10 +247,16 @@ def cycle():
 
         if DRY_RUN:
             print(info_i()+"Disabled because DRY_RUN is True")
-        
         else:
-            #TODO Run sheets_api stuff here (teams argument)
-            raise NotImplementedError("TODO")
+            sheets_api.master_function(["teams"])
+
+        print(info_i()+"Pushing matches and rankings data...")
+
+        if DRY_RUN:
+            print(info_i()+"Disabled because DRY_RUN is True")
+        else:
+            sheets_api.master_function(["matches","rankings"])
+
 
     
     current_iteration += 1

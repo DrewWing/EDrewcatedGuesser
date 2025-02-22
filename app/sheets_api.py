@@ -48,7 +48,6 @@ Lots of help from https://github.com/googleapis/google-api-python-client/blob/ma
 
 #region Imports
 # Builtins
-import sys
 import datetime
 import pickle
 
@@ -726,41 +725,51 @@ def push_elims_predictions(service):
 
 #endregion pushes
 
+#region Procedural
+
+def master_function(arguments:list):
+    global credentials
+    global service
+
+    # Get the credentials
+    credentials = build_credentials()
+
+    # Build the service
+    service = build("sheets", "v4", credentials=credentials)
 
 
-# Get the credentials
-credentials = build_credentials()
+    if ("matches" in arguments):
+        push_matches(service)
 
-# Build the service
-service = build("sheets", "v4", credentials=credentials)
+    if ("elims" in arguments):
+        push_elims_predictions(service)
 
+    if ("teams" in arguments):
+        push_teams(service)
 
-#region arguments
-if ("matches" in sys.argv):
-    push_matches(service)
-
-if ("elims" in sys.argv):
-    push_elims_predictions(service)
-
-if ("teams" in sys.argv):
-    push_teams(service)
-
-if ("rankings" in sys.argv):
-    push_rankings(service)
+    if ("rankings" in arguments):
+        push_rankings(service)
 
 
-if ("help" in sys.argv) or ("-help" in sys.argv) or ("--help" in sys.argv):
-    print("   Sheetsapi.py")
-    print("   By Drew Wingfield")
-    print(" Usage: python3 sheetsapi.py [teams/matches/quiet/help]")
-    print(" If something is going wrong, check the id of the spreadsheet we are pushing data to.")
-    print("    quiet - Don\'t print output unless there is an error")
+    if ("help" in arguments) or ("-help" in arguments) or ("--help" in arguments):
+        print("   Sheetsapi.py")
+        print("   By Drew Wingfield")
+        print(" Usage: python3 sheetsapi.py [teams/matches/quiet/help]")
+        print(" If something is going wrong, check the id of the spreadsheet we are pushing data to.")
+        print("    quiet - Don\'t print output unless there is an error")
 
 
-elif ("matches" not in sys.argv) and ("teams" not in sys.argv) and ("rankings" not in sys.argv) and ("elims" not in sys.argv):
-    log_error("[sheetsapi.py] Sheetsapi.py either called without correct arguments or imported (you should not do that). sys.argv="+str(sys.argv))
-    raise Exception("\n\n\nYou must call sheetsapi.py with arguments! (matches and/or teams) - Please use the -help modifier to see the help menu\n\n\n\n\n\n\n\n\n\n")
+    elif ("matches" not in arguments) and ("teams" not in arguments) and ("rankings" not in arguments) and ("elims" not in arguments):
+        log_error("[sheetsapi.py] Sheetsapi.py either called without correct arguments or imported (you should not do that). sys.argv="+str(arguments))
+        raise Exception("\n\n\nYou must call sheetsapi.py with arguments! (matches and/or teams) - Please use the -help modifier to see the help menu\n\n\n\n\n\n\n\n\n\n")
 
-#endregion arguments
+
+
+if __name__ == "__main__":
+    import sys
+    master_function(sys.argv)
+
+
+#endregion Procedural
 
 # -- End of file --
