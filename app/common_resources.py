@@ -223,51 +223,55 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
 
-    # create console handler
-    cons_h = logging.StreamHandler()
-    cons_h.setLevel(logging.INFO)
+    if not logger.handlers:
+        # create console handler
+        cons_h = logging.StreamHandler()
+        cons_h.setLevel(logging.INFO)
 
-    # Create Error handler
-    err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
-    err_h.setLevel(logging.WARNING)
+        # Create Error handler
+        err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
+        err_h.setLevel(logging.WARNING)
 
-    if not(disable_debug):
-        # Create debug handler
-        deb_h = logging.FileHandler(
-                filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
-                mode=str("w" if flush_debug_log else "a")
-            )
-        deb_h.setLevel(logging.DEBUG)
+        if not(disable_debug):
+            # Create debug handler
+            deb_h = logging.FileHandler(
+                    filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
+                    mode=str("w" if flush_debug_log else "a")
+                )
+            deb_h.setLevel(logging.DEBUG)
 
-    # Create formatters
-    formatter = logging.Formatter("{asctime} | {name} | {levelname:9} | {message}",style="{")
+        # Create formatters
+        formatter = logging.Formatter("{asctime} | {name} | {levelname:9} | {message}",style="{")
 
 
-    if DO_COLOR:
-        console_formatter = logging.Formatter(
-            ""
-                + Colors.GREEN
-                + "{asctime}"+ Colors.DARK_GRAY +" | "
-                + Colors.BLUE
-                + "{name}" + Colors.DARK_GRAY
-                + " | " + Colors.PURPLE
-                + "{levelname}"+Colors.DARK_GRAY+" | "+Colors.END
-                + "{message}", 
-            style="{",
-            datefmt="%H:%M:%S"
-            )
+        if DO_COLOR:
+            console_formatter = logging.Formatter(
+                ""
+                    + Colors.GREEN
+                    + "{asctime}"+ Colors.DARK_GRAY +" | "
+                    + Colors.BLUE
+                    + "{name}" + Colors.DARK_GRAY
+                    + " | " + Colors.PURPLE
+                    + "{levelname}"+Colors.DARK_GRAY+" | "+Colors.END
+                    + "{message}", 
+                style="{",
+                datefmt="%H:%M:%S"
+                )
+        else:
+            console_formatter = formatter
+
+        # Add formatters
+        cons_h.setFormatter(console_formatter)
+        err_h.setFormatter(formatter)
+        if not(disable_debug): deb_h.setFormatter(formatter)
+
+        # Add handlers to logger
+        logger.addHandler(cons_h)
+        logger.addHandler(err_h)
+        if not(disable_debug): logger.addHandler(deb_h)
+
     else:
-        console_formatter = formatter
-
-    # Add formatters
-    cons_h.setFormatter(console_formatter)
-    err_h.setFormatter(formatter)
-    if not(disable_debug): deb_h.setFormatter(formatter)
-
-    # Add handlers to logger
-    logger.addHandler(cons_h)
-    logger.addHandler(err_h)
-    if not(disable_debug): logger.addHandler(deb_h)
+        logger.debug("[create_logger] Logger already has handlers. Skipping handler creation.")
 
     logger.debug("Initialized logger.")
 

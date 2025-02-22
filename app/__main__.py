@@ -48,6 +48,7 @@ import os
 import datetime
 import time
 import json
+import logging
 
 # Third-Party Imports
 import requests
@@ -322,6 +323,7 @@ else:
 
 
 logger.info("[__main__] Program has completed")
+logging.shutdown() # Flush all log buffers before exiting.
 #endregion procedural
 
 
