@@ -35,7 +35,8 @@ Currently this project is CLI only, but I'm considering adding a GUI in some lat
 ## I'm having trouble setting up and/or am getting errors while running.
 Please make sure you followed the documentation for each, and their respective troubleshooting sections.
 Most errors will be logged in the `app/generatedfiles/errors.log` file. You may also increase the debug level for more verbosity in the terminal.
-> Note: You may set the debug level by using the `DebugLevel` parameter. 0 produces no debug output, and each additional integer adds more debug print statements.
+> [!Tip]
+> You may set the debug level by using the `DebugLevel` parameter. 0 produces no debug output, and each additional integer adds more debug print statements.
 
 
 ## I followed all documentation and have troubleshooted, but still found a bug

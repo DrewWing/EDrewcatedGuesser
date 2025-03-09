@@ -16,9 +16,8 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 See the documentation in the README.md file. -->
 
-# <p style="color:orange"><u>**Note: This Documentation is currently a WORK IN PROGRESS**</u></p>
-
-> Note: It is recommended to `cd` into the project folder before running scripts.
+> [!Tip]
+> It is recommended to `cd` into the project folder before running scripts.
 
 ## Setting Up
 Please note that this software needs to be set up correctly to work. If any of the steps are followed incorrectly, this software may fail. If you run into any trouble, see the [FAQs](FAQs.md) and the [Troubleshooting section](#Troubleshooting) below.
@@ -26,7 +25,8 @@ Please note that this software needs to be set up correctly to work. If any of t
 ### Venv
 First of all, you must set up a Virtual Environment and install the required packages. If you are running Windows, the script `venvSetup.ps1` will automatically do this for you.
 
-> *Advanced*: You may change the location of the Virtual Environment with the `VenvName` flag.
+> [!Tip]
+> You may change the location of the Virtual Environment with the `VenvName` flag.
 
 
 ### Creating the `.env` File
@@ -60,7 +60,8 @@ Click on `Select a Project` in the top left, then `Create New Project`.
 
 Name your project something memorable, and <u>don't associate it with an organization.</u> Then hit `Create` and wait a second for it to load your new project.
 
-> Note: If you are having trouble creating the project or are getting permissions errors, make sure you are not using a school account.
+> [!Note]
+> If you are having trouble creating the project or are getting permissions errors, make sure you are not using a school account.
 
 <!-- <img style="width:500px" src="images/GoogleCloudNewProject.png" /> -->
 
@@ -82,8 +83,9 @@ If you know what you're doing, you may grant users access to the service account
 Create an API access key via `Keys` -> `Add Key` -> `Create New Key`. You want a `Json` type key.
 
 This will download a `.json` file, which you should rename to something convenient like `google-sheets-api-key.ignore.json` and place in the EDrewcated Guesser project folder.
-> **Warning:** This API key should be kept secret and not shared.
-> People who have that key have access to your Google Sheets spreadsheets. 
+> [!Caution] 
+> This API key should be kept secret and not shared.
+> People who have that key have access to your Google Sheets spreadsheets and may modify them. 
 
 You should then modify `SERVICE_ACCOUNT_KEY_PATH` in the `.env` file, replacing  `path/to/service/account/key.json` with the new json file path.
 

@@ -1,8 +1,8 @@
 # How to Run the Project
 
-# <p style="color:orange"><u>**Note: This Documentation is currently a WORK IN PROGRESS**</u></p>
 
-> Note: It is recommended to `cd` into the project folder before running scripts.
+> [!Tip]
+> It is recommended to `cd` into the project folder before running scripts.
 
 
 ## Running the Main Program
