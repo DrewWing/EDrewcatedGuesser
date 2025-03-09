@@ -24,13 +24,14 @@ See the documentation in the README.md file. -->
 The EDrewcated Guesser software is aimed at real-time prediction of match outcomes for FIRST Tech Challenge using machine learning algorithms.
 
 Simply put, this software:
-  - Runs on your computer or laptop (Windows only at the moment), 
-  - Fetches live team and match data and schedules from the FTC API, 
+  - Runs on your computer or laptop, 
+  - Fetches live team data, match data, and match schedules from the FIRST API, 
   - Calculates statistics such as OPR and CCWM, 
   - Predicts match outcomes, and 
   - Pushes the statistics and predictions to a Google Sheets spreadsheet.
 
-> Note: This software is a CLI intended for advanced users. If you don't know you way around the command line or aren't willing to set up a Google Cloud project, this software is not for you.
+> Note: This software is a CLI intended for advanced users. If you don't know you way around the command line or aren't willing to set up a Google Cloud project, this software is not for you. \
+> In the future, a local spreadsheet option will be available.
 
 You can find the license statement [here](LICENSE.txt) (The full GNU Affero General Public License is [here](COPYING)).
 The todo list is [here](docs/todos.md).

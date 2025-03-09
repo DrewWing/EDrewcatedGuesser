@@ -64,5 +64,5 @@ In addition, this project relies on the FIRST API (ruled by their [terms of serv
 > >
 > ...
 
-(The Terms of Service was referenced December 16th, 2024, using the February 1, 2021 version of the Terms)
+(The Terms of Service was referenced December 16th, 2024, using the February 1, 2021 version of the Terms, which is the most current version at that time)
 

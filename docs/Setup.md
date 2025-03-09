@@ -18,29 +18,26 @@ See the documentation in the README.md file. -->
 
 # <p style="color:orange"><u>**Note: This Documentation is currently a WORK IN PROGRESS**</u></p>
 
+> Note: It is recommended to `cd` into the project folder before running scripts.
+
 ## Setting Up
 Please note that this software needs to be set up correctly to work. If any of the steps are followed incorrectly, this software may fail. If you run into any trouble, see the [FAQs](FAQs.md) and the [Troubleshooting section](#Troubleshooting) below.
 
 ### Venv
-First of all, you must set up a Virtual Environment and install the required packages. The script `venvSetup.ps1` automatically does this for you.
+First of all, you must set up a Virtual Environment and install the required packages. If you are running Windows, the script `venvSetup.ps1` will automatically do this for you.
 
 > *Advanced*: You may change the location of the Virtual Environment with the `VenvName` flag.
 
 
-### Creating Secrets.txt
-#### Basic
+### Creating the `.env` File
+Copy `.env.template` into a new file called `.env`. This will be the configuration file for the project.
+
+
+#### FIRST API Token
 You will need to get an API token from FIRST.
 Go to [their website](https://ftc-events.firstinspires.org/services/API) and click `Register for API Access`. Fill out the form, and you should recieve a token in your email.
 
-
-Create a file called `secrets.txt` containing your FIRST API token. Format it as follows:
-```
-PersonalAccessToken=YOUR_TOKEN_GOES_HERE
-```
-
-> *Advanced*: Any variables in `secrets.txt` will be written into `ftcapi.ps1`, <u>after argument parsing</u> (will override arguments). 
-> This is a great way to semi-permanently set some arguments without passing them into the script every time. 
-
+Replace `YOUR_PERSONAL_ACCESS_TOKEN_HERE` with that token in the `.env` file.
 
 
 ### Google Cloud Service Worker
@@ -86,26 +83,26 @@ Create an API access key via `Keys` -> `Add Key` -> `Create New Key`. You want a
 
 This will download a `.json` file, which you should rename to something convenient like `google-sheets-api-key.ignore.json` and place in the EDrewcated Guesser project folder.
 > **Warning:** This API key should be kept secret and not shared.
-> People who have that key have access to your Google Sheets and may mess stuff up. 
+> People who have that key have access to your Google Sheets spreadsheets. 
 
-You should then modify `SERVICE_ACCOUNT_FILE` in `common_resources.py` to match the new json file name. <!-- TODO: update this when it's changed to being in secrets.txt  -->
+You should then modify `SERVICE_ACCOUNT_KEY_PATH` in the `.env` file, replacing  `path/to/service/account/key.json` with the new json file path.
 
 ---
 
 #### Set Up the Spreadsheet
 Copy [this spreadsheet](https://docs.google.com/spreadsheets/d/1VZYXmJQ7jPPnCTyCnhFSYAuuTAymZbRimxe0GQYx_L4/edit?usp=sharing) and share it with your newly created service account. This ensures that your Service Account can actually access the Google Sheets spreadsheet.
 
+Then modify `GOOGLE_SPREADSHEET_ID` in your `.env` file to the Spreadsheet ID, found in the URL of the spreadsheet: 
+```
+docs.google.com/spreadsheets/d/the_spreadsheet_id_is_here/edit. 
+```
+For instance, the Spreadsheet ID of the example spreadsheet is `1VZYXmJQ7jPPnCTyCnhFSYAuuTAymZbRimxe0GQYx_L4`.
+<br>
+
 <img style="width:500px" src="images/GoogleCloudServiceAccountEmail.png">
 <img style="width:500px" src="images/GoogleSheetsShareWithServiceAccount.png">
 
 
-### Common Resources
-<!-- TODO: Update this when it's changed to secrets.txt -->
-Certain variables in commonresources.py need to be set up correctly;
- - `SERVICE_ACCOUNT_FILE` (string) is the path to the .json file where your Service Account authentication key is stored. You should have set this already.
-
- - `SPREADSHEET_ID` (string) is the ID of the google spreadsheet you want to push data to, found in the URL of the spreadsheet; https://docs.google.com/spreadsheets/d/spreadsheet_id_goes_here/edit. Ex: `1VZYXmJQ7jPPnCTyCnhFSYAuuTAymZbRimxe0GQYx_L4`
-  You should set this to your spreadsheet now.
 
 
 ### Run the program
