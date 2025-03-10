@@ -121,14 +121,13 @@ def get_json(path: str):
             return json.load(thefile)  # output.json
     
     except Exception as e:
-        log_error( f"[commonresources.py][get_json] Some Error occured with getting json of path {path}."
+        logger.error( f"[get_json] Some Error occured with getting json of path {path}."
                     + f" Usually caused by an empty or malformed file. Raising this to the console. Full error message: {e}"
         )
         raise e
     
     #except json.decoder.JSONDecodeError as e:
-    #    print(red_x()+"  get_json JSONDecodeError on path "+str(path))
-    #    print()
+    #    logger.error("  get_json JSONDecodeError on path "+str(path))
     #    raise e
 
 # The Colors class was taken from rene-d (2018)
@@ -209,10 +208,6 @@ def seconds_to_time(seconds, roundto=3) -> str:
 # https://docs.python.org/3/howto/logging.html#logging-basic-tutorial
 # and https://stackoverflow.com/a/57205433/25598210
 # for logging
-
-def log_error(message, level): # TODO: Remove this when everything is using new logging system
-    raise NotImplementedError(message)
-
 
 def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False):
     # Set some settings for optimization and speed
