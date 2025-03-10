@@ -49,13 +49,11 @@ if __name__ == "__main__":
     print("         Importing...")
 
 from common_resources import PATH_TO_FTCAPI, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, get_json, red_x, green_check, info_i, byte_to_gb, seconds_to_time
+from common_resources import DEBUG_LEVEL
 
 
-from python_settings import PythonSettings
-settings = PythonSettings()
-
-if settings.debug_level>0:
-    print(red_x()+" !! settings.debug_level is greater than zero !!")
+if DEBUG_LEVEL>0:
+    print(red_x()+" !! DEBUG_LEVEL is greater than zero !!")
     print(info_i()+" This will likely cause tens of thousands of extra print statements from OPRv4.py and jsonparse.py")
     print(info_i()+" The reccomondation is to set it to zero in settings.config (this script will still output progress statements)")
     print(info_i()+" If you really want to continue, type YES. Otherwise, the program will exit.")
@@ -156,11 +154,11 @@ for index, match in all_matches_to_train_on.iterrows():
     #    exit()
     #endregion debug code
 
-    print(info_i()+f" Preparing match {index}/{total_shape[0]} ({ round(100*(index/total_shape[0]), 2) }%) - approx. {seconds_to_time(time_left, roundto=0)} left                      ", end=("\n" if settings.debug_level>1 else "\r"))
+    print(info_i()+f" Preparing match {index}/{total_shape[0]} ({ round(100*(index/total_shape[0]), 2) }%) - approx. {seconds_to_time(time_left, roundto=0)} left                      ", end=("\n" if DEBUG_LEVEL>1 else "\r"))
 
     date_of_match = match["actualStartTime"]
 
-    if settings.debug_level>4:
+    if DEBUG_LEVEL>4:
         print(" match:")
         print(match)
 
@@ -171,7 +169,7 @@ for index, match in all_matches_to_train_on.iterrows():
         match["Blue2"]
     ]
 
-    if settings.debug_level>4:
+    if DEBUG_LEVEL>4:
         print(" Date of match:")
         print(date_of_match)
         print(" only_the_teams_in_that_match:")
@@ -180,14 +178,14 @@ for index, match in all_matches_to_train_on.iterrows():
     # Filter the matches by teams and date
     filtered_matches_teams = filterMatchesByTeams(all_matches_to_train_on, only_the_teams_in_that_match)
     
-    if settings.debug_level>4:
+    if DEBUG_LEVEL>4:
         print(" Matches filtered by teams:")
         print(filtered_matches)
     
     filtered_matches = filter_dataframe_by_time(filtered_matches_teams, end_date=date_of_match)
     filtered_matches_recent = filter_dataframe_by_time(filtered_matches, end_date=date_of_match, days_before_end_date=NUMBER_OF_DAYS_FOR_RECENT_OPR)
 
-    if settings.debug_level>4:
+    if DEBUG_LEVEL>4:
         print(" Matches filtered by time:")
         print(filtered_matches)
 
@@ -197,7 +195,7 @@ for index, match in all_matches_to_train_on.iterrows():
     # that the OPRs, AutoOPRs, and CCWMS are in the resulting lists once calculated.
     M = build_m(False, filtered_matches, teams=only_the_teams_in_that_match) # NOTE that M is now type numpy.matrix
 
-    if (settings.debug_level >1):
+    if (DEBUG_LEVEL >1):
         print()
         print(info_i()+" [prepare-machinelearning.py] 4 Building Scores")
 
@@ -207,7 +205,7 @@ for index, match in all_matches_to_train_on.iterrows():
     # Build scores
     Scores, Autos, Margins = build_scores(filtered_matches)
 
-    if (settings.debug_level>3):
+    if (DEBUG_LEVEL>3):
         print(green_check()+"  Scores, Autos, and Margins calculated. Displaying below:")
         print(info_i()+"Scores")
         print(Scores)
@@ -219,7 +217,7 @@ for index, match in all_matches_to_train_on.iterrows():
         print(Margins)
         print()
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         # Convert all matrices from type list to type matrix using numpy
         print(info_i()+" Memory Update:")
         print(f"    |  - M (int8) - {M.nbytes}b or {byte_to_gb(M.nbytes)}GB - Sizeof {sys.getsizeof(M)} - M.size (# of elements) {M.size}")
@@ -228,18 +226,18 @@ for index, match in all_matches_to_train_on.iterrows():
         print("    |  - Margins - " + str(Margins.nbytes) + "b  - " + str(sys.getsizeof(Margins)))
 
     
-    if (settings.debug_level>3):
+    if (DEBUG_LEVEL>3):
         print(info_i()+"  Now using calculate_opr() to calculate OPRs, AUTOs, and CCWMs...")
     
     # This is the real RAM-intense operation...
     # Actually calculate the OPR
-    if (DO_JOBLIB_MEMORY and settings.debug_level>2):
+    if (DO_JOBLIB_MEMORY and DEBUG_LEVEL>2):
         print(info_i()+" calculate_opr.check_call_in_cache (will func use joblib cache?) = "+str(calculate_opr.check_call_in_cache(M, Scores, Autos, Margins)))
 
     OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins)
 
 
-    if (settings.debug_level>3):
+    if (DEBUG_LEVEL>3):
         print(green_check()+"  raw (unrounded) OPRs, AUTOs, and CCWMS calculated. Displaying below:")
         print(info_i()+"OPRs")
         print(OPRs)
@@ -251,7 +249,7 @@ for index, match in all_matches_to_train_on.iterrows():
         print(CCWMs)
         print()
 
-    if settings.debug_level>2:
+    if DEBUG_LEVEL>2:
         print(info_i()+"  Rounding OPRs, AUTOs, and CCWMs to 10 places (prevents extremely near-zero values such as 10^-16)")
 
     # Round each to 10 places
@@ -271,7 +269,7 @@ for index, match in all_matches_to_train_on.iterrows():
         CCWMs = [0, 0, 0, 0]
     
     
-    if settings.debug_level>3:
+    if DEBUG_LEVEL>3:
         print(" OPRs type:")
         print(type(OPRs))
         print(" and its string form")
@@ -286,7 +284,7 @@ for index, match in all_matches_to_train_on.iterrows():
     # that the OPRs, AutoOPRs, and CCWMS are in the resulting lists once calculated.
     M_recent = build_m(False, filtered_matches_recent, teams=only_the_teams_in_that_match) # NOTE that M is now type numpy.matrix
 
-    if (settings.debug_level >1):
+    if (DEBUG_LEVEL >1):
         print()
         print(info_i()+"    Building Scores")
 
@@ -296,7 +294,7 @@ for index, match in all_matches_to_train_on.iterrows():
     # Build scores
     RecentScores, RecentAutos, RecentMargins = build_scores(filtered_matches_recent)
 
-    if (settings.debug_level>3):
+    if (DEBUG_LEVEL>3):
         print(green_check()+"  Scores, Autos, and Margins calculated. Displaying below:")
         print(info_i()+"RecentScores")
         print(RecentScores)
@@ -308,7 +306,7 @@ for index, match in all_matches_to_train_on.iterrows():
         print(RecentMargins)
         print()
 
-    if (settings.debug_level>2):
+    if (DEBUG_LEVEL>2):
         # Convert all matrices from type list to type matrix using numpy
         print(info_i()+" Memory Update:")
         print(f"    |  - M_recent (int8) - {M_recent.nbytes}b or {byte_to_gb(M_recent.nbytes)}GB - Sizeof {sys.getsizeof(M_recent)} - M.size (# of elements) {M_recent.size}")
@@ -320,19 +318,19 @@ for index, match in all_matches_to_train_on.iterrows():
     # collect garbage to save RAM
     #gc.collect() #removed to reduce cycle times
     
-    if (settings.debug_level>3):
+    if (DEBUG_LEVEL>3):
         #print(info_i()+"  Garbage collected")
         print(info_i()+"  Now using calculate_opr() to calculate OPRs, AUTOs, and CCWMs...")
     
     # This is the real RAM-intense operation...
     # Actually calculate the OPR
-    if (DO_JOBLIB_MEMORY and settings.debug_level>2):
+    if (DO_JOBLIB_MEMORY and DEBUG_LEVEL>2):
         print(info_i()+" calculate_opr.check_call_in_cache (will func use joblib cache?) = "+str(calculate_opr.check_call_in_cache(M_recent, RecentScores, RecentAutos, RecentMargins)))
 
     RecentOPRs, RecentAUTOs, RecentCCWMs = calculate_opr(M_recent, RecentScores, RecentAutos, RecentMargins)
 
 
-    if (settings.debug_level>3):
+    if (DEBUG_LEVEL>3):
         print(green_check()+"  raw (unrounded) RecentOPRs, RecentAUTOs, and RecentCCWMS calculated. Displaying below:")
         print(info_i()+"RecentOPRs")
         print(RecentOPRs)
@@ -344,7 +342,7 @@ for index, match in all_matches_to_train_on.iterrows():
         print(RecentCCWMs)
         print()
 
-    if settings.debug_level>2:
+    if DEBUG_LEVEL>2:
         print(info_i()+"  Rounding RecentOPRs, RecentAUTOs, and RecentCCWMs to 10 places (prevents extremely near-zero values such as 10^-16)")
 
     # Round each to 10 places
@@ -364,7 +362,7 @@ for index, match in all_matches_to_train_on.iterrows():
         RecentCCWMs = [0, 0, 0, 0]
     
     
-    if settings.debug_level>3:
+    if DEBUG_LEVEL>3:
         print(" RecentOPRs type:")
         print(type(RecentOPRs))
         print(" and its string form")
@@ -404,7 +402,7 @@ for index, match in all_matches_to_train_on.iterrows():
     new_matches_to_train_on["recentblueCCWM"   ].append(RecentCCWMs[2] + RecentCCWMs[3])
     new_matches_to_train_on["whoWon"].append(whowon)
 
-    if settings.debug_level>5:
+    if DEBUG_LEVEL>5:
         print(" new matches to train on:")
         print(new_matches_to_train_on)
 
@@ -418,18 +416,18 @@ training_data_matches = pd.DataFrame(new_matches_to_train_on)
 
 
 #region Saving
-if settings.debug_level>0:
+if DEBUG_LEVEL>0:
     print(info_i()+f" Training data matches is assembled with shape {training_data_matches.shape}")
     print(info_i()+" Now removing matches with zero OPR (the first matches before OPR was calculatable)")
 
-if settings.debug_level>3:
+if DEBUG_LEVEL>3:
     print("training_data_matches:")
     print(training_data_matches)
 
 
 training_data_matches = dataframe_remove_zeroes(training_data_matches, ["redOPR","blueOPR"])
 
-if settings.debug_level>0:
+if DEBUG_LEVEL>0:
     print(info_i()+f" Training data matches end shape {training_data_matches.shape}")
     print(info_i()+f" Now saving machine file as {os.path.join(PATH_TO_FTCAPI,"machine_file.csv")}")
 

@@ -84,7 +84,6 @@ class importsTest(unittest.TestCase):
             import common_resources
             import OPR
             import json_parse
-            import init_settings #TODO: this uses argparse, fix this test later
             import sheets_api #TODO: fix this one too
         
         except ImportError as e:
