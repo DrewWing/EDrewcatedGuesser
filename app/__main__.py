@@ -45,6 +45,7 @@ Replaces the old PowerShell and BASH scripts.
 
 # Standard Imports
 import os
+import sys
 import datetime
 import time
 import json
@@ -57,6 +58,7 @@ from dotenv import load_dotenv
 # Local Imports
 from common_resources import PATH_TO_FTCAPI, EVENT_CODE, SEASON_YEAR, create_logger
 from common_resources import __version__
+import sheets_api
 
 
 #region setup
@@ -71,6 +73,7 @@ DELAY_SECONDS   = int(os.getenv("DELAY_SECONDS", 120)) # Seconds between each cy
 ONE_CYCLE_ONLY  = os.getenv("ONE_CYCLE_ONLY", "False").lower() == "true" # Bool, if true only does one cycle
 DRY_RUN         = os.getenv("DRY_RUN","False").lower() == "true"
 DISABLE_API_CALLS       = os.getenv("DISABLE_API_CALLS","False").lower() == "true"
+DISABLE_FTC_API_CALLS   = os.getenv("DISABLE_FTC_API_CALLS","False").lower() == "true"
 AUTHORIZATION_HEADER    = {"authorization":"Basic "+os.getenv("PERSONAL_ACCESS_TOKEN", "<placeholder personal access token>")}
 
 last_update = 0
@@ -148,7 +151,6 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, "generatedfiles/eventdata/event_matches.json")
 
 
@@ -158,7 +160,6 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, "generatedfiles/eventdata/event_teams.json")
 
 
@@ -168,7 +169,6 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
     
 
@@ -180,7 +180,6 @@ def get_rankings():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/eventdata/event_rankings.json")
     
 
@@ -193,7 +192,6 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/eventdata/eventschedule_qual.json")
 
     # Playoffs
@@ -202,7 +200,6 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    #TODO: Detect invalid data and bad status codes and such.
     save_response(response, f"generatedfiles/eventdata/eventschedule_playoff.json")
 
 
@@ -214,7 +211,7 @@ def cycle():
 
     time.sleep(0.1)
 
-    if not DISABLE_API_CALLS:
+    if not(DISABLE_API_CALLS) and not(DISABLE_FTC_API_CALLS):
         logger.info("Getting FTC Event data 1/3 - Matches")
         if not DRY_RUN: get_matches()
         
@@ -250,10 +247,16 @@ def cycle():
 
         if DRY_RUN:
             logger.info("Disabled because DRY_RUN is True")
-        
         else:
-            #TODO Run sheets_api stuff here (teams argument)
-            raise NotImplementedError("TODO")
+            sheets_api.master_function(["teams"])
+
+        logger.info("Pushing matches and rankings data...")
+
+        if DRY_RUN:
+            logger.info("Disabled because DRY_RUN is True")
+        else:
+            sheets_api.master_function(["matches","rankings"])
+
 
     
     current_iteration += 1
@@ -261,49 +264,19 @@ def cycle():
     last_update_display = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-
-# function DisplayHelp {
-#     # Display Help
-#     Write-Output "FTCAPI v$Version"
-#     Write-Output "by Drew Wingfield"
-#     Write-Output "  - Make sure to see the documentation in the README.md file"
-#     Write-Output "  - This program uses the official FIRST API for match info"
-#     Write-Output "    You can find it here: https://ftc-events.firstinspires.org/services/API"
-#     Write-Output ""
-#     Write-Output "Syntax: "
-#     Write-Output "  . ftcapifinal.sh -EventCode FTCCMP1FRAN"
-#     Write-Output "Parameters: "
-#     Write-Output "  EventCode [string] Use a specific event code"
-#     Write-Output "  h     Print this Help."
-#     Write-Output "  help  Print this Help."
-#     #printf "  T     Update the team stats. \n"
-#     Write-Output "  OneCycle      Do only one cycle of getting matches, calculating stats, and pushing data."
-#     Write-Output "  RankingsOnly  Get rankings data for event, then push rankings data to sheets."
-#     Write-Output "  DryRun        Do a dry run, where nothing actually runs, just the visual output (for debug/testing)."
-#     Write-Output "  NoAPICalls    Disables calls to the FTC API (for debug)."
-#     Write-Output "  DebugLevel <int>  Sets the debug_level for all python scripts. The info printed increases with the number."
-#     Write-Output "  VenvDir <str>     Uses the given path (local or absolute) for the parent directory of the used Virutal Environment."
-#     Write-Output "  SeasonYear <int>  First year of the season. For instance, the 2023-2024 school year is just '2023'"
-
-    #printf "V     Print software version and exit. \n\n"
-
-
 #endregion functions
 
 #region procedural
-# if (($help -eq $true) -or ($h -eq $true)) {
-#     DisplayHelp
-#     return 0
-# }
-
-
-# if ($rankingsonly -eq $true) {
-#     Write-Output "  Only getting and pushing rankings data."
-#     GetRankings
-#     python "$pathtoftcapi/sheets_api.py" rankings
-#     return 0
-# }
-
+# Display help
+if "help" in [arg.lower().replace("-","") for arg in sys.argv]:
+    logger.info(f"EDrewcated Guesser v{__version__}")
+    logger.info(f" by Drew Wingfield")
+    logger.info( "This project can be found at https://github.com/DrewWing/EDrewcatedGuesser")
+    logger.info( "For more information, please consult the README.md page.")
+    logger.info( "Syntax:")
+    logger.info( "    python3 app/__main__.py")
+    logger.info( "This script takes no arguments, and instead uses environment variables.")
+    exit()
 
 logger.info("Setup complete.")
 
