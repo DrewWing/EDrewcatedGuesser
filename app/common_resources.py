@@ -49,7 +49,7 @@ __all__ = [
     "PATH_TO_FTCAPI", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
     "SPREADSHEET_ID"
 ]
-__version__ = "49.0 Beta"
+__version__ = "49.1 Beta"
 __author__ = "Drew Wingfield"
 
 import sys

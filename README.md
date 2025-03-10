@@ -1,4 +1,4 @@
-# EDrewcated Guesser V49.0 (Beta)
+# EDrewcated Guesser V49.1 (Beta)
 by Drew Wingfield
 
 [Source](https://github.com/DrewWing/EDrewcatedGuesser).
