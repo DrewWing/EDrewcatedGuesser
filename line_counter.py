@@ -144,8 +144,18 @@ class Language():
                     if not(line.startswith(self.comment_start) and self.comment_start!="") and not(is_block_comment):
                         self.lines_uncommented +=1
 
-                        if "print(" in line or "Write-Output" in line or line.startswith("echo "):
+                        if (   "print(" in line 
+                            or "Write-Output" in line 
+                            or line.strip().startswith("echo ") 
+                            or line.strip().startswith("logging.debug")
+                            or line.strip().startswith("logging.info")
+                            or line.strip().startswith("logging.warn")
+                            or line.strip().startswith("logging.error")
+                            or line.strip().startswith("logging.critical")
+                            or line.strip().startswith("logging.exception")
+                            ):
                             self.lines_output+=1
+                        
                         if " if " in line or line.startswith("if "):
                             self.lines_if+=1
                         if " for " in line or line.startswith("for "):
