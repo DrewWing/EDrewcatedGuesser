@@ -110,6 +110,22 @@ else:
     # Whether or not to calculate OPR based on all matches globally
 
 
+def make_required_directories():
+    """
+    Make directories required for the program to run if they don't already exist
+    """
+    # Make required directories if they don't exist already
+    for dir in [
+        f"app/generatedfiles/{SEASON_YEAR}",
+        #f"app/generatedfiles/{SEASON_YEAR}/joblibcache",
+        f"app/generatedfiles/{SEASON_YEAR}/opr",
+        f"app/generatedfiles/{SEASON_YEAR}/opr/all-events",
+        #f"app/generatedfiles/{SEASON_YEAR}opr/all-teams",
+        f"app/generatedfiles/{SEASON_YEAR}/eventdata"
+    ]:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+
 
 def get_json(path: str):
     """
