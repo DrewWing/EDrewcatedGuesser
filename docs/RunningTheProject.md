@@ -24,9 +24,9 @@ The program may be configured using variables in the `.env` file.
 | `LOG_LEVEL`   | INFO          | The log level for logger to use. May be `DEBUG`, `INFO`, `WARN`, `ERROR`, or `CRITICAL`. |
 | `PROJECT_PATH` | None | The absolute path to the `app` directory within this project. |
 | `SEASON_YEAR` | 2023 | A string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." |
-| `EVENT_CODE` | FTCCMP1FRAN | The alphanumeric event code FIRST uses to keep track of their events. |
-| `DO_JOBLIB_MEMORY` | True   | If True, enables heavy function caching. In general, you should leave this on unless joblib starts to throw errors. |
-| `JOBLIB_PATH` |  | The absolute path to the joblib cache. You should not change this. |
+| `EVENT_CODE` | FTCCMP1FRAN | The alphanumeric event code FIRST uses to keep track of their events, as a string. |
+| `DO_JOBLIB_MEMORY` | True   | If True, enables caching of heavy functions. In general, you should leave this on unless joblib starts to throw errors. |
+| `JOBLIB_PATH` | PROJECT_PATH/generatedfiles/joblibcache/joblib | The absolute path to the joblib cache, as a string. You shouldn't need to change this. |
 
 
 ### `__main__`-Specific Configuration Variables
@@ -44,7 +44,7 @@ The program may be configured using variables in the `.env` file.
 | `DISABLE_FTC_API_CALLS`  | False  | If True, disables all FIRST API calls. |
 | `GOOGLE_SPREADSHEET_ID` | \<placeholder Google Sheets Spreadsheet ID\> | The Google Sheets spreadsheet ID. |
 | `PERSONAL_ACCESS_TOKEN` | \<placeholder personal access token\> | Your FIRST API access token. |
-| `SERVICE_ACCOUNT_KEY_PATH` | | The path to your Google Cloud Service Worker account key. |
+| `SERVICE_ACCOUNT_KEY_PATH` | PROJECT_PATH/ServiceAccountKey.json | The path to your Google Cloud Service Worker account key. |
 
 
 ## Training Your Own Algorithm
