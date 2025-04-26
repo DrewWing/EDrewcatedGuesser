@@ -167,8 +167,7 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
     range -- A string containing the range of cells to pull data from
     credentials -- Credentials built using the build_credentials() function
     """
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug(f"[get_data] Getting data from range {range}...")
+    logger.debug(f"[get_data] Getting data from range {range}...")
 
     try:
         # Call the Sheets API

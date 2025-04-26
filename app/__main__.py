@@ -83,7 +83,7 @@ current_iteration = 1
 logger.info("EDrewcated Guesser by Drew Wingfield")
 logger.info("(c) 2025, Drew Wingfield")
 logger.info(f"Running version {__version__}")
-logger.info("User parameters collected. ")
+logger.info("Environment variables collected.")
 
 
 #endregion setup
@@ -222,14 +222,14 @@ def cycle():
         if not DRY_RUN: get_rankings()
 
     else:
-        logger.info("DISABLE_API_CALLS is True. Skipped getting FIRST API data.")
+        logger.info("DISABLE_API_CALLS or DISABLE_FTC_API_CALLS is True. Skipped getting FIRST API data.")
     
     time.sleep(0.2)
 
     logger.info("Calculating OPRs... ")
     
     if DRY_RUN:
-        logger.info("  (Disabled because DRY_RUN is True)")
+        logger.info("  (OPR calculation disabled because DRY_RUN is True)")
 
     else:
         logger.info("Setting up OPR calculation...")
@@ -238,19 +238,19 @@ def cycle():
         logger.info("Performing OPR calculation...")
         opr_module.master_function()        
         logger.info("OPR calculations commplete.")
-        logger.info("Deleting unused funtions")
+        logger.info("Deleting unused OPR funtions")
         del opr_module
-        logger.info("Unused functions deleted.")
+        logger.info("Unused OPR functions deleted.")
 
     if not DISABLE_API_CALLS:
-        logger.info("Pushing team data... ")
+        logger.info("Pushing team data to Google Sheets... ")
 
         if DRY_RUN:
             logger.info("Disabled because DRY_RUN is True")
         else:
             sheets_api.master_function(["teams"])
 
-        logger.info("Pushing matches and rankings data...")
+        logger.info("Pushing matches and rankings data to Google Sheets...")
 
         if DRY_RUN:
             logger.info("Disabled because DRY_RUN is True")
@@ -295,7 +295,8 @@ else:
             break
 
 
-logger.info("[__main__] Program has completed")
+logger.info("Program has completed.")
+logger.debug("Flushing log buggers before exit.")
 logging.shutdown() # Flush all log buffers before exiting.
 #endregion procedural
 

@@ -72,7 +72,7 @@ def get_team_stats(team_number) -> dict:
       - opr/opr_result_sorted.csv 
     """
     team_stats = {}
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.INFO):
+    if DEBUG_LEVEL>1:
         logger.info(f"[get_team_stats] Getting team stats for team #{team_number}")
     
     all_oprs = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"), index_col=False)
@@ -358,7 +358,7 @@ class EventSchedule():
         }
         counter = 0
         for match in self.matches_split:
-            if DEBUG_LEVEL > 3 and logger.isEnabledFor(logging.DEBUG):
+            if DEBUG_LEVEL > 3:
                 logger.debug(f"counter: {counter}") #TODO remove
                 counter += 1
 
@@ -873,7 +873,7 @@ def prepare_opr_calculation(
                 if (team["teamNumber"] not in specific_event_teams_list):
                     specific_event_teams_list.append(team["teamNumber"])
 
-                    if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
+                    if DEBUG_LEVEL>2:
                         logger.debug("    Adding team #"+str(team["teamNumber"]))
         
         except Exception as e:
@@ -916,20 +916,20 @@ def prepare_opr_calculation(
         logger.debug("    End shape of matches_per_team: "+str(matches_per_team.shape))
     
     #logger.debug(matches_per_team)
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
+    if DEBUG_LEVEL>1:
         logger.debug("    Teams assembled. Writing all matches per team to file generatedfiles/matches_per_team.csv...       ") #TODO: Replace with actual path from os.join
     
     matches_per_team.to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","matches_per_team.csv"), index=False)
 
 
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
+    if DEBUG_LEVEL>1:
         logger.debug("    Teams assembled. Writing all team numbers to file generatedfiles/team_list_filtered.csv...       ")
     
     matches_per_team["teamNumber"].to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","team_list_filtered.csv"), index=False)
 
     
 
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
+    if DEBUG_LEVEL>1:
         logger.debug("    Creating pandas dataframe from all_matches_dic")
     
     all_matches_pd = pd.DataFrame(all_matches_dic)
@@ -961,9 +961,8 @@ def prepare_opr_calculation(
         logger.debug(f"    Size of the actual all_matches_pd written: {all_matches_pd.size}")
         logger.debug(f"    Shape of the actual all_matches_pd written: {all_matches_pd.shape}")
     
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug( "[prepare_opr_calculation] Info is now prepared for OPR calculation.")
-        logger.debug( "    This is the end of prepare_opr_calculation.")
+    logger.debug( "[prepare_opr_calculation] Info is now prepared for OPR calculation.")
+    logger.debug( "    This is the end of prepare_opr_calculation.")
 
 
 

@@ -369,18 +369,15 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
     """
     logger.info("[calculate_opr] Getting OPRs, Autos, and CCWMs")
     
-    if (logger.isEnabledFor(logging.DEBUG)):
-        logger.debug(" Getting OPRs")
+    logger.debug(" Getting OPRs")
     
     OPRs = numpy.linalg.lstsq(M, Scores, rcond=None)[0]
 
-    if (logger.isEnabledFor(logging.DEBUG)):
-        logger.debug(" Getting Autos")
+    logger.debug(" Getting Autos")
     
     AUTOs = numpy.linalg.lstsq(M, Autos, rcond=None)[0]
 
-    if (logger.isEnabledFor(logging.DEBUG)):
-        logger.debug(" Getting CCWMs")
+    logger.debug(" Getting CCWMs")
 
     CCWMs = numpy.linalg.lstsq(M, Margins, rcond=None)[0]
 
@@ -429,21 +426,18 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         logger.error("    length of CCWMs: "+str(len(convertToList(CCWMs))))
         raise e
 
-    if (logger.isEnabledFor(logging.DEBUG)):
-        logger.debug("  | Stripping column strings of sorted_results_pd")
+    logger.debug("  | Stripping column strings of sorted_results_pd")
 
     # Strip the columns. Really I'm not sure why I do this but I found it somewhere
     # and they told me to do it, and it supposedly stops a few things from breaking.
     sorted_results_pd.columns=sorted_results_pd.columns.str.strip()
 
-    if (logger.isEnabledFor(logging.DEBUG)):
-        logger.debug("  | Sorting sorted_results_pd")
+    logger.debug("  | Sorting sorted_results_pd")
 
     # Actually sort the pandas results
     sorted_results_pd.sort_values(by="OPR", ascending=False, inplace=True)
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("  | Done sorting sorted_results_pd. Now removing brackets.")
+    logger.debug("  | Done sorting sorted_results_pd. Now removing brackets.")
     # Remove the extra brackets
     try:
         sorted_results_pd["OPR"    ] = sorted_results_pd["OPR"    ].str.get(0)
@@ -472,8 +466,7 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
         
         raise e
         
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("  | create_and_sort_stats is done. Now returning sorted_results_pd")
+    logger.debug("  | create_and_sort_stats is done. Now returning sorted_results_pd")
 
     return sorted_results_pd
 
@@ -572,8 +565,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=lo
             logger.debug(CCWMs)
             logger.debug("")
 
-    if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)")
+    logger.debug("    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)")
 
     OPRs  = OPRs.round(14)
     AUTOs = AUTOs.round(14)

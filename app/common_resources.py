@@ -210,16 +210,27 @@ def seconds_to_time(seconds, roundto=3) -> str:
 # for logging
 
 def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False):
+    """
+    Creates a logger object for the given script name and adds the appropriate handles.
+    Adds a console handler (INFO), error handler (WARNING, to generatedfiles/errors.log), 
+    and a debug handler (DEBUG, to generatedfiles/debug.log).
+
+    If disable_debug is true, disables the debug handler and sets the main logging lefel to INFO.
+    """
     # Set some settings for optimization and speed
     logging.logThreads = False
 
 
     # create logger
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+
+    if disable_debug:
+        logger.setLevel(logging.INFO) # Sets overall level to INFO so less cpu time is wasted on debug logging.
+    else:
+        logger.setLevel(logging.DEBUG)
 
     if not logger.handlers:
-        # create console handler
+        # Create Console handler
         cons_h = logging.StreamHandler()
         cons_h.setLevel(logging.INFO)
 
@@ -227,8 +238,8 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
         err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
         err_h.setLevel(logging.WARNING)
 
+        # Create Debug handler if enabled
         if not(disable_debug):
-            # Create debug handler
             deb_h = logging.FileHandler(
                     filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
                     mode=str("w" if flush_debug_log else "a")
@@ -238,7 +249,7 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
         # Create formatters
         formatter = logging.Formatter("{asctime} | {name} | {levelname:9} | {message}",style="{")
 
-
+        # Add color to console formatter, if enabled.
         if DO_COLOR:
             console_formatter = logging.Formatter(
                 ""
