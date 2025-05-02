@@ -429,9 +429,9 @@ training_data_matches = dataframe_remove_zeroes(training_data_matches, ["redOPR"
 
 if DEBUG_LEVEL>0:
     print(info_i()+f" Training data matches end shape {training_data_matches.shape}")
-    print(info_i()+f" Now saving machine file as {os.path.join(PATH_TO_FTCAPI,"machine_file.csv")}")
+    print(info_i()+f" Now saving machine file as {os.path.join(PATH_TO_FTCAPI,"app","machine_file.csv")}")
 
-training_data_matches.to_csv(os.path.join(PATH_TO_FTCAPI,"machine_file.csv"), index=False)
+training_data_matches.to_csv(os.path.join(PATH_TO_FTCAPI,"app","machine_file.csv"), index=False)
 
 print(green_check()+" Saved to machine_file.csv.")
 #endregion Saving

@@ -407,15 +407,15 @@ def push_matches(service):
     write_to_range = MATCHES_WRITE_RANGE
 
     # Get the data
-    event_object   = EventMatches(get_json(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_matches.json")))
-    event_schedule_qual    = EventSchedule(get_json(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","eventschedule_qual.json")))
-    event_schedule_playoff = EventSchedule(get_json(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","eventschedule_playoff.json")))
+    event_object   = EventMatches(get_json(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_matches.json")))
+    event_schedule_qual    = EventSchedule(get_json(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","eventschedule_qual.json")))
+    event_schedule_playoff = EventSchedule(get_json(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","eventschedule_playoff.json")))
 
 
-    with open(os.path.join(PATH_TO_FTCAPI,"gsNeigh.pkl"), "rb") as f:
+    with open(os.path.join(PATH_TO_FTCAPI,"app","gsNeigh.pkl"), "rb") as f:
         gsNeigh = pickle.load(f)
     
-    with open(os.path.join(PATH_TO_FTCAPI,"gsSVC.pkl"),"rb") as f:
+    with open(os.path.join(PATH_TO_FTCAPI,"app","gsSVC.pkl"),"rb") as f:
         gsSVC = pickle.load(f)
     
     predictors = [gsNeigh, gsSVC]
@@ -473,7 +473,7 @@ def push_teams(service):
         print(info_i()+"    Writing season-long OPR data")
         
     write_to_range = TEAMS_WRITE_RANGE
-    data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"))
+    data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_result_sorted.csv"))
     
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
@@ -495,7 +495,7 @@ def push_teams(service):
         print(info_i()+"    Writing event OPR data")
         
     write_to_range = TEAMS_EVENT_WRITE_RANGE
-    data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_event_result_sorted.csv"))
+    data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_event_result_sorted.csv"))
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
@@ -522,7 +522,7 @@ def push_teams(service):
         print(info_i()+"    Writing recent OPR  data")
         
     write_to_range = TEAMS_RECENT_WRITE_RANGE
-    data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_recent_result_sorted.csv"))
+    data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_recent_result_sorted.csv"))
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
@@ -554,9 +554,9 @@ def push_rankings(service):
         print(info_i()+" [sheetsapi.py] Pushing rankings data to sheets")
     if DEBUG_LEVEL>1:
         print(info_i()+"    Uses:")
-        print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.json"))
+        print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_rankings.json"))
         print(info_i()+"    Creates:")
-        print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv"))
+        print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_rankings.csv"))
         
     #
     # Write event ranking data
@@ -566,7 +566,7 @@ def push_rankings(service):
         
     # from jsonparse, save the rankings dataframe as a csv
     try:
-        rankings_dataframe(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.json"),os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv"))
+        rankings_dataframe(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_rankings.json"),os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_rankings.csv"))
 
     except IndexError as e:
         log_error(f"[sheetsapi.py][push_rankings] IndexError with rankngs_dataframe in jsonparse. This indicates that eventdata/event_rankings.json is either empty or malformed. This is normal if the event hasn\'t started yet. full error msg: {e}")
@@ -575,7 +575,7 @@ def push_rankings(service):
     write_to_range = TEAMS_RANKING_WRITE_RANGE
     
     try:
-        data_to_push   = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv"))
+        data_to_push   = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_rankings.csv"))
         # Dropping multiple columns with help from 
         # https://stackoverflow.com/questions/13411544/delete-a-column-from-a-pandas-dataframe
         data_to_push.drop(
@@ -589,7 +589,7 @@ def push_rankings(service):
 
     except pd.errors.EmptyDataError:
         # if the file is empty
-        data_to_push = [["No rankings for the given event"],[f'({os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv")} is empty)']]
+        data_to_push = [["No rankings for the given event"],[f'({os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","eventdata","event_rankings.csv")} is empty)']]
         log_error("[sheetsapi.py][push_rankings] generatedfiles/eventdata/event_rankings.csv is empty. This is normal if an event hasn\'t started yet, but is bad if the rankings are out.",level="Warn")
     
     
@@ -654,10 +654,10 @@ def push_elims_predictions(service):
     if DEBUG_LEVEL>1:
         print(info_i()+" [sheetsapi.py][push_elims_predictions] Elims matches data recieved. Now loading models.")
 
-    with open(os.path.join(PATH_TO_FTCAPI,"gsNeigh.pkl"), "rb") as f:
+    with open(os.path.join(PATH_TO_FTCAPI,"app","gsNeigh.pkl"), "rb") as f:
         gsNeigh = pickle.load(f)
     
-    with open(os.path.join(PATH_TO_FTCAPI,"gsSVC.pkl"),"rb") as f:
+    with open(os.path.join(PATH_TO_FTCAPI,"app","gsSVC.pkl"),"rb") as f:
         gsSVC = pickle.load(f)
     
     predictors = [gsNeigh, gsSVC]

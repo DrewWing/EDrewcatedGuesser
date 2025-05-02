@@ -145,7 +145,7 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, "generatedfiles/eventdata/event_matches.json")
+    save_response(response, "app/generatedfiles/eventdata/event_matches.json")
 
 
     # Get the teams for the event
@@ -154,7 +154,7 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, "generatedfiles/eventdata/event_teams.json")
+    save_response(response, "app/generatedfiles/eventdata/event_teams.json")
 
 
     # Get the event as a whole and put it into opr/all_events/EVENTCODE (needed for event-only OPR calculation)
@@ -163,7 +163,7 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
+    save_response(response, f"app/generatedfiles/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
     
 
 
@@ -174,7 +174,7 @@ def get_rankings():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/eventdata/event_rankings.json")
+    save_response(response, f"app/generatedfiles/eventdata/event_rankings.json")
     
 
 
@@ -186,7 +186,7 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/eventdata/eventschedule_qual.json")
+    save_response(response, f"app/generatedfiles/eventdata/eventschedule_qual.json")
 
     # Playoffs
     response = requests.get(
@@ -194,7 +194,7 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/eventdata/eventschedule_playoff.json")
+    save_response(response, f"app/generatedfiles/eventdata/eventschedule_playoff.json")
 
 
 

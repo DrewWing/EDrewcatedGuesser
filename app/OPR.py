@@ -132,7 +132,7 @@ def loadTeamNumbers() -> list:
     """
     Loads teams from a csv file team_list_filtered.csv (created in jsonparse.py)
     """
-    return list(pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","team_list_filtered.csv"))["teamNumber"])
+    return list(pd.read_csv(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","team_list_filtered.csv"))["teamNumber"])
 
 
 def filterMatchesByTeams(matches, teams: list):
@@ -149,13 +149,13 @@ def filterMatchesByTeams(matches, teams: list):
 def loadMatches(filter_by_teams: list = []):
     """
     Returns a pandas object of the all_matches.csv file containing all matches.
-    \nRelies on generatedfiles/all_matches.csv
+    \nRelies on app/generatedfiles/all_matches.csv
     \nParameters:
     \n\t filter_by_teams (list) - Filters the matches only including the team numbers in the list
     
     """
     #TODO: Update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","all_matches.csv")) # Get the csv data
+    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","all_matches.csv")) # Get the csv data
 
     # Make the start time column use the datetime format
     all_matches["actualStartTime"] = pd.to_datetime(all_matches["actualStartTime"], format="mixed")
@@ -246,7 +246,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         if (DEBUG_LEVEL>1):
             print(info_i()+" [OPRv4][build_m]  Loading matrix from file, not building it.")
             
-        M = numpy.load(os.path.join(PATH_TO_FTCAPI,"generatedfiles","OPR-m.npy"))
+        M = numpy.load(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","OPR-m.npy"))
 
         if DEBUG_LEVEL>1:
             print(green_check()+" [OPRv4][build_m]  Matrix M successfully loaded from file OPR-m.npy")
@@ -309,15 +309,15 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         
 
         # save the matrix to a file for later loading
-        numpy.save(os.path.join(PATH_TO_FTCAPI,"generatedfiles","OPR-m"),M)
+        numpy.save(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","OPR-m"),M)
 
     if (DEBUG_LEVEL>2):
         print(info_i()+"  M:")
         print(M)
         print()
         if (DEBUG_LEVEL>3):
-            print(info_i()+"  Saving M to generatedfiles/M_debug.csv for debug purposes... (this could take a little bit if it is big)")
-            numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"generatedfiles","M_debug.csv"), M, delimiter=",")
+            print(info_i()+"  Saving M to app/generatedfiles/M_debug.csv for debug purposes... (this could take a little bit if it is big)")
+            numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","M_debug.csv"), M, delimiter=",")
             print(green_check()+"  Saved.")
 
     return M
@@ -724,7 +724,7 @@ def master_function(memory=memory):
         do_all_opr_stuff(
             matches=matches,
             teams=teams, 
-            output_file_path=os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_global_result_sorted.csv"),  
+            output_file_path=os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_global_result_sorted.csv"),  
             load_m=False
         )
 
@@ -760,7 +760,7 @@ def master_function(memory=memory):
         do_all_opr_stuff(
             matches=matches,
             teams=teams,
-            output_file_path=os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"),  
+            output_file_path=os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_result_sorted.csv"),  
             load_m=False
         )
 
@@ -800,7 +800,7 @@ def master_function(memory=memory):
         do_all_opr_stuff(
             matches=matches,
             teams=teams,
-            output_file_path=os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_recent_result_sorted.csv"), 
+            output_file_path=os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_recent_result_sorted.csv"), 
             load_m=False,
             fallback="zeroes"
         )
@@ -840,7 +840,7 @@ def master_function(memory=memory):
         do_all_opr_stuff(
             matches = matches,
             teams=teams,
-            output_file_path = os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_event_result_sorted.csv"),  
+            output_file_path = os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","opr","opr_event_result_sorted.csv"),  
             load_m  = False
         )
 

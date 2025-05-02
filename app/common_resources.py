@@ -64,20 +64,23 @@ load_dotenv() # Load the environment variables
 
 
 # Environment Variables
-PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", None) # The absolute path to the "app" directory within this project.
+default_path = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0] # The absolute path to the dir two levels above (should be project dir).
+PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", default_path) # The absolute path to the project directory.
+del default_path
+
 DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
 EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
 FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
 SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
 
 # Google Sheets stuff
-SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI[:-4] + "ServiceAccountKey.json") # Used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI + "ServiceAccountKey.json") # Used in sheetsapi
 SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID", "<placeholder Google Sheets Spreadsheet ID>") # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
 
 
 #region Joblib
 DO_JOBLIB_MEMORY = os.getenv("DO_JOBLIB_MEMORY", "True").lower() == "true"  # Used to be True
-PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib"))
+PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","joblibcache","joblib"))
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
@@ -186,7 +189,7 @@ def log_error(message: str, level="ERROR") -> None:
     """
     Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
     """
-    with open(os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"), "a") as myfile:
+    with open(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","errors.log"), "a") as myfile:
         myfile.write(f"[{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}][{level}!] "+str(message)+"\n")
 
 
