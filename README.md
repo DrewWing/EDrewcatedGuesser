@@ -51,7 +51,7 @@ Also see the [Updates](docs/Updates.md) page.
 See the [contributing guide](.github/CONTRIBUTING).
 
 ## Errors
-As always, EDrewcated Guesser is a work in progress and has some bugs. Errors should be both printed to the terminal and appended to `app/generatedfiles/error.log` with a timestamp.
+As always, EDrewcated Guesser is a work in progress and has some bugs. Errors are both printed to the terminal and appended to `app/generatedfiles/errors.log` with a timestamp.
 
 
 ## Language Stats:

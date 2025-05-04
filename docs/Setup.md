@@ -30,7 +30,7 @@ First of all, you must set up a Virtual Environment and install the required pac
 
 
 ### Creating the `.env` File
-Copy `.env.template` into a new file called `.env`. This will be the configuration file for the project.
+Copy `.env.template` into a new file called `.env`. This is where you will set the project configuration.
 
 
 #### FIRST API Token
@@ -108,7 +108,7 @@ For instance, the Spreadsheet ID of the example spreadsheet is `1VZYXmJQ7jPPnCTy
 
 
 ### Run the program
-By this point, the project should be correctly set up. Go on to [running the project](RunningTheProject.md) to run the project.
+By this point, the project should be correctly set up. Next, you may look at [running the project](RunningTheProject.md) for instructions on how to use the software.
 
 
 ## Troubleshooting

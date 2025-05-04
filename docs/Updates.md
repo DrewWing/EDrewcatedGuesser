@@ -18,6 +18,30 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 See the documentation in the README.md file. -->
 
+## v50.0
+> [!Note]
+> v50.0 is a future update, and this changelog is a draft.
+
+The date of the release will go here
+#### Overview
+The update overview will go here.
+
+#### Bugs Fixed
+  - [#2](https://github.com/DrewWing/EDrewcatedGuesser/issues/5) Tests failed due to argparse usage.
+  - [#30](https://github.com/DrewWing/EDrewcatedGuesser/issues/30) Global data from two or more seasons interacted with one another, causing incorrect season statistics.
+
+
+#### Key changes
+  - [#5](https://github.com/DrewWing/EDrewcatedGuesser/issues/5) Added configuration using environment variables!
+  - [#20](https://github.com/DrewWing/EDrewcatedGuesser/issues/20) Scrapped the old manual logging system and replaced it with Python's builtin `logging` module.
+    - Added clearer debug logging levels.
+    - Added `debug.log` log file.
+  - [#23](https://github.com/DrewWing/EDrewcatedGuesser/issues/23) Renamed `PATH_TO_FTCAPI` to `PROJECT_PATH` and added automatic detection (`PROJECT_PATH` is no longer a required configuration variable).
+
+#### Docs
+  - Documentation was updated to be more clear and useful.
+
+
 ## 49.0 Beta
 December 25th, 2024
 #### Overview

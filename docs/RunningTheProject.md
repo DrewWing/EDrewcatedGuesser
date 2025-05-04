@@ -6,26 +6,26 @@
 
 
 ## Running the Main Program
-To run the main program, call `__main__.py` while in the virtual environment. The workflow should look something similar to this:
+To run the main program, call `__main__.py` while the virtual environment is activated. The workflow should look something similar to this:
 
 ```powershell
-$ . .\.venv\Scripts\activate # Activate the virtual environment.
+$ .\.venv\Scripts\activate # Activate the virtual environment.
 $ python3 .\app\__main__.py # Run the main script.
 ```
 
 ## Configuring the Program
 <!-- TODO: Should this be put in it's own page? -->
-The program may be configured using variables in the `.env` file.
+The program may be configured using variables in the `.env` file. Other than those in the [setup instructions](Setup.md), the only recommended modification is of `SEASON_YEAR`.
 
 ### General Configuration Variables
 | Variable Name | Default Value | Description |
 | :------------ | :------------ | :---------- |
 | `DEBUG_LEVEL` | 0             | An integer starting at zero. Higher values print more information. |
 | `LOG_LEVEL`   | INFO          | The log level for logger to use. May be `DEBUG`, `INFO`, `WARN`, `ERROR`, or `CRITICAL`. |
-| `PROJECT_PATH` | None | The absolute path to the `app` directory within this project. |
-| `SEASON_YEAR` | 2023 | A string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." |
-| `EVENT_CODE` | FTCCMP1FRAN | The alphanumeric event code FIRST uses to keep track of their events, as a string. |
-| `DO_JOBLIB_MEMORY` | True   | If True, enables caching of heavy functions. In general, you should leave this on unless joblib starts to throw errors. |
+| `SEASON_YEAR` | 2023          | A string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." |
+| `EVENT_CODE`  | FTCCMP1FRAN   | The alphanumeric event code FIRST uses to keep track of their events, as a string. |
+| `DO_JOBLIB_MEMORY` | True     | If True, enables caching of heavy functions. In general, you should leave this on unless joblib starts to throw errors. |
+| `PROJECT_PATH` | *(autodetected)* | The absolute path to the project directory. You shouldn't need to use this. |
 | `JOBLIB_PATH` | PROJECT_PATH/generatedfiles/joblibcache/joblib | The absolute path to the joblib cache, as a string. You shouldn't need to change this. |
 
 
