@@ -518,7 +518,7 @@ class SeasonEvents():
         rtn = []
         for event in self.raw_json["events"]:
             # debug info
-            #logger.debug("\n\n"+info_i()+"      "+event["regionCode"])
+            #logger.debug("\n\n"+"      "+event["regionCode"])
             #logger.debug(str(event))
             #logger.debug(" eventcode: "+str(event["code"]))
             #logger.debug("      If statements: region {}, type {}, nottype {}, state {}, remote {}".format(

@@ -281,7 +281,7 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
 
         # Only enable for heavy debug - will spit out lots of stuff on the terminal
         #if debug>1:
-        #    logger.debug(info_i()+"M before matricizing:")
+        #    logger.debug("M before matricizing:")
         #    logger.debug(M)
 
         # Matricize
@@ -300,9 +300,9 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         logger.debug(str(M)+"\n")
         #TODO re-enable this?
         # if (DEBUG_LEVEL>3):
-        #     logger.debug(info_i()+"  Saving M to generatedfiles/M_debug.csv for debug purposes... (this could take a little bit if it is big)")
+        #     logger.debug("  Saving M to generatedfiles/M_debug.csv for debug purposes... (this could take a little bit if it is big)")
         #     numpy.savetxt(os.path.join(PATH_TO_FTCAPI,"generatedfiles","M_debug.csv"), M, delimiter=",")
-        #     logger.debug(green_check()+"  Saved.")
+        #     logger.debug("  Saved.")
 
     return M
 
@@ -755,7 +755,7 @@ def master_function(memory=memory):
     #
     #
     if do_opr_event_only:
-        #logger.debug(green_check()+"Calculated OPR for all matches.")
+        #logger.debug("Calculated OPR for all matches.")
         logger.info("__________________________________________________")
         logger.info("Preparing for OPR calculation with specific event code "+str(EVENT_CODE))
 

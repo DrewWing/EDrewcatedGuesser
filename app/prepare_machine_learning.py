@@ -311,7 +311,7 @@ for index, match in all_matches_to_train_on.iterrows():
 
     if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
         # Convert all matrices from type list to type matrix using numpy
-        logger.debug(info_i()+" Memory Update:")
+        logger.debug(" Memory Update:")
         logger.debug(f"    |  - M_recent (int8) - {M_recent.nbytes}b or {byte_to_gb(M_recent.nbytes)}GB - Sizeof {sys.getsizeof(M_recent)} - M.size (# of elements) {M_recent.size}")
         logger.debug("    |  - RecentScores  - " + str(RecentScores.nbytes)  + "b  - " + str(sys.getsizeof(RecentScores)))
         logger.debug("    |  - RecentAutos   - " + str(RecentAutos.nbytes)   + "b  - " + str(sys.getsizeof(RecentAutos)))
@@ -322,7 +322,7 @@ for index, match in all_matches_to_train_on.iterrows():
     #gc.collect() #removed to reduce cycle times
     
     if DEBUG_LEVEL>3 and logger.isEnabledFor(logging.DEBUG):
-        #logger.debug(info_i()+"  Garbage collected")
+        #logger.debug("  Garbage collected")
         logger.debug("  Now using calculate_opr() to calculate OPRs, AUTOs, and CCWMs...")
     
     # This is the real RAM-intense operation...

@@ -216,7 +216,7 @@ def get_elims_matches(service, credentials):
 
     for row in elims_data_raw:
         #if debug:
-        #    logger.debug("\n"+info_i()+"    "", end="")
+        #    logger.debug("\n"+"    "", end="")
 
         #for col in row:
             #if debug:
