@@ -50,14 +50,17 @@ Lots of help from https://github.com/googleapis/google-api-python-client/blob/ma
 # Builtins
 import datetime
 import pickle
+import logging
 
 
 # Intraproject imports
-from common_resources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_ID, log_error
+from common_resources import PATH_TO_FTCAPI, SERVICE_ACCOUNT_FILE, SPREADSHEET_ID, create_logger
 from common_resources import DEBUG_LEVEL
 
 from json_parse import *
 
+logger = create_logger("sheets_api")
+logger.info("Setting up...")
 
 # External imports
 import pandas as pd
@@ -70,15 +73,7 @@ try:
     from googleapiclient.errors import HttpError
 
 except ImportError as e:
-    log_error("[sheetsapi.py][imports] ImportError while importing the google apiclient modules - Are you using the correct virtual environment? Full error info:"+str(e))
-    print("\n\n------\nIf you're seeing this, the googleapiclient module couldn't be imported")
-    print("Try these things:")
-    print("  - Activating the virtual environment before running this script")
-    print("  - making sure the googleapiclient is installed to the virtual environment")
-    print("    (pip install google-api-python-client)")
-    print("  - The source can be found at https://github.com/googleapis/google-api-python-client")
-    print("  - Also see https://realpython.com/python-virtual-environments-a-primer/")
-    print("Good luck!\n")
+    logger.error("[imports] ImportError while importing the google apiclient modules - Are you using the correct virtual environment? Full error info:"+str(e))
     raise e
 
 #endregion Imports
@@ -114,20 +109,20 @@ def build_credentials(credentials=None):
     credentials -- Any existing credentials (default: None)
     """
     if DEBUG_LEVEL>1:
-        print(info_i()+"[sheetsapi.py] [build_credentials] Starting to build credentials.")
+        logger.info("[build_credentials] Starting to build credentials.")
     
     if not credentials or not credentials.valid:
         if credentials and credentials.expired and credentials.refresh_token:
             if DEBUG_LEVEL>1:
-                print("[sheetsapi.py] [build_credentials] Credentials are expired. Refreshing.")
+                logger.info("[build_credentials] Credentials are expired. Refreshing.")
             
-            log_error("[sheetsapi.py][build_credentials] I raised a UserWarning because Request() is not defined and I'm not sure why. This has to do with google api credentials validation. Please do not ignore this error.")
+            logger.error("[build_credentials] I raised a UserWarning because Request() is not defined and I'm not sure why. This has to do with google api credentials validation. Please do not ignore this error.")
             raise UserWarning("This should be changed")
             #credentials.refresh(Request())
         
         else:
             if DEBUG_LEVEL>1:
-                print(info_i()+"[sheetsapi.py] [build_credentials] Credentials are nonexistent. Using the service account file")
+                logger.debug("[build_credentials] Credentials are nonexistent. Using the service account file")
             
             
             try:
@@ -135,8 +130,8 @@ def build_credentials(credentials=None):
                     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
             
             except FileNotFoundError as e:
-                log_error(f"[sheetsapi][build_credentials] FIleNotFoundError while building credentials for the Google Sheets API, probably because either the variable SERVICE_ACCOUNT_FILE in commonresources.py is malformed or because you haven't made a service account file.")
-                log_error(f'                               SERVICE_ACCOUNT_FILE: "{SERVICE_ACCOUNT_FILE}" Full error info: "{str(e)}"')
+                logger.error(f"[build_credentials] FIleNotFoundError while building credentials for the Google Sheets API, probably because either the variable SERVICE_ACCOUNT_KEY_PATH in .env is malformed or because you haven't made a service account file.")
+                logger.error(f'  SERVICE_ACCOUNT_FILE="{SERVICE_ACCOUNT_FILE}" Full error info: "{str(e)}"')
                 raise e
 
             #flow = InstalledAppFlow.from_client_secrets_file(
@@ -148,7 +143,7 @@ def build_credentials(credentials=None):
         #    token.write(creds.to_json())
 
     elif DEBUG_LEVEL>1:
-        print(info_i()+"[sheetsapi.py] [build_credentials] Credentials already exist and are valid. Returning current credentials.")
+        logger.debug("[build_credentials] Credentials already exist and are valid. Returning current credentials.")
 
     return credentials
 
@@ -172,8 +167,7 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
     range -- A string containing the range of cells to pull data from
     credentials -- Credentials built using the build_credentials() function
     """
-    if DEBUG_LEVEL>0:
-        print(info_i()+f" [sheetsapi.py] [get_data] Getting data from range {range}...")
+    logger.debug(f"[get_data] Getting data from range {range}...")
 
     try:
         # Call the Sheets API
@@ -187,22 +181,17 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
         values = result.get("values", [])
 
         if not values:
-            if DEBUG_LEVEL>0:
-                print(info_i()+" [sheetsapi.py] [get_data] No data found. Returning None.")
+            logger.debug("[get_data] No data found. Returning None.")
 
             return None
 
         return values
 
-        #print("Values raw: ")
-        #print(values)
+        #logger.debug("Values raw: ")
+        #logger.debug(values)
          
     except HttpError as err:
-        log_error("[sheetsapi.py][get_data] HttpError while calling the Sheets API. Full Error: "+str(err))
-
-        if DEBUG_LEVEL>0:
-            print(red_x()+"[sheetsapi.py] [get_data] HTTPError occured! Printing error info...")
-        print(err)
+        logger.error("[get_data] HttpError while calling the Sheets API. Full Error: "+str(err))
         raise err
 
 def get_elims_matches(service, credentials):
@@ -215,24 +204,23 @@ def get_elims_matches(service, credentials):
     service -- A service object built via build()
     credentials -- Credentials built using the build_credentials() function
     """
-    if DEBUG_LEVEL>0:
-        print(info_i()+" [sheetsapi.py][get_elims_matches] Getting matches in the elims combinations.")
+    logger.debug("[get_elims_matches] Getting matches in the elims combinations.")
     
     elims_data_raw = get_data(service, sheetid=SPREADSHEET_ID, range=MATCHES_READ_ELIMS_RANGE, credentials=credentials)
 
     if DEBUG_LEVEL>1:
-        print(info_i()+" [sheetsapi.py][get_elims_matches] Data recieved. Processing data...")
+        logger.debug("[get_elims_matches] Data recieved. Processing data...")
     
     elims_match_teams = {"Red1":[],"Red2":[],"Blue1":[],"Blue2":[]}
 
 
     for row in elims_data_raw:
         #if debug:
-        #    print("\n"+info_i()+"    "", end="")
+        #    logger.debug("\n"+info_i()+"    "", end="")
 
         #for col in row:
             #if debug:
-            #    print(col, end=" | ")
+            #    logger.debug(col, end=" | ")
             
         if type(row) != type(None) and len(row) > 0:
             elims_match_teams["Red1"].append(row[0])
@@ -243,8 +231,8 @@ def get_elims_matches(service, credentials):
     elims_match_teams = pd.DataFrame(elims_match_teams)
 
     if DEBUG_LEVEL>1:
-        print(info_i()+" [sheetsapi.py][get_elims_matches] Data processed. and dataframed.")
-        #print(elims_match_teams)
+        logger.debug("[get_elims_matches] Data processed. and dataframed.")
+        #logger.debug(elims_match_teams)
     
     return elims_match_teams
 
@@ -325,7 +313,7 @@ def push_data(service, sheetid: str, range: str, credentials, data):
     ]
     """
     if DEBUG_LEVEL>1:
-        print(info_i()+" [sheetsapi.py] [push_data] Pushing data to range {}...".format(range))
+        logger.debug("[push_data] Pushing data to range {}...".format(range))
     
     try:
         
@@ -349,37 +337,26 @@ def push_data(service, sheetid: str, range: str, credentials, data):
             .execute()
         )
         if DEBUG_LEVEL>1:
-            print(f"{info_i()}     {result.get('updatedCells')} cells updated.")
+            logger.debug(f"[push_data] {result.get('updatedCells')} cells updated.")
         
         return result
     
     except HttpError as error:
-        log_error(f"[sheetsapi.py][push_data] Some HttpError occured! range={range}, sheetid={sheetid}, service={service}, Full error info:{error}")
-        print(red_x()+" [sheetsapi.py][push_data] An error occurred!")
-        print(red_x()+"    Some info:")
-        print(red_x()+"    debug_level:"+str(DEBUG_LEVEL))
-        print(red_x()+"    range:"+str(range))
-        print(red_x()+"    sheetid:"+str(sheetid))
-        print(red_x()+"    service:"+str(service))
-        #print(red_x()+"    data:"+str(data))
-        print()
+        logger.error(f"[push_data] Some HttpError occured! range={range}, sheetid={sheetid}, service={service}, Full error info:{error}")
+        logger.debug("    data:"+str(data))
         
         return error
     
     except google.auth.exceptions.TransportError as error:
-        print(red_x()+" [sheetsapi][push_data] Google Authentication TransportError!")
-        print(red_x()+"         Most likely due to a weak connection or incorrectly set up DNS.")
-        print(red_x()+f"         Full error info: {error}")
-        log_error("[sheetsapi][push_data] Google Authentication TransportError! Most likely due to weak connection or incorrectly set up DNS.")
-        log_error(f"         Full error info: {error}")
-        log_error("           Error has been printed and raised, irreguardless of debug_level setting.")
+        logger.error( " [push_data] Google Authentication TransportError! Most likely due to a weak connection or incorrectly set up DNS.")
+        logger.error(f" Full error info: {error}")
         raise error
     
     except KeyboardInterrupt as error:
         raise error
     
     except Exception as error:
-        log_error(f" [sheetsapi][push_data] Some unknown Exception occured! Not a HttpError or google.auth.exceptions.TransportError. Full error info: {error}")
+        logger.error(f" [push_data] Some unknown Exception occured! Not a HttpError or google.auth.exceptions.TransportError. Full error info: {error}")
         raise error
 
 
@@ -395,14 +372,13 @@ def push_matches(service):
     service -- A service object built via build()
     """
     
-    if DEBUG_LEVEL>0:
-        print(info_i()+" [sheetsapi.py][push_matches] Pushing matches data to sheets")
+    logger.info("[push_matches] Pushing matches data to sheets")
         
     if DEBUG_LEVEL>1:
-        print(info_i()+"     Uses:")
-        print(info_i()+"       - eventdata/event_matches.json")
-        print(info_i()+"       - eventdata/eventschedule_qual.json")
-        print(info_i()+"       - eventdata/eventschedule_playoff.json")
+        logger.debug(" This function uses:")
+        logger.debug("   - eventdata/event_matches.json")
+        logger.debug("   - eventdata/eventschedule_qual.json")
+        logger.debug("   - eventdata/eventschedule_playoff.json")
     
     write_to_range = MATCHES_WRITE_RANGE
 
@@ -421,8 +397,7 @@ def push_matches(service):
     predictors = [gsNeigh, gsSVC]
 
     # Predict the outcomes of the matches
-    if DEBUG_LEVEL>1:
-        print(info_i()+" [sheetsapi.py][push_matches] Predicting matches.")
+    logger.info(" [push_matches] Predicting matches")
 
     event_object.predict_outcomes(          predictors=predictors, inplace=True)
     event_schedule_qual.predict_outcomes(   predictors=predictors, inplace=True)
@@ -434,8 +409,7 @@ def push_matches(service):
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push)
     
-    if DEBUG_LEVEL>0:
-        print(info_i()+" Pushing data")
+    logger.info(" Pushing data")
 
     
     # Push the data
@@ -444,8 +418,7 @@ def push_matches(service):
         data_to_push
     )
 
-    if DEBUG_LEVEL>0:
-        print(green_check()+" [sheetsapi.py] Done pushing matches data!")
+    logger.info(" Done pushing matches data!")
 
 
 def push_teams(service):
@@ -458,19 +431,18 @@ def push_teams(service):
     Arguments:
     service -- A service object built via build()
     """
-    if DEBUG_LEVEL>0:
-        print(info_i()+" [sheetsapi.py] Pushing teams data to sheets")
+    logger.info("[push_teams] Pushing teams data to sheets")
 
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Uses:")
-        print(info_i()+"      - opr_result_sorted.csv")
-        print(info_i()+"      - opr_recent_result_sorted.csv")
-        print(info_i()+"      - opr_event_result_sorted.csv")
+        logger.debug(" This function uses:")
+        logger.debug("   - opr_result_sorted.csv")
+        logger.debug("   - opr_recent_result_sorted.csv")
+        logger.debug("   - opr_event_result_sorted.csv")
     #
     # Write season-long OPR data
     #
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Writing season-long OPR data")
+        logger.debug("    Writing season-long OPR data")
         
     write_to_range = TEAMS_WRITE_RANGE
     data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"))
@@ -479,7 +451,7 @@ def push_teams(service):
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Pushing data")
+        logger.debug("    Pushing data")
         
     # Push the data
     push_data(
@@ -492,7 +464,7 @@ def push_teams(service):
     # Write event OPR data
     #
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Writing event OPR data")
+        logger.debug("    Writing event OPR data")
         
     write_to_range = TEAMS_EVENT_WRITE_RANGE
     data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_event_result_sorted.csv"))
@@ -500,13 +472,12 @@ def push_teams(service):
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Pushing data")
+        logger.debug("    Pushing data")
         
     # Push the data
     if len(data_to_push)==1:
-        if DEBUG_LEVEL>0:
-            print(info_i()+"    There is no data for the event OPR! Pushing a timestamp with a message.")
-            log_error("[sheetsapi.py][push_teams] No data exists for event OPR. This is normal if no match scores are out.",level="Info")
+        logger.debug("[push_teams] There is no data for the event OPR! Pushing a timestamp with a message.")
+        logger.warning("[push_teams] No data exists for event OPR. This is normal if no match scores are out.")
         data_to_push.append(["Event has no OPR data","Event has probably not started yet."])
         
     push_data(
@@ -519,7 +490,7 @@ def push_teams(service):
     # Write recent OPR data
     #
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Writing recent OPR  data")
+        logger.debug("    Writing recent OPR  data")
         
     write_to_range = TEAMS_RECENT_WRITE_RANGE
     data_to_push   = get_team_data(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_recent_result_sorted.csv"))
@@ -527,7 +498,7 @@ def push_teams(service):
     data_to_push = add_timestamp(data_to_push.values.tolist())
 
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Pushing data")
+        logger.debug("    Pushing data")
     
     # push the data
     push_data(
@@ -535,8 +506,7 @@ def push_teams(service):
         data_to_push
     )
 
-    if DEBUG_LEVEL>0:
-        print(green_check()+" [sheetsapi.py] done pushing teams data!")
+    logger.info(" done pushing teams data!")
 
 
 
@@ -550,26 +520,26 @@ def push_rankings(service):
     Arguments:
     service -- A service object built via build()
     """
-    if DEBUG_LEVEL>0:
-        print(info_i()+" [sheetsapi.py] Pushing rankings data to sheets")
+    logger.info(" [push_rankings] Pushing rankings data to sheets")
+    
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Uses:")
-        print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.json"))
-        print(info_i()+"    Creates:")
-        print(info_i()+"      -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv"))
+        logger.debug("  This function uses:")
+        logger.debug("    -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.json"))
+        logger.debug("  This function creates:")
+        logger.debug("    -",os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv"))
         
     #
     # Write event ranking data
     #
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Writing event ranking data")
+        logger.debug(" Writing event ranking data")
         
     # from jsonparse, save the rankings dataframe as a csv
     try:
         rankings_dataframe(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.json"),os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv"))
 
     except IndexError as e:
-        log_error(f"[sheetsapi.py][push_rankings] IndexError with rankngs_dataframe in jsonparse. This indicates that eventdata/event_rankings.json is either empty or malformed. This is normal if the event hasn\'t started yet. full error msg: {e}")
+        logger.warning(f"[push_rankings] IndexError with rankngs_dataframe in jsonparse. This indicates that eventdata/event_rankings.json is either empty or malformed. This is normal if the event hasn\'t started yet. full error msg: {e}")
         raise e
     
     write_to_range = TEAMS_RANKING_WRITE_RANGE
@@ -590,12 +560,12 @@ def push_rankings(service):
     except pd.errors.EmptyDataError:
         # if the file is empty
         data_to_push = [["No rankings for the given event"],[f'({os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_rankings.csv")} is empty)']]
-        log_error("[sheetsapi.py][push_rankings] generatedfiles/eventdata/event_rankings.csv is empty. This is normal if an event hasn\'t started yet, but is bad if the rankings are out.",level="Warn")
+        logger.warning("[push_rankings] generatedfiles/eventdata/event_rankings.csv is empty. This is normal if an event hasn\'t started yet, but is bad if the rankings are out.")
     
     
 
     if DEBUG_LEVEL>1:
-        print(info_i()+"    Pushing data")
+        logger.debug("    Pushing data")
         
     # push the data
     push_data(
@@ -604,16 +574,14 @@ def push_rankings(service):
     )
 
 
-    if DEBUG_LEVEL>0:
-        print(green_check()+" [sheetsapi.py] done pushing rankings data!")
+    logger.info(" Done pushing rankings data!")
 
 
 def push_elims_predictions(service):
     """
     Pushes the predictions for the elims based on the input predictions (DataFrame).
     """
-    if DEBUG_LEVEL>0:
-        print(info_i()+" [sheetsapi.py][push_elims_predictions] Pushing elims prediction data to sheets.")
+    logger.info(" [push_elims_predictions] Pushing elims prediction data to sheets.")
     
     # get the data
     elims_matches = get_elims_matches(service, credentials)
@@ -621,11 +589,11 @@ def push_elims_predictions(service):
     jsonified_elims_matches = {"schedule":[]}
 
     #if debug:
-    #    print("elims_matches iterrows stuff") #TODO remove this debug print
+    #    logger.debug("elims_matches iterrows stuff") #TODO remove this debug print
     for index, i in elims_matches.iterrows():
 
         #if debug:
-        #    print(i)
+        #    logger.debug(i)
         jsonified_elims_matches["schedule"].append(
             {"description": "<placeholder>",
           "field": "<placeholder>",
@@ -652,7 +620,7 @@ def push_elims_predictions(service):
         )
 
     if DEBUG_LEVEL>1:
-        print(info_i()+" [sheetsapi.py][push_elims_predictions] Elims matches data recieved. Now loading models.")
+        logger.debug(" [push_elims_predictions] Elims matches data recieved. Now loading models.")
 
     with open(os.path.join(PATH_TO_FTCAPI,"gsNeigh.pkl"), "rb") as f:
         gsNeigh = pickle.load(f)
@@ -663,8 +631,7 @@ def push_elims_predictions(service):
     predictors = [gsNeigh, gsSVC]
 
     # Predict the outcomes of the matches
-    if DEBUG_LEVEL>1:
-        print(info_i()+" [sheetsapi.py][push_elims_predictions] Predicting matches.")
+    logger.info(" [push_elims_predictions] Predicting matches.")
 
     #     "schedule": [
     #     {
@@ -699,13 +666,17 @@ def push_elims_predictions(service):
     # Add the timestamp to the begining of the data
     data_to_push = add_timestamp(data_to_push)
     
-    for row in data_to_push:
-        print("  ")
-        for column in row:
-            print(column, end=" | ")
+    if logger.isEnabledFor(logging.DEBUG):
+        debug_text = ""
+        for row in data_to_push:
+            debug_text.append("  ")
+            for column in row:
+                debug_text.append(str(column)+" | ")
+        
+        logger.debug(debug_text)
 
     if DEBUG_LEVEL>1:
-        print(info_i()+" Pushing data")
+        logger.debug(" Pushing data")
 
     #
     #row [
@@ -719,8 +690,7 @@ def push_elims_predictions(service):
         data_to_push
     )
 
-    if DEBUG_LEVEL>0:
-        print(green_check()+" [sheetsapi.py] Done pushing matches data!")
+    logger.info(" Done pushing matches data!")
 
 
 #endregion pushes
@@ -752,21 +722,22 @@ def master_function(arguments:list):
 
 
     if ("help" in arguments) or ("-help" in arguments) or ("--help" in arguments):
-        print("   Sheetsapi.py")
-        print("   By Drew Wingfield")
-        print(" Usage: python3 sheetsapi.py [teams/matches/quiet/help]")
-        print(" If something is going wrong, check the id of the spreadsheet we are pushing data to.")
-        print("    quiet - Don\'t print output unless there is an error")
+        logger.info("   Sheetsapi.py")
+        logger.info("   By Drew Wingfield")
+        logger.info(" Usage: python3 sheetsapi.py [teams/matches/elims/rankings/help]")
+        logger.info(" If something is going wrong, check the id of the spreadsheet we are pushing data to.")
+        logger.info("    quiet - Don\'t print output unless there is an error")
 
 
     elif ("matches" not in arguments) and ("teams" not in arguments) and ("rankings" not in arguments) and ("elims" not in arguments):
-        log_error("[sheetsapi.py] Sheetsapi.py either called without correct arguments or imported (you should not do that). sys.argv="+str(arguments))
-        raise Exception("\n\n\nYou must call sheetsapi.py with arguments! (matches and/or teams) - Please use the -help modifier to see the help menu\n\n\n\n\n\n\n\n\n\n")
+        logger.error(" master_function called without correct arguments! arguments="+str(arguments))
+        raise Exception("\n\n\nYou must call master_function with arguments! (matches and/or teams) - Please use the -help modifier to see the help menu.\n")
 
 
 
 if __name__ == "__main__":
     import sys
+    logger.debug("sheets_api was called as __main__")
     master_function(sys.argv)
 
 

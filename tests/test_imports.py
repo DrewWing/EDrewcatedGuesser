@@ -85,9 +85,17 @@ class importsTest(unittest.TestCase):
             import OPR
             import json_parse
             import sheets_api #TODO: fix this one too
-        
+
         except ImportError as e:
             raise AssertionError(e)
+        
+
+    def test_logging(self): # Test logging
+            from common_resources import create_logger
+
+            logger = create_logger("test_imports",flush_debug_log=False,disable_debug=False)
+            logger.info("This is a test of the logging system.")
+        
 
 
 
