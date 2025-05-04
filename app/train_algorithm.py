@@ -65,7 +65,7 @@ import os
 starttime = time.time()
 
 print("  - commonresources.py")
-from common_resources import PATH_TO_FTCAPI, PATH_TO_JOBLIB_CACHE, LATEST_VERSION, green_check, red_x, info_i, seconds_to_time
+from common_resources import PROJECT_PATH, PATH_TO_JOBLIB_CACHE, LATEST_VERSION, green_check, red_x, info_i, seconds_to_time
 print("                 Using version "+str(LATEST_VERSION))
 
 print("  - External modules:")
@@ -147,7 +147,7 @@ def describe_model(model, X_cat_test, Y_cat_test):
 print(info_i()+" Loading data...")
 
 
-pandasdata = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"app","machine_file.csv"), dtype={
+pandasdata = pd.read_csv(os.path.join(PROJECT_PATH,"app","machine_file.csv"), dtype={
     "RedOPR" :np.longdouble, "RedAutoOPR" :np.longdouble, "RedCCWM" :np.longdouble, 
     "blueOPR":np.longdouble, "blueAutoOPR":np.longdouble, "blueCCWM":np.longdouble, 
     "recentRedOPR" :np.longdouble, "recentRedAutoOPR" :np.longdouble, "recentRedCCWM" :np.longdouble, 
@@ -318,12 +318,12 @@ print(green_check()+" gsSVC and gsNeigh created as GridSearchCVs")
 if LOAD_MODEL:
     print(info_i()+" Loading models...")
     
-    with open(os.path.join(PATH_TO_FTCAPI,"app","gsNeigh.pkl"), "rb") as f:
+    with open(os.path.join(PROJECT_PATH,"app","gsNeigh.pkl"), "rb") as f:
         gsNeigh = pickle.load(f)
     
     print(green_check()+"     Model gsNeigh loaded.")
 
-    with open(os.path.join(PATH_TO_FTCAPI,"app","gsSVC.pkl"), "rb") as f:
+    with open(os.path.join(PROJECT_PATH,"app","gsSVC.pkl"), "rb") as f:
         gsSVC = pickle.load(f)
     
     print(green_check()+"     Model gsSVC loaded.")
@@ -336,10 +336,10 @@ else:
 
     print(green_check()+" gsNeigh successfully fit!")
 
-    with open(os.path.join(PATH_TO_FTCAPI,"app","gsNeigh.pkl"),"wb") as f:
+    with open(os.path.join(PROJECT_PATH,"app","gsNeigh.pkl"),"wb") as f:
         pickle.dump(gsNeigh,f)
     
-    print(green_check()+" gsNeigh model saved as "+os.path.join(PATH_TO_FTCAPI,"app","gsNeigh.pkl"))
+    print(green_check()+" gsNeigh model saved as "+os.path.join(PROJECT_PATH,"app","gsNeigh.pkl"))
 
     print(info_i()+" gsNeigh:")
     describe_model(gsNeigh, X_cat_test, Y_cat_test)
@@ -350,10 +350,10 @@ else:
     gsSVC.fit(X_cat_train, Y_cat_train)
     print(green_check()+" gsSVC successfully fit!")
 
-    with open(os.path.join(PATH_TO_FTCAPI,"app","gsSVC.pkl"),"wb") as f:
+    with open(os.path.join(PROJECT_PATH,"app","gsSVC.pkl"),"wb") as f:
         pickle.dump(gsSVC,f)
     
-    print(green_check()+" gsSVC model saved as "+os.path.join(PATH_TO_FTCAPI,"app","gsSVC.pkl"))
+    print(green_check()+" gsSVC model saved as "+os.path.join(PROJECT_PATH,"app","gsSVC.pkl"))
     print("\n"+info_i()+"gsSVC")
     describe_model(gsSVC, X_cat_test, Y_cat_test)
     print(info_i()+f" That took {seconds_to_time((time.time()-starttime))} total so far")

@@ -46,7 +46,7 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 __all__ = [
     "get_json", "log_error", "byte_to_gb", "seconds_to_time", 
     "NUMBER_OF_DAYS_FOR_RECENT_OPR", "DO_JOBLIB_MEMORY", 
-    "PATH_TO_FTCAPI", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
+    "PROJECT_PATH", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
     "SPREADSHEET_ID"
 ]
 __version__ = "49.1 Beta"
@@ -65,7 +65,7 @@ load_dotenv() # Load the environment variables
 
 # Environment Variables
 default_path = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0] # The absolute path to the dir two levels above (should be project dir).
-PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", default_path) # The absolute path to the project directory.
+PROJECT_PATH = os.getenv("PROJECT_PATH", default_path) # The absolute path to the project directory.
 del default_path
 
 DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
@@ -74,13 +74,13 @@ FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
 SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
 
 # Google Sheets stuff
-SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI + "ServiceAccountKey.json") # Used in sheetsapi
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PROJECT_PATH + "ServiceAccountKey.json") # Used in sheetsapi
 SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID", "<placeholder Google Sheets Spreadsheet ID>") # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
 
 
 #region Joblib
 DO_JOBLIB_MEMORY = os.getenv("DO_JOBLIB_MEMORY", "True").lower() == "true"  # Used to be True
-PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","joblibcache","joblib"))
+PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PROJECT_PATH,"app","generatedfiles","joblibcache","joblib"))
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
@@ -187,9 +187,9 @@ def byte_to_gb(bytes) -> float:
 
 def log_error(message: str, level="ERROR") -> None:
     """
-    Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
+    Logs an error message (with timestamp) to the error log at PROJECT_PATH/errors.log
     """
-    with open(os.path.join(PATH_TO_FTCAPI,"app","generatedfiles","errors.log"), "a") as myfile:
+    with open(os.path.join(PROJECT_PATH,"app","generatedfiles","errors.log"), "a") as myfile:
         myfile.write(f"[{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}][{level}!] "+str(message)+"\n")
 
 
@@ -220,7 +220,7 @@ if __name__ == "__main__":
     a = {
         "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         "EVENTCODE"       : EVENT_CODE,
-        "PATH_TO_FTCAPI"  : PATH_TO_FTCAPI,
+        "PROJECT_PATH"  : PROJECT_PATH,
         "CRAPPY_LAPTOP"   : CRAPPY_LAPTOP,
         "DO_JOBLIB_MEMORY": DO_JOBLIB_MEMORY,
         "PATH_TO_JOBLIB_CACHE"  : PATH_TO_JOBLIB_CACHE,

@@ -63,7 +63,7 @@ class CommonResourcesTest(unittest.TestCase):
 
     def test_slashes(self):
         """ Make sure that the paths don't contain both forwardslashes and backslashes """
-        self.assertFalse(self.string_contains_both_slashes(common_resources.PATH_TO_FTCAPI))
+        self.assertFalse(self.string_contains_both_slashes(common_resources.PROJECT_PATH))
         self.assertFalse(self.string_contains_both_slashes(common_resources.PATH_TO_JOBLIB_CACHE))
     
     def test_byte_to_gb(self):

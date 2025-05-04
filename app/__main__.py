@@ -55,7 +55,7 @@ import requests
 from dotenv import load_dotenv
 
 # Local Imports
-from common_resources import PATH_TO_FTCAPI, EVENT_CODE, SEASON_YEAR, log_error, green_check, red_x, info_i
+from common_resources import PROJECT_PATH, EVENT_CODE, SEASON_YEAR, log_error, green_check, red_x, info_i
 from common_resources import DEBUG_LEVEL, __version__
 import sheets_api
 
@@ -133,7 +133,7 @@ def save_response(response:requests.Response, path):
         log_error(f"[__main__] save_response was unable to get the json of a response (saving to path {path})")
         raise e
     
-    with open(os.path.join(PATH_TO_FTCAPI,path),"w") as writer:
+    with open(os.path.join(PROJECT_PATH,path),"w") as writer:
         json.dump(data, writer, indent=4)
 
 def get_matches ():
