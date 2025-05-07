@@ -49,7 +49,7 @@ __all__ = [
     "PATH_TO_FTCAPI", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
     "SPREADSHEET_ID"
 ]
-__version__ = "49.0 Beta"
+__version__ = "49.1 Beta"
 __author__ = "Drew Wingfield"
 
 import sys
@@ -58,15 +58,28 @@ import datetime
 import os
 import pathlib
 
-from python_settings import PythonSettings
-global_settings = PythonSettings()
+import logging
 
-slash = ("\\" if "\\" in global_settings.path_to_ftcapi else "/") # support both forwardslash and backslash type paths
+from dotenv import load_dotenv
+load_dotenv() # Load the environment variables
 
-PATH_TO_FTCAPI = global_settings.path_to_ftcapi+slash # Should have trailing slash!
 
-#region joblibpath
-PATH_TO_JOBLIB_CACHE = os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib")
+# Environment Variables
+PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", None) # The absolute path to the "app" directory within this project.
+DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
+EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
+FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
+SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
+DO_COLOR    = os.getenv("DO_COLOR","true").lower() == "true"
+
+# Google Sheets stuff
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI[:-4] + "ServiceAccountKey.json") # Used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
+SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID", "<placeholder Google Sheets Spreadsheet ID>") # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
+
+
+#region Joblib
+DO_JOBLIB_MEMORY = os.getenv("DO_JOBLIB_MEMORY", "True").lower() == "true"  # Used to be True
+PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib"))
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
@@ -79,35 +92,24 @@ if os.name == "nt":
     else:
         PATH_TO_JOBLIB_CACHE = "\\\\?\\" + PATH_TO_JOBLIB_CACHE
 
-#endregion joblibpath
+#endregion Joblib
 
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
-EVENTCODE = global_settings.event_code
 
 # TODO: make this and its correspondant in jsonparse all caps
 accepted_match_types = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
 
+# This is kind of dead code and needs to be replaced.
 # If using the windows machine (more powerful)
 if "win" in sys.platform:
     CRAPPY_LAPTOP  = False  # if True, inserts many more garbage collections to preserve RAM
     # Whether or not to calculate OPR based on all matches globally
 
-# Otherwise, assume we're using a less powerful linux machine
+# Otherwise, assume we're using a less powerful machine
 else:
     CRAPPY_LAPTOP  = True
     # Whether or not to calculate OPR based on all matches globally
-
-
-# whether or not to memorize functions using joblib.memory
-DO_JOBLIB_MEMORY = True  # Used to be True
-
-# used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
-SERVICE_ACCOUNT_FILE = PATH_TO_FTCAPI[:-4] + "YOUR_SERVICE_ACCOUNT_KEY_FILE_HERE.json"
-SPREADSHEET_ID = "YOUR_SPREADSHEET_ID_HERE"
-# A spreadsheet id is found in the URL of the given sheet:
-# https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
-
 
 
 def get_json(path: str):
@@ -119,14 +121,13 @@ def get_json(path: str):
             return json.load(thefile)  # output.json
     
     except Exception as e:
-        log_error( f"[commonresources.py][get_json] Some Error occured with getting json of path {path}."
+        logger.error( f"[get_json] Some Error occured with getting json of path {path}."
                     + f" Usually caused by an empty or malformed file. Raising this to the console. Full error message: {e}"
         )
         raise e
     
     #except json.decoder.JSONDecodeError as e:
-    #    print(red_x()+"  get_json JSONDecodeError on path "+str(path))
-    #    print()
+    #    logger.error("  get_json JSONDecodeError on path "+str(path))
     #    raise e
 
 # The Colors class was taken from rene-d (2018)
@@ -181,14 +182,6 @@ def byte_to_gb(bytes) -> float:
     return round((bytes / (10**9)), 4)
 
 
-def log_error(message: str, level="ERROR") -> None:
-    """
-    Logs an error message (with timestamp) to the error log at PATH_TO_FTCAPI/errors.log
-    """
-    with open(os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"), "a") as myfile:
-        myfile.write(f"[{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}][{level}!] "+str(message)+"\n")
-
-
 def seconds_to_time(seconds, roundto=3) -> str:
     
     minutes = int(seconds//60)
@@ -207,15 +200,104 @@ def seconds_to_time(seconds, roundto=3) -> str:
 
     else:
         return f"{minutes} minutes, {seconds_remainder} seconds"
-    
+
+
+
+#region Logging
+# With help from 
+# https://docs.python.org/3/howto/logging.html#logging-basic-tutorial
+# and https://stackoverflow.com/a/57205433/25598210
+# for logging
+
+def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False):
+    """
+    Creates a logger object for the given script name and adds the appropriate handles.
+    Adds a console handler (INFO), error handler (WARNING, to generatedfiles/errors.log), 
+    and a debug handler (DEBUG, to generatedfiles/debug.log).
+
+    If disable_debug is true, disables the debug handler and sets the main logging lefel to INFO.
+    """
+    # Set some settings for optimization and speed
+    logging.logThreads = False
+
+
+    # create logger
+    logger = logging.getLogger(name)
+
+    if disable_debug:
+        logger.setLevel(logging.INFO) # Sets overall level to INFO so less cpu time is wasted on debug logging.
+    else:
+        logger.setLevel(logging.DEBUG)
+
+    if not logger.handlers:
+        # Create Console handler
+        cons_h = logging.StreamHandler()
+        cons_h.setLevel(logging.INFO)
+
+        # Create Error handler
+        err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
+        err_h.setLevel(logging.WARNING)
+
+        # Create Debug handler if enabled
+        if not(disable_debug):
+            deb_h = logging.FileHandler(
+                    filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
+                    mode=str("w" if flush_debug_log else "a")
+                )
+            deb_h.setLevel(logging.DEBUG)
+
+        # Create formatters
+        formatter = logging.Formatter("{asctime} | {name} | {levelname:9} | {message}",style="{")
+
+        # Add color to console formatter, if enabled.
+        if DO_COLOR:
+            console_formatter = logging.Formatter(
+                ""
+                    + Colors.GREEN
+                    + "{asctime}"+ Colors.DARK_GRAY +" | "
+                    + Colors.BLUE
+                    + "{name}" + Colors.DARK_GRAY
+                    + " | " + Colors.PURPLE
+                    + "{levelname}"+Colors.DARK_GRAY+" | "+Colors.END
+                    + "{message}", 
+                style="{",
+                datefmt="%H:%M:%S"
+                )
+        else:
+            console_formatter = formatter
+
+        # Add formatters
+        cons_h.setFormatter(console_formatter)
+        err_h.setFormatter(formatter)
+        if not(disable_debug): deb_h.setFormatter(formatter)
+
+        # Add handlers to logger
+        logger.addHandler(cons_h)
+        logger.addHandler(err_h)
+        if not(disable_debug): logger.addHandler(deb_h)
+
+    else:
+        logger.debug("[create_logger] Logger already has handlers. Skipping handler creation.")
+
+    logger.debug("Initialized logger.")
+
+    if flush_debug_log:
+        logger.debug("Flushed debug log.")
+
+    return logger
+
+#endregion Logging
+
+
 
 
 if __name__ == "__main__":
-    print(info_i()+"[commonresources] This file was called as __main__, which usually does not happen.")
-    print(info_i()+"    Displaying constants and their values:")
+    logger = create_logger("common_resources")
+    logger.warning("common_resources.py was called as __main__, which should not happen!")
+    logger.info("Displaying constants and their values:")
     a = {
         "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
-        "EVENTCODE"       : EVENTCODE,
+        "EVENTCODE"       : EVENT_CODE,
         "PATH_TO_FTCAPI"  : PATH_TO_FTCAPI,
         "CRAPPY_LAPTOP"   : CRAPPY_LAPTOP,
         "DO_JOBLIB_MEMORY": DO_JOBLIB_MEMORY,
@@ -226,7 +308,7 @@ if __name__ == "__main__":
         "sys.platform": sys.platform
     }
     for i in a.keys():
-        print(info_i()+f"      - {i:<30} {str(type(a[i])):<15} = {a[i]}")
+        logger.info(f"  - {i:<30} {str(type(a[i])):<15} = {a[i]}")
 
 
 
