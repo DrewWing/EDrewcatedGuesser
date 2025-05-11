@@ -287,6 +287,15 @@ if "help" in [arg.lower().replace("-","") for arg in sys.argv]:
 
 logger.info("Setup complete.")
 
+
+# Warn user if the API data doesn't exist.
+logger.debug("Checking for FIRST API data path existence...")
+if os.path.exists(""):
+    logger.debug("FIRST API data found!")
+
+else:
+    logger.critical("FIRST API data does not exist! Either FIRST API calls are disabled, or something went wrong with the FIRST API calls.")
+
 if ONE_CYCLE_ONLY:
     cycle()
 
