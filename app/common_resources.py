@@ -238,13 +238,13 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
         cons_h.setLevel(logging.INFO)
 
         # Create Error handler
-        err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
+        err_h = logging.FileHandler(filename=os.path.join(PROJECT_PATH,"app","generatedfiles","errors.log"))
         err_h.setLevel(logging.WARNING)
 
         # Create Debug handler if enabled
         if not(disable_debug):
             deb_h = logging.FileHandler(
-                    filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
+                    filename=os.path.join(PROJECT_PATH,"app","generatedfiles","debug.log"),
                     mode=str("w" if flush_debug_log else "a")
                 )
             deb_h.setLevel(logging.DEBUG)
