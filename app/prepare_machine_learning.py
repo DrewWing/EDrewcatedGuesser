@@ -48,7 +48,7 @@ if __name__ == "__main__":
     print("   [prepare-machinelearning.py] This script was called as __main__")
     print("         Importing...")
 
-from common_resources import PATH_TO_FTCAPI, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, get_json, byte_to_gb, seconds_to_time
+from common_resources import PROJECT_PATH, DO_JOBLIB_MEMORY, NUMBER_OF_DAYS_FOR_RECENT_OPR, get_json, byte_to_gb, seconds_to_time
 from common_resources import DEBUG_LEVEL, create_logger
 
 import logging
@@ -431,9 +431,9 @@ if DEBUG_LEVEL>3 and logger.isEnabledFor(logging.DEBUG):
 training_data_matches = dataframe_remove_zeroes(training_data_matches, ["redOPR","blueOPR"])
 
 logger.debug(f" Training data matches end shape {training_data_matches.shape}")
-logger.debug(f" Now saving machine file as {os.path.join(PATH_TO_FTCAPI,"machine_file.csv")}")
+logger.debug(f" Now saving machine file as {os.path.join(PROJECT_PATH,"app","machine_file.csv")}")
 
-training_data_matches.to_csv(os.path.join(PATH_TO_FTCAPI,"machine_file.csv"), index=False)
+training_data_matches.to_csv(os.path.join(PROJECT_PATH,"app","machine_file.csv"), index=False)
 
 logger.info(" Saved to machine_file.csv.")
 #endregion Saving
