@@ -84,11 +84,24 @@ class importsTest(unittest.TestCase):
             import common_resources
             import OPR
             import json_parse
-            import init_settings #TODO: this uses argparse, fix this test later
             import sheets_api #TODO: fix this one too
-        
+
         except ImportError as e:
             raise AssertionError(e)
+        
+
+    def test_logging(self): # Test logging
+            from common_resources import create_logger
+
+            logger = create_logger("test_imports",flush_debug_log=False,disable_debug=False)
+            logger.info("This is a test of the logging system.")
+            logger.debug("[TEST] This is a debug message. It should show up in debug.log")
+            logger.info("[TEST] This is an info message. It should show up in debug.log")
+            logger.warning("[TEST] This is a warning message. It should show up in debug.log and in errors.log")
+            logger.error("[TEST] This is an error message. It should show up in debug.log and in errors.log")
+            logger.critical("[TEST] This is a critical message. It should show up in debug.log and in errors.log")
+
+        
 
 
 
