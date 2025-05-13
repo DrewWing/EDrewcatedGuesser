@@ -584,7 +584,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=lo
     
     sorted_results_pd.to_csv(output_file_path, index=False)
 
-    logger.info(f"[do_all_opr_stuff] Saved sorted statistics to {output_file_path.replace(PATH_TO_FTCAPI,'')}")
+    logger.info(f"[do_all_opr_stuff] Saved sorted statistics to {output_file_path.replace(PROJECT_PATH,'')}")
 
 #endregion functions
 
