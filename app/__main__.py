@@ -56,7 +56,7 @@ import requests
 from dotenv import load_dotenv
 
 # Local Imports
-from common_resources import PATH_TO_FTCAPI, EVENT_CODE, SEASON_YEAR, create_logger
+from common_resources import PROJECT_PATH, EVENT_CODE, SEASON_YEAR, create_logger
 from common_resources import __version__, make_required_directories
 import sheets_api
 
@@ -146,7 +146,7 @@ def save_response(response:requests.Response, path):
         logger.error(f"save_response was unable to get the json of a response (saving to path {path})")
         raise e
     
-    with open(os.path.join(PATH_TO_FTCAPI,path),"w") as writer:
+    with open(os.path.join(PROJECT_PATH,path),"w") as writer:
         json.dump(data, writer, indent=4)
 
 def get_matches ():
@@ -158,7 +158,7 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/{SEASON_YEAR}/eventdata/event_matches.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/event_matches.json")
 
 
     # Get the teams for the event
@@ -167,7 +167,7 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/{SEASON_YEAR}/eventdata/event_teams.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/event_teams.json")
 
 
     # Get the event as a whole and put it into opr/all_events/EVENTCODE (needed for event-only OPR calculation)
@@ -176,7 +176,7 @@ def get_matches ():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/{SEASON_YEAR}/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
     
 
 
@@ -187,7 +187,7 @@ def get_rankings():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/{SEASON_YEAR}eventdata/event_rankings.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}eventdata/event_rankings.json")
     
 
 
@@ -199,7 +199,7 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/{SEASON_YEAR}/eventdata/eventschedule_qual.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/eventschedule_qual.json")
 
     # Playoffs
     response = requests.get(
@@ -207,7 +207,7 @@ def get_schedule():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"generatedfiles/{SEASON_YEAR}/eventdata/eventschedule_playoff.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/eventschedule_playoff.json")
 
 
 
