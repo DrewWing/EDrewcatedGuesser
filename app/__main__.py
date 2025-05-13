@@ -159,6 +159,8 @@ def get_matches ():
     )
 
     save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/event_matches.json")
+    # Get the event as a whole and put it into opr/all_events/EVENTCODE (needed for event-only OPR calculation)
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
 
 
     # Get the teams for the event
@@ -169,14 +171,6 @@ def get_matches ():
 
     save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/event_teams.json")
 
-
-    # Get the event as a whole and put it into opr/all_events/EVENTCODE (needed for event-only OPR calculation)
-    response = requests.get(
-        url=f"https://ftc-api.firstinspires.org/v2.0/{SEASON_YEAR}/matches/{EVENT_CODE}",
-        headers=AUTHORIZATION_HEADER
-    )
-
-    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/opr/all_events/{EVENT_CODE.replace('/','_')}.json")
     
 
 
@@ -290,7 +284,7 @@ logger.info("Setup complete.")
 
 # Warn user if the API data doesn't exist.
 logger.debug("Checking for FIRST API data path existence...")
-if os.path.exists(""):
+if os.path.exists(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"event_matches.json")):
     logger.debug("FIRST API data found!")
 
 else:
