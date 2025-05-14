@@ -73,7 +73,7 @@ DELAY_SECONDS   = int(os.getenv("DELAY_SECONDS", 120)) # Seconds between each cy
 ONE_CYCLE_ONLY  = os.getenv("ONE_CYCLE_ONLY", "False").lower() == "true" # Bool, if true only does one cycle
 DRY_RUN         = os.getenv("DRY_RUN","False").lower() == "true"
 DISABLE_API_CALLS       = os.getenv("DISABLE_API_CALLS","False").lower() == "true"
-DISABLE_GOOGLE_API_CALLS= os.getenv("DISABLE_GOOGLE_CALLS","False").lower() == "true"
+DISABLE_GOOGLE_API_CALLS= os.getenv("DISABLE_GOOGLE_API_CALLS","False").lower() == "true"
 DISABLE_FTC_API_CALLS   = os.getenv("DISABLE_FTC_API_CALLS","False").lower() == "true"
 AUTHORIZATION_HEADER    = {"authorization":"Basic "+os.getenv("PERSONAL_ACCESS_TOKEN", "<placeholder personal access token>")}
 
