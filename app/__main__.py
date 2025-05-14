@@ -58,6 +58,7 @@ from dotenv import load_dotenv
 # Local Imports
 from common_resources import PROJECT_PATH, EVENT_CODE, SEASON_YEAR, create_logger
 from common_resources import __version__, make_required_directories
+make_required_directories() # Make the required directories if they don't exist already.
 import sheets_api
 
 
@@ -68,9 +69,6 @@ logger = create_logger("__main__",flush_debug_log=FLUSH_DEBUG_LOG)
 logger.info("Setting up...")
 
 load_dotenv() # Load environment variables
-
-# Make the required directories if they don't exist already.
-make_required_directories()
 
 DELAY_SECONDS   = int(os.getenv("DELAY_SECONDS", 120)) # Seconds between each cycle
 ONE_CYCLE_ONLY  = os.getenv("ONE_CYCLE_ONLY", "False").lower() == "true" # Bool, if true only does one cycle
@@ -181,7 +179,7 @@ def get_rankings():
         headers=AUTHORIZATION_HEADER
     )
 
-    save_response(response, f"app/generatedfiles/{SEASON_YEAR}eventdata/event_rankings.json")
+    save_response(response, f"app/generatedfiles/{SEASON_YEAR}/eventdata/event_rankings.json")
     
 
 
@@ -284,7 +282,7 @@ logger.info("Setup complete.")
 
 # Warn user if the API data doesn't exist.
 logger.debug("Checking for FIRST API data path existence...")
-if os.path.exists(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"event_matches.json")):
+if os.path.exists(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"eventdata","event_matches.json")):
     logger.debug("FIRST API data found!")
 
 else:

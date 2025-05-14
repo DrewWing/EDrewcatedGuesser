@@ -50,7 +50,7 @@ import os
 import logging
 
 from common_resources import get_json, PROJECT_PATH, accepted_match_types, create_logger
-from common_resources import DEBUG_LEVEL
+from common_resources import DEBUG_LEVEL, SEASON_YEAR
 
 logger = create_logger("json_parse")
 
@@ -75,7 +75,7 @@ def get_team_stats(team_number) -> dict:
     if DEBUG_LEVEL>1:
         logger.info(f"[get_team_stats] Getting team stats for team #{team_number}")
     
-    all_oprs = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles","opr","opr_result_sorted.csv"), index_col=False)
+    all_oprs = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_result_sorted.csv"), index_col=False)
 
     try:
         team_stats["OPR"]     = all_oprs[all_oprs["Team"]==team_number]["OPR"].values[0]
@@ -95,7 +95,7 @@ def get_team_stats(team_number) -> dict:
         team_stats["CCWM"]    = 1
     #Team,OPR,AutoOPR,CCWM
 
-    all_oprs_recent = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles","opr","opr_recent_result_sorted.csv"), index_col=False)
+    all_oprs_recent = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_recent_result_sorted.csv"), index_col=False)
 
     try:
         team_stats["recentOPR"]     = all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]["OPR"].values[0]
@@ -643,11 +643,11 @@ def write_needed_events(season_events, texasonly=False):
     """
     logger.info(" Writing needed events...")
     
-    rawevents = open(os.path.join(PROJECT_PATH,"app","generatedfiles","opr","needed_events_raw.json"),"w+")
+    rawevents = open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","needed_events_raw.json"),"w+")
     rawevents.truncate()
     rawevents.write('{"matches":[\n')
     
-    with open(os.path.join(PROJECT_PATH+"app","generatedfiles","opr","needed-event-ids.txt"),"w+") as thefile:
+    with open(os.path.join(PROJECT_PATH+"app","generatedfiles",str(SEASON_YEAR),"opr","needed-event-ids.txt"),"w+") as thefile:
         thefile.truncate() # Clear the file
         filtered_event_list = season_events.filter(type=accepted_match_types, state=("TX" if texasonly else None))
         # Iterate over every event
@@ -670,11 +670,11 @@ def write_needed_teams(use_opr=False):
     """
     allteams = []
     counter  = 0
-    eventcounter = 0
+    event_counter = 0
     if (not use_opr):
-        thepath = os.path.join(PROJECT_PATH,"app","generatedfiles","all_events")
+        thepath = os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_events")
     else:
-        thepath = os.path.join(PROJECT_PATH,"app","generatedfiles","opr","all_events")
+        thepath = os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events")
     
     l=len(os.listdir(thepath))
 
@@ -683,10 +683,10 @@ def write_needed_teams(use_opr=False):
     for file in os.listdir(thepath):
         filename = os.fsdecode(file)
 
-        eventcounter += 1
+        event_counter += 1
 
         if logger.isEnabledFor(logging.INFO): # Skip expensive logging if not enabled
-            logger.info(f"  Event {eventcounter}/{l} - {filename}",end="            \r")
+            logger.info(f"  Event {event_counter}/{l} - {filename}",end="            \r")
 
         #open the file json & extract matches from the event
         a = get_json(thepath+"/"+filename)
@@ -704,7 +704,7 @@ def write_needed_teams(use_opr=False):
     
     logger.info("    Teams assembled. Writing all teams to file team-ids-to-get.txt...       ")
     
-    with open(os.path.join(PROJECT_PATH,"app/generatedfiles",("opr","all-teamids-involved.txt" if use_opr else "team-ids-to-get.txt")),"w+") as thefile:
+    with open(os.path.join(PROJECT_PATH,"app/generatedfiles",str(SEASON_YEAR),("opr","all-teamids-involved.txt" if use_opr else "team-ids-to-get.txt")),"w+") as thefile:
         thefile.truncate() # Clear the file
         for team in allteams:
             thefile.write(str(team)+"\n")
@@ -719,7 +719,7 @@ def loadMatches(filter_by_teams=None) -> pd.DataFrame:
     Returns a pandas object of the csv file containing all matches (reads from all_matches.csv, created by prepare_opr_calculation)
     """
     #TODO: update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles","all_matches.csv"))
+    all_matches = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_matches.csv"))
     all_matches["actualStartTime"] = pd.to_datetime(all_matches["actualStartTime"], "format=mixed")#format="%Y-%m-%"+"dT%H:%M:%S.%"+"f")
 
     # if filter_by_teams isn't none, filter the matches
@@ -752,15 +752,15 @@ def prepare_opr_calculation(
       - specific_event_teams (str) - returns data only for all teams in specified event code.
     """
     
-    matchcounter  = 0
-    eventcounter  = 0
+    match_counter  = 0
+    event_counter  = 0
     try:
         l=len(os.listdir(
             (
-                os.path.join(PROJECT_PATH,"app","generatedfiles","opr","all_events"))
+                os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events"))
             ))
     except FileNotFoundError as e:
-        logger.warning("[prepare_opr_calculation] app/generatedfiles/opr/all_events directory does not exist!")
+        logger.warning(f"[prepare_opr_calculation] app/generatedfiles/opr/{SEASON_YEAR}/all_events directory does not exist!")
 
     matches_per_team_dic = {}
     all_matches_dic = {
@@ -781,32 +781,33 @@ def prepare_opr_calculation(
     if specific_teams != None:
         specific_teams = [ str(i) for i in specific_teams]
 
-    logger.debug("  Getting teams...")
+    logger.debug("[prepare_opr_calculation]  Getting team data from saved places...")
     
     if specific_event==None:
-        path_list = [ os.path.join(PROJECT_PATH,"app","generatedfiles","opr","all_events", j) for j in [i for i in os.listdir(os.path.join(PROJECT_PATH,"app","generatedfiles","opr","all_events"))]]
+        path_list = [ os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events", j) for j in [i for i in os.listdir(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events"))]]
 
     elif specific_event=="RECENT":
         # event_matches.json is updated in ftcapiv3.sh, during the getmatches
-        logger.debug("    [prepare_opr_calculation] Iterating through only event in event_matches.json")
-        path_list = [os.path.join(PROJECT_PATH,"app","generatedfiles","eventdata","event_matches.json")]
+        logger.debug("    [prepare_opr_calculation] Iterating through only event in eventdata/event_matches.json")
+        path_list = [os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"eventdata","event_matches.json")]
         l = 1
     
     else:
         logger.debug("    [prepare_opr_calculation] Iterating through only one event with code "+str(specific_event))
-        path_list = [os.path.join(PROJECT_PATH,"app","generatedfiles","opr","all_events",str(specific_event).upper()+".json")]
+        path_list = [os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events",str(specific_event).upper()+".json")]
         l = 1
 
+    logger.debug(f"    Found {len(path_list)} events (file paths). Listing: "+str(path_list))
     
     # Iterate through all events
     for eventfile in path_list:
         
         eventfilename = os.fsdecode(eventfile)
 
-        eventcounter += 1
+        event_counter += 1
 
         if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f"    Event {eventcounter}/{l} - {eventfilename}",end="            \r")
+            logger.debug(f"    Event {event_counter}/{l} - {eventfilename}",end="            \r")
 
         #open the file json & extract matches from the event
         event_raw_json = get_json(eventfilename)
@@ -814,7 +815,7 @@ def prepare_opr_calculation(
 
         # Iterate over each match
         for match in event_raw_json["matches"]:
-            matchcounter += 1
+            match_counter += 1
 
             # do some opr stuff
             teamsdic = {"Red1":1,"Red2":1,"Blue1":1,"Blue2":1}
@@ -862,7 +863,7 @@ def prepare_opr_calculation(
     if (specific_event_teams != None):
         try:
             # If the current event is the specific event given, add all teams to list
-            event_teams_raw_json = get_json(os.path.join(PROJECT_PATH,"app","generatedfiles","eventdata","event_teams.json")) # Created when FTC APIing
+            event_teams_raw_json = get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"eventdata","event_teams.json")) # Created when FTC APIing
 
             #logger.debug("event_teams_raw_json[teams]"+str(event_teams_raw_json["teams"]))
     
@@ -917,15 +918,15 @@ def prepare_opr_calculation(
     
     #logger.debug(matches_per_team)
     if DEBUG_LEVEL>1:
-        logger.debug("    Teams assembled. Writing all matches per team to file app/generatedfiles/matches_per_team.csv...       ") #TODO: Replace with actual path from os.join
+        logger.debug(f"    Teams assembled. Writing all matches per team to file app/generatedfiles/{SEASON_YEAR}/matches_per_team.csv...       ") #TODO: Replace with actual path from os.join
     
-    matches_per_team.to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles","matches_per_team.csv"), index=False)
+    matches_per_team.to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"matches_per_team.csv"), index=False)
 
 
     if DEBUG_LEVEL>1:
-        logger.debug("    Teams assembled. Writing all team numbers to file app/generatedfiles/team_list_filtered.csv...       ")
+        logger.debug(f"    Teams assembled. Writing all team numbers to file app/generatedfiles/{SEASON_YEAR}/team_list_filtered.csv...       ")
     
-    matches_per_team["teamNumber"].to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles","team_list_filtered.csv"), index=False)
+    matches_per_team["teamNumber"].to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"team_list_filtered.csv"), index=False)
 
     
 
@@ -952,12 +953,12 @@ def prepare_opr_calculation(
     all_matches_pd.sort_values(by="actualStartTime", inplace=True)
     #logger.debug(all_matches_pd)
     
-    logger.debug("    Matches assembled. Writing all teams to file app/generatedfiles/all_matches.csv...       ")
+    logger.debug(f"    Matches assembled. Writing all teams to file app/generatedfiles/{SEASON_YEAR}/all_matches.csv...       ")
     
-    all_matches_pd.to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles","all_matches.csv"), index=False)
+    all_matches_pd.to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_matches.csv"), index=False)
 
     if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
-        logger.debug(f"[prepare_opr_calculation] Wrote about {len(pd.unique(all_matches_pd['Red1']))} (unique in Red1) of teams out of {matchcounter} matches (matchcounter).")
+        logger.debug(f"[prepare_opr_calculation] Wrote about {len(pd.unique(all_matches_pd['Red1']))} (unique in Red1) of teams out of {match_counter} matches (match_counter).")
         logger.debug(f"    Size of the actual all_matches_pd written: {all_matches_pd.size}")
         logger.debug(f"    Shape of the actual all_matches_pd written: {all_matches_pd.shape}")
     
@@ -969,9 +970,9 @@ def prepare_opr_calculation(
 if __name__ == "__main__" and "get-events-global" in sys.argv:
     logger.info("This script was called as __main__")
     logger.info("  Jsonparse getting global event ids that match")
-    logger.info("  Getting the season's data from seasondata at "+os.path.join(PROJECT_PATH,"app","generatedfiles","season_data.json"))
+    logger.info("  Getting the season's data from seasondata at "+os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_data.json"))
 
-    write_needed_events(SeasonEvents(get_json(os.path.join(PROJECT_PATH,"app","generatedfiles","season_data.json"))), texasonly=False)
+    write_needed_events(SeasonEvents(get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_data.json"))), texasonly=False)
 
 
 # -- End of file --
