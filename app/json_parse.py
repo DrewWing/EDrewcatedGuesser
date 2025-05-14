@@ -744,12 +744,19 @@ def prepare_opr_calculation(
     """
     Prepares the OPR calculation and writes to all_matches.csv and matches_per_team.csv
     
-    Draws from opr/all_events (created when curling in the BASH/Powershell script)
-    
     Arguments:
       - specific_event (str) - returns only the data pertaining to the specified event code.
-      - specific_teams (list) - filters all matches by the given teams
+      - specific_teams (list) - returns data only involving the given teams
       - specific_event_teams (str) - returns data only for all teams in specified event code.
+
+    1. Loads all events in opr/all_events (raw FIRST API data), unless specific_event != None.
+    2. Gathers all matches from all loaded events
+    3. Filters matches by teams
+    4. Organizes dictionary of matches per team
+    5. Saves matches per team to app/generatedfiles/{SEASON_YEAR}/matches_per_team.csv
+    6. Saves all teams involved in matches to app/generatedfiles/{SEASON_YEAR}/team_list_filtered.csv
+    7. Saves all matches to app/generatedfiles/{SEASON_YEAR}/all_matches.csv
+    
     """
     
     match_counter  = 0
@@ -781,8 +788,8 @@ def prepare_opr_calculation(
     if specific_teams != None:
         specific_teams = [ str(i) for i in specific_teams]
 
+    #region Load all events
     logger.debug("[prepare_opr_calculation]  Getting team data from saved places...")
-    
     if specific_event==None:
         path_list = [ os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events", j) for j in [i for i in os.listdir(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events"))]]
 
@@ -798,7 +805,9 @@ def prepare_opr_calculation(
         l = 1
 
     logger.debug(f"    Found {len(path_list)} events (file paths). Listing: "+str(path_list))
-    
+    #endregion
+
+    #region Filter data
     # Iterate through all events
     for eventfile in path_list:
         
@@ -806,8 +815,8 @@ def prepare_opr_calculation(
 
         event_counter += 1
 
-        if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f"    Event {event_counter}/{l} - {eventfilename}",end="            \r")
+        if DEBUG_LEVEL>2:
+            logger.debug(f"    Event {event_counter}/{l} - {eventfilename}")
 
         #open the file json & extract matches from the event
         event_raw_json = get_json(eventfilename)
@@ -817,7 +826,7 @@ def prepare_opr_calculation(
         for match in event_raw_json["matches"]:
             match_counter += 1
 
-            # do some opr stuff
+            # Sort the team numbers into teamsdic
             teamsdic = {"Red1":1,"Red2":1,"Blue1":1,"Blue2":1}
 
             for i in match["teams"]:
@@ -826,9 +835,9 @@ def prepare_opr_calculation(
             """
             red1, red2, redscore, redauto, blue1, blue2, bluescore, blueauto
             """
-            # If the teams are in the valid list (or all teams are acceptable)
+            # Filter matches with teams in specific_teams (or all matches if no specific_teams specified)
             if (
-                (specific_teams==None) or 
+                (specific_teams == None) or 
                 (str(teamsdic["Red1"])  in specific_teams) or
                 (str(teamsdic["Red2"])  in specific_teams) or
                 (str(teamsdic["Blue1"]) in specific_teams) or
@@ -838,18 +847,19 @@ def prepare_opr_calculation(
                 for i in ["actualStartTime","description","tournamentLevel", "scoreRedAuto","scoreBlueAuto"]:
                     all_matches_dic[i].append(match[i])
 
+                # Make all scoring "NP" or non-penalty
                 all_matches_dic["scoreRedFinal"].append( match["scoreRedFinal"] -match["scoreBlueFoul"])
                 all_matches_dic["scoreBlueFinal"].append(match["scoreBlueFinal"]-match["scoreRedFoul"])
-                # add the team numbers to the all_matches dictionary
+                # Add the team numbers to the all_matches dictionary
                 all_matches_dic["Red1" ].append(teamsdic["Red1"])
                 all_matches_dic["Red2" ].append(teamsdic["Red2"])
                 all_matches_dic["Blue1"].append(teamsdic["Blue1"])
                 all_matches_dic["Blue2"].append(teamsdic["Blue2"])
             
 
-            # Extract teams
+            # Add the current match into each team's list of matches
             for team in match["teams"]:
-                # if team in specified teams (or no specified teams)
+                # If team in specified teams (or no specified teams)
                 if (specific_teams==None) or (str(team["teamNumber"]) in specific_teams):
                     #logger.debug("team "+str(team))
                     # If team isn't already in the matches_per_team_dic
@@ -916,6 +926,9 @@ def prepare_opr_calculation(
     if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
         logger.debug("    End shape of matches_per_team: "+str(matches_per_team.shape))
     
+    #endregion Filter data
+
+    #region Save data
     #logger.debug(matches_per_team)
     if DEBUG_LEVEL>1:
         logger.debug(f"    Teams assembled. Writing all matches per team to file app/generatedfiles/{SEASON_YEAR}/matches_per_team.csv...       ") #TODO: Replace with actual path from os.join
@@ -956,6 +969,7 @@ def prepare_opr_calculation(
     logger.debug(f"    Matches assembled. Writing all teams to file app/generatedfiles/{SEASON_YEAR}/all_matches.csv...       ")
     
     all_matches_pd.to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_matches.csv"), index=False)
+    #endregion Save data
 
     if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
         logger.debug(f"[prepare_opr_calculation] Wrote about {len(pd.unique(all_matches_pd['Red1']))} (unique in Red1) of teams out of {match_counter} matches (match_counter).")
