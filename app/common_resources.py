@@ -44,10 +44,10 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 
 __all__ = [
-    "get_json", "log_error", "byte_to_gb", "seconds_to_time", 
+    "get_json", "byte_to_gb", "seconds_to_time", 
     "NUMBER_OF_DAYS_FOR_RECENT_OPR", "DO_JOBLIB_MEMORY", 
-    "PROJECT_PATH", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
-    "SPREADSHEET_ID"
+    "PROJECT_PATH", "PATH_TO_JOBLIB_CACHE", "SERVICE_ACCOUNT_FILE", 
+    "SPREADSHEET_ID", "CALCULATION_MODE"
 ]
 __version__ = "49.1 Beta"
 __author__ = "Drew Wingfield"
@@ -71,9 +71,16 @@ del default_path
 
 DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
 EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
-FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
 SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
 DO_COLOR    = os.getenv("DO_COLOR","true").lower() == "true"
+
+
+# Statistics calculation mode
+CALCULATION_MODE = str(os.getenv("CALCULATION_MODE","AUTO")).upper()
+# AUTO - automatic mode, only runs global calculations if any team being calculated doesn't already have global calculations, or if the last time global calcs was run is >30 days ago.
+# LOCAL - local mode, disables global (season-wide) calculations and only runs calcs on the currently running event.
+# GLOBAL - global mode, only runs global (all-season) calcs.
+# ALL - all mode, runs both local and global calculations every cycle.
 
 # Google Sheets stuff
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PROJECT_PATH + "ServiceAccountKey.json") # Used in sheetsapi
@@ -100,8 +107,8 @@ if os.name == "nt":
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
 
-# TODO: make this and its correspondant in jsonparse all caps
-accepted_match_types = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
+# The types of events to accept. All others will be filtered out (used in json_parse.py). See the FIRST API docs for more info on types.
+ACCEPTED_EVENT_TYPES = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
 
 # This is kind of dead code and needs to be replaced.
 # If using the windows machine (more powerful)
@@ -123,7 +130,7 @@ def make_required_directories():
         f"app/generatedfiles/{SEASON_YEAR}",
         #f"app/generatedfiles/{SEASON_YEAR}/joblibcache",
         f"app/generatedfiles/{SEASON_YEAR}/opr",
-        f"app/generatedfiles/{SEASON_YEAR}/opr/all-events",
+        f"app/generatedfiles/{SEASON_YEAR}/opr/all_events",
         #f"app/generatedfiles/{SEASON_YEAR}opr/all-teams",
         f"app/generatedfiles/{SEASON_YEAR}/eventdata"
     ]:

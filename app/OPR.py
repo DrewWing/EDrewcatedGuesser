@@ -57,11 +57,12 @@ import time
 import sys
 import os
 import logging
+import datetime
 
 # Internal Imports
 import json_parse
 from common_resources import PROJECT_PATH, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENT_CODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY, SEASON_YEAR
-from common_resources import DEBUG_LEVEL, FIELD_MODE
+from common_resources import DEBUG_LEVEL, CALCULATION_MODE
 from common_resources import byte_to_gb, seconds_to_time, create_logger
 
 logger = create_logger("OPR")
@@ -108,7 +109,7 @@ except Exception as e:
 
 
 logger.info("All imports successful. Setup complete.")
-logger.info(f"field_mode is {FIELD_MODE}. Global calcs will {'' if (FIELD_MODE) else 'NOT '}be run.")
+logger.info(f"CALCULATION_MODE is {CALCULATION_MODE}.")
 
 
 if __name__ == "__main__":
@@ -124,7 +125,7 @@ def convertToList(statMatrix) -> list:
 
 def loadTeamNumbers() -> list:
     """
-    Loads teams from a csv file team_list_filtered.csv (created in jsonparse.py)
+    Returns a list of team numbers from the file team_list_filtered.csv (created by json_parse.prepare_opr_calculation)
     """
     return list(pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"team_list_filtered.csv"))["teamNumber"])
 
@@ -252,8 +253,8 @@ def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
         #for match in matches:
         for row in matches.itertuples(index=False):
             # Display progress
-            if (counter%50==0) and (logger.isEnabledFor(logging.INFO)):
-                logger.info(f"    Match {counter}/{total_l}    {round(100*(counter/total_l), 2)}%   ")
+            if (counter%50==0) and (logger.isEnabledFor(logging.DEBUG)): #NOTE: We don't want to waste time with calculations if debug disabled
+                logger.debug(f"    Match {counter}/{total_l}    {round(100*(counter/total_l), 2)}%   ")
             counter += 1
             
             r = []
@@ -367,17 +368,17 @@ def calculate_opr(M: numpy.matrix, Scores: numpy.matrix, Autos: numpy.matrix, Ma
     
     Inspired by this guide for OPR calculation: https://blog.thebluealliance.com/2017/10/05/the-math-behind-opr-an-introduction/
     """
-    logger.info("[calculate_opr] Getting OPRs, Autos, and CCWMs")
+    logger.info("[calculate_opr] Calculating OPRs, Autos, and CCWMs (this could take awhile)")
     
-    logger.debug(" Getting OPRs")
+    logger.debug(" Calculating OPRs")
     
     OPRs = numpy.linalg.lstsq(M, Scores, rcond=None)[0]
 
-    logger.debug(" Getting Autos")
+    logger.debug(" Calculating Autos")
     
     AUTOs = numpy.linalg.lstsq(M, Autos, rcond=None)[0]
 
-    logger.debug(" Getting CCWMs")
+    logger.debug(" Calculating CCWMs")
 
     CCWMs = numpy.linalg.lstsq(M, Margins, rcond=None)[0]
 
@@ -471,15 +472,18 @@ def create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs) -> pd.DataFrame:
     return sorted_results_pd
 
 
-def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=loadTeamNumbers(), load_m=False, fallback=None):
+def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list="<default>", load_m=False, fallback=None):
     """
     Calculates OPR based on input matches (from load_matches), and saves the sorted results to the output filepath (csv).
     If fallback is set to the string 'zeroes', and there are empty dataframes, it will fill them with zeroes. Otherwise, it
     returns an error.
     """
+    if teams=="<default>": #NOTE: Cannot use Python's default argument hints as it runs on import.
+        teams = loadTeamNumbers()
+    
     # Build M
     if (DO_JOBLIB_MEMORY):
-        logger.info("    build_m.check_call_in_cache (will func use joblib cache?) = "+str(build_m.check_call_in_cache(load_m, matches, teams=loadTeamNumbers())))
+        logger.info(f"[do_all_opr_stuff]    Will build_m use joblib cache? {build_m.check_call_in_cache(load_m, matches, teams=teams)} (build_m.check_call_in_cache)")
 
     M = build_m(load_m, matches, teams=teams) # Type numpy.matrix with ones and zeroes
 
@@ -517,7 +521,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=lo
     # This is the real intense operation...
     # Actually calculate the OPR
     if (DO_JOBLIB_MEMORY):
-        logger.info("    calculate_opr.check_call_in_cache (will func use joblib cache?) = "+str(calculate_opr.check_call_in_cache(M, Scores, Autos, Margins)))
+        logger.info("[do_all_opr_stuff]    calculate_opr.check_call_in_cache (will func use joblib cache?) = "+str(calculate_opr.check_call_in_cache(M, Scores, Autos, Margins)))
 
     OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins)
 
@@ -565,7 +569,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=lo
             logger.debug(CCWMs)
             logger.debug("")
 
-    logger.debug("    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)")
+    logger.debug("[do_all_opr_stuff]    Rounding OPRs, AUTOs, and CCWMs to 14 places (prevents extremely near-zero values such as 10^-16)")
 
     OPRs  = OPRs.round(14)
     AUTOs = AUTOs.round(14)
@@ -573,14 +577,14 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list=lo
 
 
     if (DO_JOBLIB_MEMORY):
-        logger.info(" create_and_sort_stats.check_call_in_cache (will func use joblib cache?) = "+str(create_and_sort_stats.check_call_in_cache(teamsList, OPRs, AUTOs, CCWMs)))
+        logger.info(f"[do_all_opr_stuff] Will create_and_sort_stats use joblib cache? {create_and_sort_stats.check_call_in_cache(teamsList, OPRs, AUTOs, CCWMs)} (create_and_sort_stats.check_call_in_cache)")
     
     
     # Put everything into a pandas dataframe and sort by OPR
     sorted_results_pd = create_and_sort_stats(teamsList, OPRs, AUTOs, CCWMs)
     
     # Now write to the csv file
-    logger.debug(f"[d0_all_opr_stuff] Writing to the pandas csv file {output_file_path}...")
+    logger.debug(f"[do_all_opr_stuff] Writing to the pandas csv file {output_file_path}...")
     
     sorted_results_pd.to_csv(output_file_path, index=False)
 
@@ -595,6 +599,7 @@ def master_function(memory=memory):
     # NOTE that memorized functions will not read or write to files, so
     # any func that deals in files shouldn't be cached.
     if (DO_JOBLIB_MEMORY):
+        logger.debug("Caching functions calculate_opr, build_m, build_scores, and create_and_sort_stats using Joblib because DO_JOBLIB_MEMORY=True")
         calculate_opr, build_m, build_scores, create_and_sort_stats = cache_heavy_functions(
             memory=memory,
             calculate_opr_f=calculate_opr,
@@ -604,76 +609,49 @@ def master_function(memory=memory):
         ) # Doesn't work non-locally
 
     else:
-        logger.info("NOT doing joblib memory caching - the respective variable in commonresources is False.")
+        logger.debug("NOT caching using Joblib - the respective variable in commonresources is False.")
     #endregion Joblib memory
 
-    #region set settings
 
-    # While in "field_mode" (during an event), global calcs take waaay to long.
-    # We instead assume that the person was smart and ran a global calc session
-    # very recently before the event, and use the previous global stats.
-    if FIELD_MODE:
-        do_opr_for_all_time = True
-        do_opr_event_only   = True
-        do_opr_recent       = True
-        do_opr_global       = False
+    if not(CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE","GLOBAL","LOCAL","ALL"]):
+        logger.error(f"CALCULATION_MODE ({CALCULATION_MODE}) is not a valid choice!")
+    
 
-    else:
-        # Not in field_mode, enable all calculations
-        do_opr_for_all_time = True
-        do_opr_event_only   = True
-        do_opr_recent       = True
-        do_opr_global       = True
+    # Get the time since last global calcs were run
+    try:
+        logger.debug("Getting the time since last global calcs were run...")
+        with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_calc_date.txt"),"r") as reader:
+            t_one = reader.read()
+        t_one = t_one.strip()
+        t_one = datetime.datetime.strptime(t_one,"%Y/%m/%d %H:%M:%S")
+    
+    except FileNotFoundError:
+        logger.warning(f"File app/generatedfiles{SEASON_YEAR}opr/opr_global_calc_date.txt was not found. This is normal if this is the first time running the program.")
+        t_one = datetime.date(1970,1,1) # Set it as epoch as a backup
 
-
-    if ("recentonly" in sys.argv) or ("recent_only" in sys.argv) or ("recent-only" in sys.argv):
-        do_opr_for_all_time = False
-        do_opr_event_only   = False
-        do_opr_recent       = True
-        do_opr_global       = False
-        do_team_stats       = False
-
-    elif ("alltimeonly" in sys.argv) or ("alltime_only" in sys.argv) or ("alltime-only" in sys.argv):
-        do_opr_for_all_time = True
-        do_opr_event_only   = False
-        do_opr_recent       = False
-        do_opr_global       = False
-        do_team_stats       = False
+    time_since_global_calc = datetime.datetime.today() - t_one
+    logger.debug(f"Time since last global calcs were run: {time_since_global_calc} or {time_since_global_calc.days} days")
 
 
-    if ("eventonly" in sys.argv) or ("event_only" in sys.argv) or ("event-only" in sys.argv):
-        do_opr_for_all_time = False
-        do_opr_event_only   = True
-        do_opr_recent       = False
-        do_opr_global       = False
-        do_team_stats       = False
-
-
-    if ("teamstatsonly" in sys.argv) or ("teamstats_only" in sys.argv) or ("teamstats-only" in sys.argv):
-        do_opr_for_all_time = False
-        do_opr_event_only   = False
-        do_opr_recent       = False
-        do_opr_global       = False
-        do_team_stats       = True
-    #endregion set settings
-
-    if do_opr_global:
+    # Season-long, all-teams data. No restrictions, all events used.
+    if (CALCULATION_MODE in ["ALL","GLOBAL"]
+            #or (CALCULATION_MODE in ["AUTO_CONSERVATIVE"] and some_team_doesnt_have_global_opr_stats) #TODO
+            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.days >= 30)):
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation for global calculation...")
+        logger.info("Preparing for OPR calculation - Global, season-long, all-teams. No restrictions, all events in opr/all_events are used.")
 
-        # Use all matches data (no specific_event)
-        json_parse.prepare_opr_calculation()  # specific_event=event_code)
+        # Use all matches data in generatedfiles/{SEASON_YEAR}/opr/all_events (no specific_event or teams)
+        json_parse.prepare_opr_calculation()
 
 
         # Load teams and matches from txt files
-        logger.info("Loading teams")
+        logger.info("Loading teams and matches...")
 
-        teams   = loadTeamNumbers()  # Uses team_list_filtered.csv (created in jsonparse)
-        matches = loadMatches()  # Uses all_matches.csv
+        teams   = loadTeamNumbers() # Uses team_list_filtered.csv (created by json_parse.prepare_opr_calculation)
+        matches = loadMatches() # Uses all_matches.csv (created by json_parse.prepare_opr_calculation)
 
-
-        logger.info("Number of teams:"+str(len(teams)))
-        logger.info("Calculating global OPR for all matches.")
+        logger.info(f"Loaded {len(teams)} teams and {matches.shape[1]} matches")
+        logger.info("Calculating global OPR for all matches and all teams.")
 
         do_all_opr_stuff(
             matches=matches,
@@ -682,26 +660,26 @@ def master_function(memory=memory):
             load_m=False
         )
 
+        # Write the current datestamp to a file so we can determine days since last global calculations were run
+        with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_calc_date.txt"),"w") as writer:
+            writer.truncate()
+            writer.write(datetime.datetime.strftime(datetime.date.today(),"%Y/%m/%d %H:%M:%S"))
 
 
-    if do_opr_for_all_time:
+    # Season-long data for the teams in the event.
+    elif (CALCULATION_MODE in ["AUTO","GLOBAL"]
+            or (CALCULATION_MODE in ["AUTO_CONSERVATIVE"] and time_since_global_calc.days >= 365)): # If AUTO and global OPR is up to date, or if global calcs have never been run
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation (all-time OPR for teams in given event only)...")
+        logger.info("Preparing for OPR calculation - Season-long OPR for teams in given event only...")
 
         # for the first one, use all matches data
-        json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)#specific_event=event_code)
-
-
+        json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)
 
         # Load teams and matches from txt files
         logger.info("Loading teams")
 
         teams   = loadTeamNumbers()
-        #logger.debug("teams")
-        #logger.debug(teams)
-        
         matches = loadMatches(filter_by_teams=teams)
-
 
         logger.info("Number of teams:"+str(len(teams)))
         logger.info("Calculating all-time OPR for all matches.")
@@ -715,15 +693,10 @@ def master_function(memory=memory):
 
 
 
-    #
-    # Now calculate RECENT OPR
-    #
-    #
-    #event_code=sys.argv[-1]
-
-    if do_opr_recent:
+    # Recent (last 30 days) stats for teams in current event.
+    if (CALCULATION_MODE in ["ALL","AUTO","AUTO_CONSERVATIVE"]):
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation recent only...")
+        logger.info(f"Preparing for OPR calculation recent (last {NUMBER_OF_DAYS_FOR_RECENT_OPR} days for teams in current event)...")
 
         # for the first one, use all matches data
         json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)#specific_event=event_code)
@@ -734,7 +707,7 @@ def master_function(memory=memory):
         logger.info("Loading teams")
 
         teams   = loadTeamNumbers()
-        matches = loadMatchesByRecent(filter_by_teams=teams)
+        matches = loadMatchesByRecent(filter_by_teams=teams, number_of_days_from_today=NUMBER_OF_DAYS_FOR_RECENT_OPR)
 
 
 
@@ -750,14 +723,11 @@ def master_function(memory=memory):
         )
 
 
-    #
-    # Now calculate OPR within event
-    #
-    #
-    if do_opr_event_only:
+    # Event-only matches.
+    if (CALCULATION_MODE in ["ALL","LOCAL","AUTO","AUTO_CONSERVATIVE"]):
         #logger.debug("Calculated OPR for all matches.")
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation with specific event code "+str(EVENT_CODE))
+        logger.info("Preparing for OPR calculation - event-only matches. Code="+str(EVENT_CODE))
 
 
         # Prepares the OPR calculation
@@ -767,7 +737,7 @@ def master_function(memory=memory):
         #  - specific_event_teams (str) - returns data only for all teams in specified event code.
         json_parse.prepare_opr_calculation(specific_event=EVENT_CODE)
 
-        teams   = loadTeamNumbers() # load teams from matches_per_team.csv
+        teams   = loadTeamNumbers() # load teams from team_list_filtered.csv
         matches = loadMatches(filter_by_teams=teams)
 
         logger.info("Calculating OPR for matches within event...")

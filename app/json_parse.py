@@ -49,7 +49,7 @@ import sys
 import os
 import logging
 
-from common_resources import get_json, PROJECT_PATH, accepted_match_types, create_logger
+from common_resources import get_json, PROJECT_PATH, ACCEPTED_EVENT_TYPES, create_logger
 from common_resources import DEBUG_LEVEL, SEASON_YEAR
 
 logger = create_logger("json_parse")
@@ -510,7 +510,10 @@ class SeasonEvents():
                 ]
             )
 
-    def filter(self, region=None,type=[], nottype=[], state=None) -> list:
+    def __len__(self) -> int:
+        return len(self.raw_json["events"])
+
+    def filter(self, regions:list =[], types:list =[], not_types:list =[], states:list =None) -> list:
         """
         Returns a list of non-remote events in the raw json filtered by stuff 
         """
@@ -531,10 +534,10 @@ class SeasonEvents():
             #exit()
             if (
                 #all types: Qualifier, Championship, Scrimmage, Kickoff, League Tournament, League Meet, Super Qualifier, Volunteer Signup, Practice Day, Workshop, FIRST Championship, Demo / Exhibition, Off-Season
-                ((region==None) or (event["regionCode"].lower()==region.lower()) ) and
-                ((len(type)==0) or (event["typeName"] in type) ) and
-                ((len(nottype)==0) or (event["typeName"] not in nottype) ) and
-                ((state==None) or (event["stateprov"]==state) ) and
+                ((regions   == []) or (event["regionCode"].lower() in [region.lower() for region in regions]) ) and
+                ((states    == []) or (event["stateprov" ] in states) ) and
+                ((types     == []) or (event["typeName"  ] in types) ) and
+                ((not_types == []) or (event["typeName"  ] not in not_types) ) and
                 (True != event["remote"])
             ):
                 rtn.append(event)
@@ -636,30 +639,30 @@ def rankings_dataframe(json_filepath: str, csv_filepath: str):
 
 
 
-def write_needed_events(season_events, texasonly=False):
+def filter_event_ids(season_events:SeasonEvents, by_states:list =[]):
     """
     Using a given SeasonEvents object, gathers all the
-    event IDs (for non-remote events) and writes them to a file
+    event IDs (for non-remote, official events and skirmishes)
+    and writes the needed event IDs to generatedfiles/{SEASON_YEAR}/opr/needed_event_ids.json
+    \nReturns the list of IDs
     """
     logger.info(" Writing needed events...")
     
-    rawevents = open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","needed_events_raw.json"),"w+")
-    rawevents.truncate()
-    rawevents.write('{"matches":[\n')
-    
-    with open(os.path.join(PROJECT_PATH+"app","generatedfiles",str(SEASON_YEAR),"opr","needed-event-ids.txt"),"w+") as thefile:
+    with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","needed_event_ids.csv"),"w") as thefile:
         thefile.truncate() # Clear the file
-        filtered_event_list = season_events.filter(type=accepted_match_types, state=("TX" if texasonly else None))
+        thefile.write("EventCode,DateStart\n")
+        
+        # Filter the events
+        logger.debug(f" Filtering {len(season_events)} events...")
+        filtered_event_list = season_events.filter(types=ACCEPTED_EVENT_TYPES, states=by_states) # Filter the events
+        logger.debug(f" Events filtered. Now {len(filtered_event_list)} events.")
+        
         # Iterate over every event
         for event in filtered_event_list:
             # If it's not remote and it's an accepted type
-            thefile.write(str(event["code"])+"\n") #write to the file
-            rawevents.write(str(event).replace("'",'"').replace("False","false").replace("True","true").replace("None","null")+", \n")
-
-    rawevents.write("]}")
-    #logger.info("Done!")
-    rawevents.close()
-
+            thefile.write(str(event["code"])+", "+str(event["dateStart"])+"\n") # Add the event code to the file
+    
+    return [event["code"] for event in filtered_event_list]
 
 
 
@@ -960,11 +963,13 @@ def prepare_opr_calculation(
 
 
 if __name__ == "__main__" and "get-events-global" in sys.argv:
-    logger.info("This script was called as __main__")
+    # I'm leaving this in here because I might want to trigger it manually later.
+    logger = create_logger("json_parse.py")
+    logger.warning("This script was called as __main__")
     logger.info("  Jsonparse getting global event ids that match")
-    logger.info("  Getting the season's data from seasondata at "+os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_data.json"))
+    logger.info("  Getting the season's data from seasondata at "+os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_events.json"))
 
-    write_needed_events(SeasonEvents(get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_data.json"))), texasonly=False)
+    filter_event_ids(SeasonEvents(get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_events.json"))))
 
 
 # -- End of file --
