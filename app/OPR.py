@@ -525,7 +525,7 @@ def do_all_opr_stuff(matches: pd.DataFrame, output_file_path: str, teams:list="<
 
     OPRs, AUTOs, CCWMs = calculate_opr(M, Scores, Autos, Margins)
 
-    logger.info(" Raw OPRs, AUTOs, and CCWMS calculated.")
+    logger.info("[do_all_opr_stuff] Raw OPRs, AUTOs, and CCWMS calculated.")
 
     if (logger.isEnabledFor(logging.DEBUG)) and DEBUG_LEVEL>1:
         logger.debug("  Displaying raw ones below:")
@@ -629,8 +629,8 @@ def master_function(memory=memory):
         logger.warning(f"File app/generatedfiles{SEASON_YEAR}opr/opr_global_calc_date.txt was not found. This is normal if this is the first time running the program.")
         t_one = datetime.date(1970,1,1) # Set it as epoch as a backup
 
-    time_since_global_calc = datetime.datetime.today() - t_one
-    logger.debug(f"Time since last global calcs were run: {time_since_global_calc} or {time_since_global_calc.days} days")
+    time_since_global_calc = datetime.datetime.now() - t_one
+    logger.debug(f"Time since last global calcs were run: {time_since_global_calc} or {time_since_global_calc.days} days and {time_since_global_calc.total_seconds()/3600} hours")
 
 
     # Season-long, all-teams data. No restrictions, all events used.
@@ -663,25 +663,31 @@ def master_function(memory=memory):
         # Write the current datestamp to a file so we can determine days since last global calculations were run
         with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_calc_date.txt"),"w") as writer:
             writer.truncate()
-            writer.write(datetime.datetime.strftime(datetime.date.today(),"%Y/%m/%d %H:%M:%S"))
+            writer.write(datetime.datetime.strftime(datetime.datetime.now(),"%Y/%m/%d %H:%M:%S"))
 
 
     # Season-long data for the teams in the event.
-    elif (CALCULATION_MODE in ["AUTO","GLOBAL"]
-            or (CALCULATION_MODE in ["AUTO_CONSERVATIVE"] and time_since_global_calc.days >= 365)): # If AUTO and global OPR is up to date, or if global calcs have never been run
+    if (CALCULATION_MODE == "ALL" 
+            or (CALCULATION_MODE in ["GLOBAL"] and time_since_global_calc.days >= 30)
+            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.total_seconds()/3600 >= 1)
+            # or (CALCULATION_MODE in ["AUTO_CONSERVATIVE"] and some_team_doesnt_have_opr_stats) #TODO
+            or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and time_since_global_calc.days >= 365)): # If AUTO and global OPR is up to date, or if global calcs have never been run
         logger.info("__________________________________________________")
         logger.info("Preparing for OPR calculation - Season-long OPR for teams in given event only...")
 
-        # for the first one, use all matches data
-        json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)
 
-        # Load teams and matches from txt files
+        # Use prepare_opr_calculation to filter out all matches by the current event
+        json_parse.prepare_opr_calculation(specific_event=EVENT_CODE)
+
         logger.info("Loading teams")
+        teams = loadTeamNumbers() # Load all of the team numbers involved in the event.
+        logger.info("Number of teams:"+str(len(teams)))
 
-        teams   = loadTeamNumbers()
+        # Then use prepare...tion *again* to get all matches (season-long), filtering by the teams that we just got.
+        json_parse.prepare_opr_calculation(specific_teams=teams)
+
         matches = loadMatches(filter_by_teams=teams)
 
-        logger.info("Number of teams:"+str(len(teams)))
         logger.info("Calculating all-time OPR for all matches.")
 
         do_all_opr_stuff(
