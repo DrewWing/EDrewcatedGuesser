@@ -515,7 +515,7 @@ class SeasonEvents():
 
     def filter(self, regions:list =[], types:list =[], not_types:list =[], states:list =None) -> list:
         """
-        Returns a list of non-remote events in the raw json filtered by stuff 
+        Returns a list of non-remote events in the raw json filtered by the given criteria.
         """
         #logger.debug(" parameters: region={}   type={}   nottype={}   state={}".format(region,type,nottype,state))
         rtn = []
@@ -533,12 +533,13 @@ class SeasonEvents():
             #))
             #exit()
             if (
-                #all types: Qualifier, Championship, Scrimmage, Kickoff, League Tournament, League Meet, Super Qualifier, Volunteer Signup, Practice Day, Workshop, FIRST Championship, Demo / Exhibition, Off-Season
-                ((regions   == []) or (event["regionCode"].lower() in [region.lower() for region in regions]) ) and
-                ((states    == []) or (event["stateprov" ] in states) ) and
-                ((types     == []) or (event["typeName"  ] in types) ) and
-                ((not_types == []) or (event["typeName"  ] not in not_types) ) and
-                (True != event["remote"])
+                # All types: Qualifier, Championship, Scrimmage, Kickoff, League Tournament, League Meet, Super Qualifier, Volunteer Signup, Practice Day, Workshop, FIRST Championship, Demo / Exhibition, Off-Season
+                ((regions   == []) or (event["regionCode"].lower() in [region.lower() for region in regions]) ) 
+                and ((states    == []) or (event["stateprov" ] in states) ) 
+                and ((types     == []) or (event["typeName"  ] in types ) ) 
+                and ((not_types == []) or (event["typeName"  ] not in not_types) ) 
+                and (True != event["remote"])
+                and (True == event["published"])
             ):
                 rtn.append(event)
 
