@@ -524,9 +524,9 @@ def push_rankings(service):
     
     if DEBUG_LEVEL>1:
         logger.debug("  This function uses:")
-        logger.debug("    -",os.path.join(PROJECT_PATH,"app","generatedfiles","eventdata","event_rankings.json"))
+        logger.debug("    -"+os.path.join(PROJECT_PATH,"app","generatedfiles","eventdata","event_rankings.json"))
         logger.debug("  This function creates:")
-        logger.debug("    -",os.path.join(PROJECT_PATH,"app","generatedfiles","eventdata","event_rankings.csv"))
+        logger.debug("    -"+os.path.join(PROJECT_PATH,"app","generatedfiles","eventdata","event_rankings.csv"))
         
     #
     # Write event ranking data
