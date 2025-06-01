@@ -34,10 +34,21 @@ Now, for the interesting stuff:
 
 
 Places that OPR results are stored:
-`opr_result_sorted.csv` - Season-long data for the teams in the event.
-`opr_global_result_sorted.csv` - Season-long, all-teams data. No restrictions, all events used.
-`opr_recent_result_sorted.csv` - Recent (last 30 days) stats for teams in current event.
+`opr_result_sorted.csv` - Season-long data for the teams in the event. \
+`opr_global_result_sorted.csv` - Season-long, all-teams data. No restrictions, all events used. \
+`opr_recent_result_sorted.csv` - Recent (last 30 days) stats for teams in current event. \
 `opr_event_result_sorted.csv` - Event-only matches
+
+
+
+## Stats Calculation Terms:
+The following table describes the types of statistics we can calculate. Each type calculates OPR, AutoOPR, and CCWM for their given filters, and is fed into the ML algorithm for accurate match outcome prediction.
+| Name | Date Range | Teams | Output file |
+|------|------------|-------|-------------|
+| UniversalSeasonStats | All-Season | **All** active teams in the world. **No** restrictions. | `opr_global_result_sorted.csv` |
+| RegularSeasonStats   | All-Season | Only teams in current event. | `opr_result_sorted.csv` |
+| RecentStats          | The last `NUMBER_OF_DAYS_FOR_RECENT_OPR` (default 30) days | Only teams in current event. | `opr_recent_result_sorted.csv` |
+| EventStats           | Current event only. | Only teams in current event. | `opr_event_result_sorted.csv` |
 
 ## Process
 (TODO) put text here describing the process of calculating statistics. Perhaps add a diagram.
