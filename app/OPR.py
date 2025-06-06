@@ -123,6 +123,22 @@ def convertToList(statMatrix) -> list:
     return statMatrix.tolist()
 
 
+def time_since_datestamp(filepath: str | os.PathLike, friendly_name: str):
+    """ Returns the time since a given datestamp in a file as a datetime object. """
+    try:
+        logger.debug(f"Getting the time since last {friendly_name} calcs were run...")
+        with open(filepath,"r") as reader:
+            t_one = reader.read()
+        t_one = t_one.strip()
+        t_one = datetime.datetime.strptime(t_one,"%Y/%m/%d %H:%M:%S")
+    
+    except FileNotFoundError:
+        logger.warning(f"File {filepath} was not found. This is normal if this is the first time running the program.")
+        t_one = datetime.datetime(year=1970, month=1, day=1, hour=0, minute=0, second=0) # Set it as epoch as a backup
+
+    return datetime.datetime.now() - t_one
+
+
 def loadTeamNumbers() -> list:
     """
     Returns a list of team numbers from the file team_list_filtered.csv (created by json_parse.prepare_opr_calculation)
@@ -134,7 +150,7 @@ def loadTeamNumbersFromEvent() -> list:
     Returns a list of team numbers from eventdata/event_teams.json (created by get_matches in main)
     """
     #TODO: Change to accept an event code as argument, and load the teams from that event code.
-    r = [team["teamNumber"] for team in get_json(os.path.join(PROJECT_PATH,"generratedfiles",str(SEASON_YEAR),"eventdata/event_teams.json"))["teams"]]
+    r = [team["teamNumber"] for team in get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"eventdata","event_teams.json"))["teams"]]
     logger.debug(f"[loadTeamNumbersFromEvent] Found {len(r)} teams in current event.")
     logger.debug(r)
     return r
@@ -180,13 +196,14 @@ def all_teams_have_stats(teams: list, filepath: str) -> bool:
     """ Returns boolean on whether all teams have stats in the given filepath or not. """
     try:
         df = pd.read_csv(filepath)
+        if DEBUG_LEVEL > 1: logger.debug(f"[all_teams_have_stats] dataframe of teams in {filepath}: \n{df}")
 
     except FileNotFoundError as e:
         logger.warning(f"[all_teams_have_stats] Filepath {filepath} does not exist! This is NORMAL if this is the first time running the program.")
         return False # Data doesn't exist yet, so return false
 
     for team in teams:
-        if not(str(team) in df.team.values): # If a team isn't in the stats (if this line gives an err, check the source file)
+        if not(str(team) in df.Team.values): # If a team isn't in the stats (if this line gives an err, check the source file)
             logger.debug(f"[all_teams_have_stats] Filepath {filepath} does not contain team data for team {team}. Returning False.")
             return False
 
@@ -647,25 +664,20 @@ def master_function(memory=memory):
         logger.error(f"CALCULATION_MODE ({CALCULATION_MODE}) is not a valid choice!")
     
 
-    # Get the time since last global calcs were run
-    try:
-        logger.debug("Getting the time since last global calcs were run...")
-        with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_calc_date.txt"),"r") as reader:
-            t_one = reader.read()
-        t_one = t_one.strip()
-        t_one = datetime.datetime.strptime(t_one,"%Y/%m/%d %H:%M:%S")
+    # Get the time since last calculations were run
+    time_since_calc = {
+        "UniversalSeasonStats":time_since_datestamp(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","UniversalSeasonStats_timestamp.txt"), "UniversalSeasonStats"),
+        "RegularSeasonStats"  :time_since_datestamp(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","RegularSeasonStats_timestamp.txt"), "RegularSeasonStats")
+        }
     
-    except FileNotFoundError:
-        logger.warning(f"File app/generatedfiles{SEASON_YEAR}opr/opr_global_calc_date.txt was not found. This is normal if this is the first time running the program.")
-        t_one = datetime.date(1970,1,1) # Set it as epoch as a backup
-
-    time_since_global_calc = datetime.datetime.now() - t_one
-    logger.debug(f"Time since last global calcs were run: {time_since_global_calc} or {time_since_global_calc.days} days and {time_since_global_calc.total_seconds()/3600} hours")
+    if logger.isEnabledFor(logging.DEBUG): # Reduce unnecessary calculations
+        for key in time_since_calc:
+            logger.debug(f"Time since last {key} calcs run: {time_since_calc[key]} or {time_since_calc[key].days} days and {time_since_calc[key].total_seconds()/3600} hours")
 
 
     # UniversalSeasonStats - Season-long, all-teams data. No restrictions, all events used.
     if (CALCULATION_MODE in ["ALL","GLOBAL"]
-            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.days >= 30)
+            or (CALCULATION_MODE in ["AUTO"] and time_since_calc["UniversalSeasonStats"].days >= 30)
             or (
                 CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] 
                 and not(all_teams_have_stats(teams=loadTeamNumbersFromEvent(), filepath=os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_result_sorted.csv")))
@@ -673,7 +685,7 @@ def master_function(memory=memory):
                 ) # AUTO_CONSERVATIVE and some team doesn't already have the stats.
         ):
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation - Global, season-long, all-teams. No restrictions, all events in opr/all_events are used.")
+        logger.info("Preparing for UniversalSeasonStats calculation - Global, season-long, all-teams. No restrictions, all events in opr/all_events are used.")
 
         # Use all matches data in generatedfiles/{SEASON_YEAR}/opr/all_events (no specific_event or teams)
         json_parse.prepare_opr_calculation()
@@ -695,20 +707,23 @@ def master_function(memory=memory):
             load_m=False
         )
 
-        # Write the current datestamp to a file so we can determine days since last global calculations were run
-        with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_calc_date.txt"),"w") as writer:
+        # Write the current datestamp to a file so we can determine days since last UniversalSeasonStats were run
+        #TODO: Make this into a function. It's alrerady used in multiple places
+        with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","UniversalSeasonStats_timestamp.txt"),"w") as writer:
             writer.truncate()
             writer.write(datetime.datetime.strftime(datetime.datetime.now(),"%Y/%m/%d %H:%M:%S"))
+
+        logger.info("UniversalSeasonStats calculation complete.")
 
 
     # RegularSeasonStats - Season-long data for the teams in the event.
     if (CALCULATION_MODE == "ALL" # If ALL mode, force calculation.
-            or (CALCULATION_MODE in ["GLOBAL"] and time_since_global_calc.days >= 30) # If global mode & 30 or more days since last global calc.
-            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.total_seconds()/3600 >= 1) # If auto mode & 1 or more hours since last global calc.
-            or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and time_since_global_calc.days >= 365) # If auto modes & if global calcs have never been run
+            or (CALCULATION_MODE in ["GLOBAL"] and time_since_calc["RegularSeasonStats"].days >= 1) # If global mode & 1 or more days since last calc.
+            or (CALCULATION_MODE in ["AUTO"] and time_since_calc["RegularSeasonStats"].total_seconds() >= 3600) # If auto mode & 1+ hours since last calc.
+            or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and time_since_calc["RegularSeasonStats"].days >= 365) # If auto modes & if calcs have never been run
             or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and not(all_teams_have_stats(teams=loadTeamNumbersFromEvent(), filepath=os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_result_sorted.csv")))) ): # If auto modes & a team's stats don't exist.
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation - Season-long OPR for teams in given event only...")
+        logger.info("Preparing for RegularSeasonStats calculation - Season-long OPR for teams in given event only...")
 
 
         # Use prepare_opr_calculation to filter out all matches by the current event
@@ -732,12 +747,19 @@ def master_function(memory=memory):
             load_m=False
         )
 
+        # Write the current datestamp to a file so we can determine days since last RegularSeasonStats were run
+        with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","RegularSeasonStats_timestamp.txt"),"w") as writer:
+            writer.truncate()
+            writer.write(datetime.datetime.strftime(datetime.datetime.now(),"%Y/%m/%d %H:%M:%S"))
+
+        logger.info("RegularSeasonStats calculation complete.")
+
 
 
     # RecentStats - Recent (last 30 days) stats for teams in current event.
     if (CALCULATION_MODE in ["ALL","AUTO","AUTO_CONSERVATIVE"]):
         logger.info("__________________________________________________")
-        logger.info(f"Preparing for OPR calculation recent (last {NUMBER_OF_DAYS_FOR_RECENT_OPR} days for teams in current event)...")
+        logger.info(f"Preparing for RecentStats calculation - last {NUMBER_OF_DAYS_FOR_RECENT_OPR} days for teams in current event...")
 
         # for the first one, use all matches data
         json_parse.prepare_opr_calculation(specific_event_teams=EVENT_CODE)#specific_event=event_code)
@@ -763,12 +785,15 @@ def master_function(memory=memory):
             fallback="zeroes"
         )
 
+        logger.info("RecentStats calculation complete.")
+
+
 
     # EventStats - Event-only matches.
     if (CALCULATION_MODE in ["ALL","LOCAL","AUTO","AUTO_CONSERVATIVE"]):
         #logger.debug("Calculated OPR for all matches.")
         logger.info("__________________________________________________")
-        logger.info("Preparing for OPR calculation - event-only matches. Code="+str(EVENT_CODE))
+        logger.info("Preparing for EventStats calculation - event-only matches. Code="+str(EVENT_CODE))
 
 
         # Prepares the OPR calculation
@@ -794,7 +819,8 @@ def master_function(memory=memory):
             load_m  = False
         )
 
-        logger.info("Calculated OPR for event only.")
+        logger.info("EventStats calculation complete.")
+
 
 
 

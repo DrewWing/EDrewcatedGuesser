@@ -57,7 +57,7 @@ from dotenv import load_dotenv
 
 # Local Imports
 from common_resources import PROJECT_PATH, EVENT_CODE, SEASON_YEAR, create_logger
-from common_resources import __version__, make_required_directories, CALCULATION_MODE
+from common_resources import __version__, make_required_directories, CALCULATION_MODE, DEBUG_LEVEL
 make_required_directories() # Make the required directories if they don't exist already.
 import sheets_api
 
@@ -206,7 +206,7 @@ def get_season_events_matches(year:str|int =SEASON_YEAR):
     tot = len(all_season_event_ids)
     for code in all_season_event_ids:
         counter += 1
-        logger.debug(f"[get_season_events_matches] Event {counter:8}/{tot:8} - {code}") # For heavy debug use only
+        if DEBUG_LEVEL > 0: logger.debug(f"[get_season_events_matches] Event {counter:8}/{tot:8} - {code}") # For heavy debug use only
         # Get list of matches and teams for the event
         response = requests.get(
             url=f"https://ftc-api.firstinspires.org/v2.0/{year}/matches/{code}",

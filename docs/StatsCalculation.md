@@ -51,14 +51,77 @@ Places that OPR results are stored:
 The following table describes the types of statistics we can calculate. Each type calculates OPR, AutoOPR, and CCWM for their given filters, and is fed into the ML algorithm for accurate match outcome prediction.
 | Name                 | Date Range                                                 | Teams                                                   | Output file |
 | :------------------  | :--------------------------------------------------------- | :------------------------------------------------------ | :---------- |
-| UniversalSeasonStats | All-Season                                                 | **All** active teams in the world. **No** restrictions. | `opr_global_result_sorted.csv` |
+| UniversalSeasonStats | All-Season                                                 | **All** active teams in the world*. **No** restrictions. | `opr_global_result_sorted.csv` |
 | RegularSeasonStats   | All-Season                                                 | Only teams in current event.                            | `opr_result_sorted.csv` |
 | RecentStats          | The last `NUMBER_OF_DAYS_FOR_RECENT_OPR` (default 30) days | Only teams in current event.                            | `opr_recent_result_sorted.csv` |
 | EventStats           | Current event only.                                        | Only teams in current event.                            | `opr_event_result_sorted.csv` |
 
+*Note that stats calculation will **only** use the events stored in `opr/all_events` (created by `__main__.py`). 
+If events are missing from there, they will **not** be accounted for.
+
+## Stats Calculation Mode
+The environment variable `CALCULATION_MODE` may be set to any of the following, which changes <u>when</u> calculations are run:
+
+> [!Note]
+> If `DO_JOBLIB_MEMORY` is `True` (default), all calculations are cached. Calculations are not re-run unless input data is changed.
+
+### AUTO
+Automatic mode (default, recommended).
+ - **UniversalSeasonStats**
+   - If any team being calculated doesn't already have global calculations, OR
+   - If the last time UniversalSeasonStats calc was run is **>30 days** ago.
+ - **RegularSeasonStats**
+   - If any team being calculated doesn't already have RegularSeasonStats stats, OR
+   - If **>=1 hours** passed since last calc, OR
+   - If RegularSeasonStats has never been run.
+ - **RecentStats**
+   - Runs every cycle.
+ - **EventStats**
+   - Runs every cycle.
+
+
+### AUTO_CONSERVATIVE
+Automatic conservative mode, same as AUTO except
+
+ - **UniversalSeasonStats**
+   - <u>Only</u> if any team being calculated doesn't already have global calculations.
+ - **RegularSeasonStats** 
+   - If any team being calculated doesn't already have RegularSeasonStats stats, OR
+   - If RegularSeasonStats has never been run.
+
+### LOCAL
+Local mode, disables global (season-wide) calculations and only runs calcs on the currently running event.
+ - **EventStats**
+   - Runs every cycle.
+ - **All others**
+   - Never runs.
+
+### GLOBAL
+Global mode, only runs global (all-season) calcs and disables local (current event) calcs.
+ - **UniversalSeasonStats**
+   - Runs every cycle.
+ - **RegularSeasonStat**
+   - If 1 or more days since last RegularSeasonStat calculation.
+ - **All others**
+   - Never runs.
+
+
+### ALL
+All mode, runs **every** type of calculation <u>every cycle</u>.
+
+Some tips for performance and accuracy:
+ - Don't forget to set the `EVENT_CODE` environment variable to the correct code! <!-- TODO: add documentation for this, and a link to that doc here -->
+ - Run the program in `GLOBAL` mode a day or two before the event starts. This ensures that UniversalSeasonStats (which takes a while to calculate) aren't run during the event.
+ - If it is very early in the season (the first 3 or so events), it may be better to run in `ALL` mode. This forces all calculation types to run, but isn't as big of a deal 
+ because there's much less data to crunch.
+ - Run in `AUTO_CONSERVATIVE` mode if you're dealing with performance issues.
+
+
+---
 
 
 ## Process
+The process for calculating stats (once every cycle) is as follows:
 
 1. `__main__.py` calls `master_function` in `OPR.py`.
 2. `master_function`:
