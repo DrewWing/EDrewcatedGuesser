@@ -133,6 +133,7 @@ def loadTeamNumbersFromEvent() -> list:
     """
     Returns a list of team numbers from eventdata/event_teams.json (created by get_matches in main)
     """
+    #TODO: Change to accept an event code as argument, and load the teams from that event code.
     r = [team["teamNumber"] for team in get_json(os.path.join(PROJECT_PATH,"generratedfiles",str(SEASON_YEAR),"eventdata/event_teams.json"))["teams"]]
     logger.debug(f"[loadTeamNumbersFromEvent] Found {len(r)} teams in current event.")
     logger.debug(r)
