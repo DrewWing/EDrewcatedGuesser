@@ -62,7 +62,7 @@ import datetime
 # Internal Imports
 import json_parse
 from common_resources import PROJECT_PATH, NUMBER_OF_DAYS_FOR_RECENT_OPR, EVENT_CODE, PATH_TO_JOBLIB_CACHE, DO_JOBLIB_MEMORY, SEASON_YEAR
-from common_resources import DEBUG_LEVEL, CALCULATION_MODE
+from common_resources import DEBUG_LEVEL, CALCULATION_MODE, get_json
 from common_resources import byte_to_gb, seconds_to_time, create_logger
 
 logger = create_logger("OPR")
@@ -129,10 +129,18 @@ def loadTeamNumbers() -> list:
     """
     return list(pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"team_list_filtered.csv"))["teamNumber"])
 
+def loadTeamNumbersFromEvent() -> list:
+    """
+    Returns a list of team numbers from eventdata/event_teams.json (created by get_matches in main)
+    """
+    r = [team["teamNumber"] for team in get_json(os.path.join(PROJECT_PATH,"generratedfiles",str(SEASON_YEAR),"eventdata/event_teams.json"))["teams"]]
+    logger.debug(f"[loadTeamNumbersFromEvent] Found {len(r)} teams in current event.")
+    logger.debug(r)
+    return r
 
 def filterMatchesByTeams(matches, teams: list):
     """
-    """
+    """#TODO: Fill out this documentation
     return matches[
             matches["Red1" ].isin(teams) |
             matches["Red2" ].isin(teams) |
@@ -165,6 +173,25 @@ def loadMatches(filter_by_teams: list = []):
     #logger.info(all_matches)
     #logger.info("\n\n")
     return all_matches
+
+
+def all_teams_have_stats(teams: list, filepath: str) -> bool:
+    """ Returns boolean on whether all teams have stats in the given filepath or not. """
+    try:
+        df = pd.read_csv(filepath)
+
+    except FileNotFoundError as e:
+        logger.warning(f"[all_teams_have_stats] Filepath {filepath} does not exist! This is NORMAL if this is the first time running the program.")
+        return False # Data doesn't exist yet, so return false
+
+    for team in teams:
+        if not(str(team) in df.team.values): # If a team isn't in the stats (if this line gives an err, check the source file)
+            logger.debug(f"[all_teams_have_stats] Filepath {filepath} does not contain team data for team {team}. Returning False.")
+            return False
+
+    df = None # Helps with memory usage.
+    logger.debug(f"[all_teams_have_stats] Filepath {filepath} contains all data for teams. Returning True.")
+    return True
 
 
 def filter_dataframe_by_time(df: pd.DataFrame, days_before_now=None, start_date=None, end_date=None, days_before_end_date=None) -> pd.DataFrame:
@@ -221,9 +248,11 @@ The resulting matrix should have 2 * len(matches) rows.
 """
 def build_m(load_m: bool, matches: pd.DataFrame, teams: list) -> numpy.matrix:
     """
-    Reuturns a matrix of type numpy.matrix M, with each row representing a match
-    and each column representing a team. Ones for teams that participate, zeroes
-    for teams that don't.
+    Reuturns a sparse matrix of type numpy.matrix M, with each row representing a match
+    and each column representing a team. 1 for teams that participate, 0
+    for teams that don't. \n
+    If load_m (deprecated, soon to be removed) is true, loads the matrix from 
+    app/generatedfiles/SEASON_YEAR/OPPR-m.npy without calculation.
     """
     logger.info("Building Matrix M for teams in alliances.")
     
@@ -633,10 +662,15 @@ def master_function(memory=memory):
     logger.debug(f"Time since last global calcs were run: {time_since_global_calc} or {time_since_global_calc.days} days and {time_since_global_calc.total_seconds()/3600} hours")
 
 
-    # Season-long, all-teams data. No restrictions, all events used.
+    # UniversalSeasonStats - Season-long, all-teams data. No restrictions, all events used.
     if (CALCULATION_MODE in ["ALL","GLOBAL"]
-            #or (CALCULATION_MODE in ["AUTO_CONSERVATIVE"] and some_team_doesnt_have_global_opr_stats) #TODO
-            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.days >= 30)):
+            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.days >= 30)
+            or (
+                CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] 
+                and not(all_teams_have_stats(teams=loadTeamNumbersFromEvent(), filepath=os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_global_result_sorted.csv")))
+                # NOTE that loadTeamNumbers() can't be used directly here, as it relies on output created by json_parse.prepare_opr_calculation()
+                ) # AUTO_CONSERVATIVE and some team doesn't already have the stats.
+        ):
         logger.info("__________________________________________________")
         logger.info("Preparing for OPR calculation - Global, season-long, all-teams. No restrictions, all events in opr/all_events are used.")
 
@@ -666,12 +700,12 @@ def master_function(memory=memory):
             writer.write(datetime.datetime.strftime(datetime.datetime.now(),"%Y/%m/%d %H:%M:%S"))
 
 
-    # Season-long data for the teams in the event.
-    if (CALCULATION_MODE == "ALL" 
-            or (CALCULATION_MODE in ["GLOBAL"] and time_since_global_calc.days >= 30)
-            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.total_seconds()/3600 >= 1)
-            # or (CALCULATION_MODE in ["AUTO_CONSERVATIVE"] and some_team_doesnt_have_opr_stats) #TODO
-            or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and time_since_global_calc.days >= 365)): # If AUTO and global OPR is up to date, or if global calcs have never been run
+    # RegularSeasonStats - Season-long data for the teams in the event.
+    if (CALCULATION_MODE == "ALL" # If ALL mode, force calculation.
+            or (CALCULATION_MODE in ["GLOBAL"] and time_since_global_calc.days >= 30) # If global mode & 30 or more days since last global calc.
+            or (CALCULATION_MODE in ["AUTO"] and time_since_global_calc.total_seconds()/3600 >= 1) # If auto mode & 1 or more hours since last global calc.
+            or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and time_since_global_calc.days >= 365) # If auto modes & if global calcs have never been run
+            or (CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE"] and not(all_teams_have_stats(teams=loadTeamNumbersFromEvent(), filepath=os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_result_sorted.csv")))) ): # If auto modes & a team's stats don't exist.
         logger.info("__________________________________________________")
         logger.info("Preparing for OPR calculation - Season-long OPR for teams in given event only...")
 
@@ -699,7 +733,7 @@ def master_function(memory=memory):
 
 
 
-    # Recent (last 30 days) stats for teams in current event.
+    # RecentStats - Recent (last 30 days) stats for teams in current event.
     if (CALCULATION_MODE in ["ALL","AUTO","AUTO_CONSERVATIVE"]):
         logger.info("__________________________________________________")
         logger.info(f"Preparing for OPR calculation recent (last {NUMBER_OF_DAYS_FOR_RECENT_OPR} days for teams in current event)...")
@@ -729,7 +763,7 @@ def master_function(memory=memory):
         )
 
 
-    # Event-only matches.
+    # EventStats - Event-only matches.
     if (CALCULATION_MODE in ["ALL","LOCAL","AUTO","AUTO_CONSERVATIVE"]):
         #logger.debug("Calculated OPR for all matches.")
         logger.info("__________________________________________________")
