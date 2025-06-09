@@ -322,12 +322,13 @@ if __name__ == "__main__":
     logger.warning("common_resources.py was called as __main__, which should not happen!")
     logger.info("Displaying constants and their values:")
     a = {
-        "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
-        "EVENTCODE"       : EVENT_CODE,
-        "PROJECT_PATH"  : PROJECT_PATH,
+        "CALCULATION_MODE":CALCULATION_MODE,
         "CRAPPY_LAPTOP"   : CRAPPY_LAPTOP,
         "DO_JOBLIB_MEMORY": DO_JOBLIB_MEMORY,
+        "EVENTCODE"       : EVENT_CODE,
+        "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         "PATH_TO_JOBLIB_CACHE"  : PATH_TO_JOBLIB_CACHE,
+        "PROJECT_PATH"  : PROJECT_PATH,
         "SERVICE_ACCOUNT_FILE"  : SERVICE_ACCOUNT_FILE,
         "SPREADSHEET_ID": SPREADSHEET_ID,
         "sys.path"    : sys.path,

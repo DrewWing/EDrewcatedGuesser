@@ -86,6 +86,7 @@ logger.info("EDrewcated Guesser by Drew Wingfield")
 logger.info("(c) 2025, Drew Wingfield")
 logger.info(f"Running version {__version__}")
 logger.info("Environment variables collected.")
+logger.debug(f"CALCULATION_MODE is {CALCULATION_MODE}")
 
 
 #endregion setup
