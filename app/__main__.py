@@ -260,31 +260,25 @@ def cycle():
     time.sleep(0.1)
 
     if not(DISABLE_API_CALLS) and not(DISABLE_FTC_API_CALLS):
+        # GLOBAL or ALL modes, always retrieve and replace data. 
+        # Note that this should happen BEFORE the event matches/schedule/rankings fetching.
+        if CALCULATION_MODE in ["GLOBAL","ALL"]:
+            # Fetch and replace all events in season every cycle.
+            logger.debug(f"Fetching and replacing all events data in season {SEASON_YEAR}...")
+            get_season_events_matches(year=SEASON_YEAR)
+            logger.info("Season events matches retrieved.")
+
+        
         logger.info("Getting FTC Event data 1/3 - Matches")
-        if not DRY_RUN: get_matches()
+        if not DRY_RUN: get_matches(year=SEASON_YEAR, code=EVENT_CODE)
         
         logger.info("Getting FTC event data 2/3 - Schedule")
-        if not DRY_RUN: get_schedule()
+        if not DRY_RUN: get_schedule(year=SEASON_YEAR, code=EVENT_CODE)
         
         logger.info("Getting FTC event data 3/3 - Rankings")
-        if not DRY_RUN: get_rankings()
+        if not DRY_RUN: get_rankings(year=SEASON_YEAR, code=EVENT_CODE)
 
 
-        # GLOBAL or ALL modes, always retrieve and replace data
-        if CALCULATION_MODE in ["GLOBAL","ALL"]:
-            # Fetch and replace all events in season
-            logger.debug(f"Fetching and replacing all events data in season {SEASON_YEAR}...")
-            get_season_events_matches(year=SEASON_YEAR)
-            logger.info("Season events matches retrieved.")
-        
-        # AUTO mode, retrieve event data that doesn't exist, and only replace events that are within 7 days (possibly ongoing events)
-        if CALCULATION_MODE in ["AUTO", "AUTO_CONSERVATIVE"]:
-            # Fetch
-            #TODO: implement functionality of checking
-            logger.warning("TODO: implement functionality")
-            logger.debug(f"Fetching and replacing all events data in season {SEASON_YEAR}...")
-            get_season_events_matches(year=SEASON_YEAR)
-            logger.info("Season events matches retrieved.")
 
     else:
         logger.info("DISABLE_API_CALLS or DISABLE_FTC_API_CALLS is True. Skipped getting FIRST API data.")
@@ -355,11 +349,14 @@ else:
     logger.critical("FIRST API data does not exist! Either FIRST API calls are disabled, or something went wrong with the FIRST API calls.")
 
 
-# Get the list of season events if there's a possibility of using things
+# Get the list of season events and save it to season_events.json if there's a possibility of using them.
 if CALCULATION_MODE in ["AUTO","AUTO_CONSERVATIVE","GLOBAL","ALL"] and not(DISABLE_API_CALLS) and not(DISABLE_FTC_API_CALLS):
-    logger.info(f"Calculation mode is {CALCULATION_MODE} - getting season events list...")
-    get_season_events_list()
-    logger.info("Season events list retrieved.")
+    # Fetch and replace data for all season events.
+    logger.info(f"Calculation mode is {CALCULATION_MODE} - Fetching and replacing all events data in season {SEASON_YEAR}...")    
+    #TODO Add logic here to account for AUTO_CONSERVATIVE and reduce frequency of fetching and replacing.
+    # It's fine for now (the calls are probably going to total a coupble MB maximum), but eventually I should add that for things like weak/slow internet.
+    get_season_events_matches(year=SEASON_YEAR)
+    logger.info("Season events matches retrieved.")
 
 elif DISABLE_FTC_API_CALLS or DISABLE_API_CALLS:
     logger.warning(f"Calculation mode is set to {CALCULATION_MODE}, but API calls are disabled! Program will be unable to fetch global data!")
