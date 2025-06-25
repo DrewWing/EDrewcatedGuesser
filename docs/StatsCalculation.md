@@ -109,8 +109,10 @@ Global mode, only runs global (all-season) calcs and disables local (current eve
 ### ALL
 All mode, runs **every** type of calculation <u>every cycle</u>.
 
-Some tips for performance and accuracy:
- - Don't forget to set the `EVENT_CODE` environment variable to the correct code! <!-- TODO: add documentation for this, and a link to that doc here -->
+<br>
+
+## Performance Tips:
+ - Don't forget to **set the `EVENT_CODE` environment variable** to the correct code! <!-- TODO: add documentation for this, and a link to that doc here -->
  - Run the program in `GLOBAL` mode a day or two before the event starts. This ensures that UniversalSeasonStats (which takes a while to calculate) aren't run during the event.
  - If it is very early in the season (the first 3 or so events), it may be better to run in `ALL` mode. This forces all calculation types to run, but isn't as big of a deal 
  because there's much less data to crunch.
