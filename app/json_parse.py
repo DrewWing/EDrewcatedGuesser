@@ -49,8 +49,8 @@ import sys
 import os
 import logging
 
-from common_resources import get_json, PATH_TO_FTCAPI, accepted_match_types, create_logger
-from common_resources import DEBUG_LEVEL
+from common_resources import get_json, PROJECT_PATH, ACCEPTED_EVENT_TYPES, create_logger
+from common_resources import DEBUG_LEVEL, SEASON_YEAR
 
 logger = create_logger("json_parse")
 
@@ -75,7 +75,7 @@ def get_team_stats(team_number) -> dict:
     if DEBUG_LEVEL>1:
         logger.info(f"[get_team_stats] Getting team stats for team #{team_number}")
     
-    all_oprs = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_result_sorted.csv"), index_col=False)
+    all_oprs = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_result_sorted.csv"), index_col=False)
 
     try:
         team_stats["OPR"]     = all_oprs[all_oprs["Team"]==team_number]["OPR"].values[0]
@@ -95,7 +95,7 @@ def get_team_stats(team_number) -> dict:
         team_stats["CCWM"]    = 1
     #Team,OPR,AutoOPR,CCWM
 
-    all_oprs_recent = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","opr_recent_result_sorted.csv"), index_col=False)
+    all_oprs_recent = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","opr_recent_result_sorted.csv"), index_col=False)
 
     try:
         team_stats["recentOPR"]     = all_oprs_recent.loc[all_oprs_recent["Team"]==team_number]["OPR"].values[0]
@@ -510,9 +510,12 @@ class SeasonEvents():
                 ]
             )
 
-    def filter(self, region=None,type=[], nottype=[], state=None) -> list:
+    def __len__(self) -> int:
+        return len(self.raw_json["events"])
+
+    def filter(self, regions:list =[], types:list =[], not_types:list =[], states:list =None) -> list:
         """
-        Returns a list of non-remote events in the raw json filtered by stuff 
+        Returns a list of non-remote events in the raw json filtered by the given criteria.
         """
         #logger.debug(" parameters: region={}   type={}   nottype={}   state={}".format(region,type,nottype,state))
         rtn = []
@@ -530,12 +533,13 @@ class SeasonEvents():
             #))
             #exit()
             if (
-                #all types: Qualifier, Championship, Scrimmage, Kickoff, League Tournament, League Meet, Super Qualifier, Volunteer Signup, Practice Day, Workshop, FIRST Championship, Demo / Exhibition, Off-Season
-                ((region==None) or (event["regionCode"].lower()==region.lower()) ) and
-                ((len(type)==0) or (event["typeName"] in type) ) and
-                ((len(nottype)==0) or (event["typeName"] not in nottype) ) and
-                ((state==None) or (event["stateprov"]==state) ) and
-                (True != event["remote"])
+                # All types: Qualifier, Championship, Scrimmage, Kickoff, League Tournament, League Meet, Super Qualifier, Volunteer Signup, Practice Day, Workshop, FIRST Championship, Demo / Exhibition, Off-Season
+                ((regions   == []) or (event["regionCode"].lower() in [region.lower() for region in regions]) ) 
+                and ((states    == []) or (event["stateprov" ] in states) ) 
+                and ((types     == []) or (event["typeName"  ] in types ) ) 
+                and ((not_types == []) or (event["typeName"  ] not in not_types) ) 
+                and (True != event["remote"])
+                and (True == event["published"])
             ):
                 rtn.append(event)
 
@@ -636,30 +640,30 @@ def rankings_dataframe(json_filepath: str, csv_filepath: str):
 
 
 
-def write_needed_events(season_events, texasonly=False):
+def filter_event_ids(season_events:SeasonEvents, by_states:list =[]):
     """
     Using a given SeasonEvents object, gathers all the
-    event IDs (for non-remote events) and writes them to a file
+    event IDs (for non-remote, official events and skirmishes)
+    and writes the needed event IDs to generatedfiles/{SEASON_YEAR}/opr/needed_event_ids.json
+    \nReturns the list of IDs
     """
     logger.info(" Writing needed events...")
     
-    rawevents = open(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","needed_events_raw.json"),"w+")
-    rawevents.truncate()
-    rawevents.write('{"matches":[\n')
-    
-    with open(os.path.join(PATH_TO_FTCAPI+f"generatedfiles","opr","needed-event-ids.txt"),"w+") as thefile:
+    with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","needed_event_ids.csv"),"w") as thefile:
         thefile.truncate() # Clear the file
-        filtered_event_list = season_events.filter(type=accepted_match_types, state=("TX" if texasonly else None))
+        thefile.write("EventCode,DateStart\n")
+        
+        # Filter the events
+        logger.debug(f" Filtering {len(season_events)} events...")
+        filtered_event_list = season_events.filter(types=ACCEPTED_EVENT_TYPES, states=by_states) # Filter the events
+        logger.debug(f" Events filtered. Now {len(filtered_event_list)} events.")
+        
         # Iterate over every event
         for event in filtered_event_list:
             # If it's not remote and it's an accepted type
-            thefile.write(str(event["code"])+"\n") #write to the file
-            rawevents.write(str(event).replace("'",'"').replace("False","false").replace("True","true").replace("None","null")+", \n")
-
-    rawevents.write("]}")
-    #logger.info("Done!")
-    rawevents.close()
-
+            thefile.write(str(event["code"])+", "+str(event["dateStart"])+"\n") # Add the event code to the file
+    
+    return [event["code"] for event in filtered_event_list]
 
 
 
@@ -670,11 +674,11 @@ def write_needed_teams(use_opr=False):
     """
     allteams = []
     counter  = 0
-    eventcounter = 0
+    event_counter = 0
     if (not use_opr):
-        thepath = os.path.join(PATH_TO_FTCAPI,"generatedfiles","all_events")
+        thepath = os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_events")
     else:
-        thepath = os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events")
+        thepath = os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events")
     
     l=len(os.listdir(thepath))
 
@@ -683,10 +687,10 @@ def write_needed_teams(use_opr=False):
     for file in os.listdir(thepath):
         filename = os.fsdecode(file)
 
-        eventcounter += 1
+        event_counter += 1
 
         if logger.isEnabledFor(logging.INFO): # Skip expensive logging if not enabled
-            logger.info(f"  Event {eventcounter}/{l} - {filename}",end="            \r")
+            logger.info(f"  Event {event_counter}/{l} - {filename}",end="            \r")
 
         #open the file json & extract matches from the event
         a = get_json(thepath+"/"+filename)
@@ -704,7 +708,7 @@ def write_needed_teams(use_opr=False):
     
     logger.info("    Teams assembled. Writing all teams to file team-ids-to-get.txt...       ")
     
-    with open(os.path.join(PATH_TO_FTCAPI,"generatedfiles",("opr","all-teamids-involved.txt" if use_opr else "generatedfiles","team-ids-to-get.txt")),"w+") as thefile:
+    with open(os.path.join(PROJECT_PATH,"app/generatedfiles",str(SEASON_YEAR),("opr","all-teamids-involved.txt" if use_opr else "team-ids-to-get.txt")),"w+") as thefile:
         thefile.truncate() # Clear the file
         for team in allteams:
             thefile.write(str(team)+"\n")
@@ -719,7 +723,7 @@ def loadMatches(filter_by_teams=None) -> pd.DataFrame:
     Returns a pandas object of the csv file containing all matches (reads from all_matches.csv, created by prepare_opr_calculation)
     """
     #TODO: update everything else that relies on this function's output to accomodate pandas
-    all_matches = pd.read_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","all_matches.csv"))
+    all_matches = pd.read_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_matches.csv"))
     all_matches["actualStartTime"] = pd.to_datetime(all_matches["actualStartTime"], "format=mixed")#format="%Y-%m-%"+"dT%H:%M:%S.%"+"f")
 
     # if filter_by_teams isn't none, filter the matches
@@ -738,31 +742,81 @@ def loadMatches(filter_by_teams=None) -> pd.DataFrame:
     return all_matches
 
 
+def filter_matches(match_list:list, by_teams:list =None):
+    """ Filters a set of matches (given as raw json) and returns a dictionary containing the match info lists. """
+    rtn = {"actualStartTime":[],"description" :[],"tournamentLevel":[],
+        "scoreRedFinal"  :[],"scoreRedAuto":[],"scoreBlueFinal" :[],"scoreBlueAuto":[],
+        "Red1":[], "Red2":[], "Blue1":[], "Blue2":[]
+        }
+
+    # Iterate over each match
+    for match in match_list:
+
+        # Sort the team numbers into teamsdic
+        teamsdic = {"Red1":1,"Red2":1,"Blue1":1,"Blue2":1} #TODO: Add a warning if not all team numbers are present in match
+
+        for i in match["teams"]:
+            teamsdic[i["station"]] = i["teamNumber"]
+        
+        """
+        red1, red2, redscore, redauto, blue1, blue2, bluescore, blueauto
+        """
+        # Filter matches with teams in specific_teams (or all matches if no specific_teams specified)
+        if (
+            (by_teams == None) or 
+            (str(teamsdic["Red1"])  in by_teams) or
+            (str(teamsdic["Red2"])  in by_teams) or
+            (str(teamsdic["Blue1"]) in by_teams) or
+            (str(teamsdic["Blue2"]) in by_teams)
+        ):
+            # Add the match info to the all_matches_dic dictionary
+            for i in ["actualStartTime","description","tournamentLevel", "scoreRedAuto","scoreBlueAuto"]:
+                rtn[i].append(match[i])
+
+            # Make all scoring "NP" or non-penalty
+            rtn["scoreRedFinal"].append( match["scoreRedFinal"] -match["scoreBlueFoul"])
+            rtn["scoreBlueFinal"].append(match["scoreBlueFinal"]-match["scoreRedFoul"])
+            # Add the team numbers to the all_matches dictionary
+            rtn["Red1" ].append(teamsdic["Red1"])
+            rtn["Red2" ].append(teamsdic["Red2"])
+            rtn["Blue1"].append(teamsdic["Blue1"])
+            rtn["Blue2"].append(teamsdic["Blue2"])
+
+    return rtn
+
 
 def prepare_opr_calculation(
-    specific_event=None, specific_teams: list =None, specific_event_teams: str =None):
+    specific_event=None, specific_teams: list =None, specific_event_teams: str =None): #TODO: remove specific_event_teams, unneccessary
     """
-    Prepares the OPR calculation and writes to all_matches.csv and matches_per_team.csv
-    
-    Draws from opr/all_events (created when curling in the BASH/Powershell script)
+    Prepares the OPR calculation and writes to all_matches.csv
     
     Arguments:
       - specific_event (str) - returns only the data pertaining to the specified event code.
-      - specific_teams (list) - filters all matches by the given teams
+      - specific_teams (list) - returns data only involving the given teams
       - specific_event_teams (str) - returns data only for all teams in specified event code.
-    """
+
+    1. Loads all events in opr/all_events (raw FIRST API data), unless specific_event != None.
+    2. Gathers all matches from all loaded events
+    3. Filters matches by teams
+    4. Organizes dictionary of matches per team
+    6. Saves all teams involved in matches to app/generatedfiles/{SEASON_YEAR}/team_list_filtered.csv
+    7. Saves all matches to app/generatedfiles/{SEASON_YEAR}/all_matches.csv
     
-    matchcounter  = 0
-    eventcounter  = 0
+    Note: team_list_filtered.csv is a list of the team numbers of teams that this function output's
+    relevance is about - that is, the teams that are in common for the filtered matches. more specifically
+    specific_teams (if specific teams is not None) or else all unique teams in the event.
+
+    """
+    total_match_counter = 0
+    event_counter = 0
     try:
         l=len(os.listdir(
             (
-                os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events"))
+                os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events"))
             ))
     except FileNotFoundError as e:
-        logger.warning("[prepare_opr_calculation] generatedfiles/opr/all_events directory does not exist!")
+        logger.warning(f"[prepare_opr_calculation] app/generatedfiles/opr/{SEASON_YEAR}/all_events directory does not exist!")
 
-    matches_per_team_dic = {}
     all_matches_dic = {
         "actualStartTime":[],"description" :[],"tournamentLevel":[],
         "scoreRedFinal"  :[],"scoreRedAuto":[],"scoreBlueFinal" :[],"scoreBlueAuto":[],
@@ -781,88 +835,54 @@ def prepare_opr_calculation(
     if specific_teams != None:
         specific_teams = [ str(i) for i in specific_teams]
 
-    logger.debug("  Getting teams...")
-    
+    #region Load all events
+    logger.debug("[prepare_opr_calculation]  Getting team data from saved places...")
     if specific_event==None:
-        path_list = [ os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events", j) for j in [i for i in os.listdir(os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events"))]]
+        path_list = [ os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events", j) for j in [i for i in os.listdir(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events"))]]
 
     elif specific_event=="RECENT":
         # event_matches.json is updated in ftcapiv3.sh, during the getmatches
-        logger.debug("    [prepare_opr_calculation] Iterating through only event in event_matches.json")
-        path_list = [os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_matches.json")]
+        logger.debug("    [prepare_opr_calculation] Iterating through only event in eventdata/event_matches.json")
+        path_list = [os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"eventdata","event_matches.json")]
         l = 1
     
     else:
         logger.debug("    [prepare_opr_calculation] Iterating through only one event with code "+str(specific_event))
-        path_list = [os.path.join(PATH_TO_FTCAPI,"generatedfiles","opr","all_events",str(specific_event).upper()+".json")]
+        path_list = [os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"opr","all_events",str(specific_event).upper()+".json")]
         l = 1
 
-    
+    logger.debug(f"    Found {len(path_list)} events (file paths). Listing: "+str(path_list))
+    if 0 == len(path_list): logger.warning("[prepare_opr_calculation] Found zero events! (length of path_list is zero)")
+    #endregion
+
+    #region Filter data
     # Iterate through all events
     for eventfile in path_list:
         
         eventfilename = os.fsdecode(eventfile)
 
-        eventcounter += 1
+        event_counter += 1
 
-        if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f"    Event {eventcounter}/{l} - {eventfilename}",end="            \r")
+        if DEBUG_LEVEL>2:
+            logger.debug(f"    Event {event_counter}/{l} - {eventfilename}")
 
-        #open the file json & extract matches from the event
+        # Open the file json & extract matches from the event
         event_raw_json = get_json(eventfilename)
 
+        total_match_counter += len(event_raw_json["matches"])
 
-        # Iterate over each match
-        for match in event_raw_json["matches"]:
-            matchcounter += 1
+        # Filter out the matches that we want
+        all_matches_dic_add = filter_matches(match_list=event_raw_json["matches"], by_teams=specific_teams)
 
-            # do some opr stuff
-            teamsdic = {"Red1":1,"Red2":1,"Blue1":1,"Blue2":1}
-
-            for i in match["teams"]:
-                teamsdic[i["station"]] = i["teamNumber"]
-            
-            """
-            red1, red2, redscore, redauto, blue1, blue2, bluescore, blueauto
-            """
-            # If the teams are in the valid list (or all teams are acceptable)
-            if (
-                (specific_teams==None) or 
-                (str(teamsdic["Red1"])  in specific_teams) or
-                (str(teamsdic["Red2"])  in specific_teams) or
-                (str(teamsdic["Blue1"]) in specific_teams) or
-                (str(teamsdic["Blue2"]) in specific_teams)
-            ):
-                # Add the match info to the all_matches_dic dictionary
-                for i in ["actualStartTime","description","tournamentLevel", "scoreRedAuto","scoreBlueAuto"]:
-                    all_matches_dic[i].append(match[i])
-
-                all_matches_dic["scoreRedFinal"].append( match["scoreRedFinal"] -match["scoreBlueFoul"])
-                all_matches_dic["scoreBlueFinal"].append(match["scoreBlueFinal"]-match["scoreRedFoul"])
-                # add the team numbers to the all_matches dictionary
-                all_matches_dic["Red1" ].append(teamsdic["Red1"])
-                all_matches_dic["Red2" ].append(teamsdic["Red2"])
-                all_matches_dic["Blue1"].append(teamsdic["Blue1"])
-                all_matches_dic["Blue2"].append(teamsdic["Blue2"])
-            
-
-            # Extract teams
-            for team in match["teams"]:
-                # if team in specified teams (or no specified teams)
-                if (specific_teams==None) or (str(team["teamNumber"]) in specific_teams):
-                    #logger.debug("team "+str(team))
-                    # If team isn't already in the matches_per_team_dic
-                    if not (team["teamNumber"] in matches_per_team_dic.keys()):
-                        matches_per_team_dic[team["teamNumber"]] = [match] # add the team
-
-                    else:
-                        matches_per_team_dic[team["teamNumber"]].append(match)
+        # Add the new filtered matches to our master dictionary
+        for key in all_matches_dic_add: # (adds the new values to every list in the dict)
+            all_matches_dic[key] += all_matches_dic_add[key]
 
     
     if (specific_event_teams != None):
         try:
             # If the current event is the specific event given, add all teams to list
-            event_teams_raw_json = get_json(os.path.join(PATH_TO_FTCAPI,"generatedfiles","eventdata","event_teams.json")) # Created when FTC APIing
+            event_teams_raw_json = get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"eventdata","event_teams.json")) # Created when FTC APIing
 
             #logger.debug("event_teams_raw_json[teams]"+str(event_teams_raw_json["teams"]))
     
@@ -881,61 +901,37 @@ def prepare_opr_calculation(
             raise e
     
 
+    if specific_teams != None:
+        filtered_teams = specific_teams
     
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
-        logger.debug("    Formatting matches_per_team_dic")
-        logger.debug("    len(matches_per_team_dic.keys()): "+str(len(matches_per_team_dic.keys())))
-    
-    matches_per_team_for_pandas = {
-        "teamNumber":[],
-        "matches"   :[]
-    }
-    
-    for team in matches_per_team_dic.keys():
-        if (specific_event_teams == None) or (team in specific_event_teams_list):
-            matches_per_team_for_pandas["teamNumber"].append(team)
-            matches_per_team_for_pandas["matches"].append(matches_per_team_dic[team])
+    else:
+        # Get all unique team numbers from matches
+        filtered_teams = sorted(list(set(
+            all_matches_dic["Red1"]
+            + all_matches_dic["Red2"]
+            + all_matches_dic["Blue1"]
+            + all_matches_dic["Blue2"]
+        ))) # NOTE: sorted to keep joblib stuff consistent as this is used as args elsewhere.
 
-    
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
-        logger.debug("    Creating pandas dataframe from matches_per_team_dic")
-        logger.debug("    len(matches_per_team_for_pandas[\'teamNumber\']): "+str(len(matches_per_team_for_pandas["teamNumber"])))
-        logger.debug("      specific_event_teams: "+str(specific_event_teams))
-        logger.debug("      specific_event_teams_list: "+str(specific_event_teams_list))
-    
-    matches_per_team = pd.DataFrame(matches_per_team_for_pandas)
-    
-    if (specific_event_teams != None):
-        if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
-            logger.debug("    Filtering pandas dataframe matches_per_team for only the teams in specific_event_teams_list")
-            logger.debug("    Start shape of matches_per_team: "+str(matches_per_team.shape))
-        
-        matches_per_team = matches_per_team[matches_per_team["teamNumber"].isin( specific_event_teams_list)]
-    
-    if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
-        logger.debug("    End shape of matches_per_team: "+str(matches_per_team.shape))
-    
-    #logger.debug(matches_per_team)
-    if DEBUG_LEVEL>1:
-        logger.debug("    Teams assembled. Writing all matches per team to file generatedfiles/matches_per_team.csv...       ") #TODO: Replace with actual path from os.join
-    
-    matches_per_team.to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","matches_per_team.csv"), index=False)
+    #endregion Filter data
 
+    #region Save data
+    logger.debug(f"    Teams assembled. Writing all team numbers to file app/generatedfiles/{SEASON_YEAR}/team_list_filtered.csv...       ")
 
-    if DEBUG_LEVEL>1:
-        logger.debug("    Teams assembled. Writing all team numbers to file generatedfiles/team_list_filtered.csv...       ")
-    
-    matches_per_team["teamNumber"].to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","team_list_filtered.csv"), index=False)
-
+    #TODO: make team_list_filtered.csv something other than a csv
+    with open(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"team_list_filtered.csv"), "w") as writer:
+        writer.truncate()
+        writer.write("teamNumber\n")
+        for team_numb in filtered_teams:
+            writer.write(str(team_numb)+"\n")
     
 
-    if DEBUG_LEVEL>1:
-        logger.debug("    Creating pandas dataframe from all_matches_dic")
+    logger.debug("    Creating pandas dataframe from all_matches_dic")
     
     all_matches_pd = pd.DataFrame(all_matches_dic)
 
     if specific_event_teams != None:
-        if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
+        if DEBUG_LEVEL>1:
             logger.debug("    Filtering pandas dataframe from all_matches_dic by teams in specific_event_teams_list")
             logger.debug("    Start shape of all_matches_pd: "+str(all_matches_pd.shape))
         
@@ -945,19 +941,20 @@ def prepare_opr_calculation(
             all_matches_pd["Blue1"].isin(specific_event_teams_list) |
             all_matches_pd["Blue2"].isin(specific_event_teams_list)
         ]
-        if DEBUG_LEVEL>1 and logger.isEnabledFor(logging.DEBUG):
+        if DEBUG_LEVEL>1:
             logger.debug("    End shape of all_matches_pd: "+str(all_matches_pd.shape))
             logger.debug("    Sorting pandas dataframe by actualStartTime")
             
     all_matches_pd.sort_values(by="actualStartTime", inplace=True)
     #logger.debug(all_matches_pd)
     
-    logger.debug("    Matches assembled. Writing all teams to file generatedfiles/all_matches.csv...       ")
+    logger.debug(f"    Matches assembled. Writing all teams to file app/generatedfiles/{SEASON_YEAR}/all_matches.csv...       ")
     
-    all_matches_pd.to_csv(os.path.join(PATH_TO_FTCAPI,"generatedfiles","all_matches.csv"), index=False)
+    all_matches_pd.to_csv(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"all_matches.csv"), index=False)
+    #endregion Save data
 
     if DEBUG_LEVEL>2 and logger.isEnabledFor(logging.DEBUG):
-        logger.debug(f"[prepare_opr_calculation] Wrote about {len(pd.unique(all_matches_pd['Red1']))} (unique in Red1) of teams out of {matchcounter} matches (matchcounter).")
+        logger.debug(f"[prepare_opr_calculation] Wrote about {len(pd.unique(all_matches_pd['Red1']))} (unique in Red1) of teams out of {total_match_counter} matches (total_match_counter).")
         logger.debug(f"    Size of the actual all_matches_pd written: {all_matches_pd.size}")
         logger.debug(f"    Shape of the actual all_matches_pd written: {all_matches_pd.shape}")
     
@@ -967,11 +964,13 @@ def prepare_opr_calculation(
 
 
 if __name__ == "__main__" and "get-events-global" in sys.argv:
-    logger.info("This script was called as __main__")
+    # I'm leaving this in here because I might want to trigger it manually later.
+    logger = create_logger("json_parse.py")
+    logger.warning("This script was called as __main__")
     logger.info("  Jsonparse getting global event ids that match")
-    logger.info("  Getting the season's data from seasondata at "+os.path.join(PATH_TO_FTCAPI,"generatedfiles","season_data.json"))
+    logger.info("  Getting the season's data from seasondata at "+os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_events.json"))
 
-    write_needed_events(SeasonEvents(get_json(os.path.join(PATH_TO_FTCAPI,"generatedfiles","season_data.json"))), texasonly=False)
+    filter_event_ids(SeasonEvents(get_json(os.path.join(PROJECT_PATH,"app","generatedfiles",str(SEASON_YEAR),"season_events.json"))))
 
 
 # -- End of file --

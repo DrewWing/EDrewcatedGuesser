@@ -202,7 +202,7 @@ class pepTest(unittest.TestCase):
             #print("Root:",root) #DEBUG
 
             for file_name in filenames:
-                if file_name.endswith(".py") and not(root in ignore_list):
+                if file_name.endswith(".py") and not(root in ignore_list) and not(".ignore." in root) and not(".ignore." in file_name):
                     file_name = os.path.join(root,file_name)
                     #print("    ",file_name) #DEBUG
                     test_function(file_name)

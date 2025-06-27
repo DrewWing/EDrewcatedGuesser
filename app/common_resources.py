@@ -44,10 +44,10 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 
 __all__ = [
-    "get_json", "log_error", "byte_to_gb", "seconds_to_time", 
+    "get_json", "byte_to_gb", "seconds_to_time", 
     "NUMBER_OF_DAYS_FOR_RECENT_OPR", "DO_JOBLIB_MEMORY", 
-    "PATH_TO_FTCAPI", "PATH_TO_JOBLIB_MEMORY", "SERVICE_ACCOUNT_FILE", 
-    "SPREADSHEET_ID"
+    "PROJECT_PATH", "PATH_TO_JOBLIB_CACHE", "SERVICE_ACCOUNT_FILE", 
+    "SPREADSHEET_ID", "CALCULATION_MODE"
 ]
 __version__ = "49.1 Beta"
 __author__ = "Drew Wingfield"
@@ -65,21 +65,31 @@ load_dotenv() # Load the environment variables
 
 
 # Environment Variables
-PATH_TO_FTCAPI = os.getenv("PROJECT_PATH", None) # The absolute path to the "app" directory within this project.
+default_path = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0] # The absolute path to the dir two levels above (should be project dir).
+PROJECT_PATH = os.getenv("PROJECT_PATH", default_path) # The absolute path to the project directory.
+del default_path
+
 DEBUG_LEVEL = int(os.getenv("DEBUG_LEVEL", 0))
 EVENT_CODE = os.getenv("EVENT_CODE", "FTCCMP1FRAN")
-FIELD_MODE = os.getenv("FIELD_MODE", None) #TODO: Determine if this is necessary
 SEASON_YEAR = int(os.getenv("SEASON_YEAR",2023))
 DO_COLOR    = os.getenv("DO_COLOR","true").lower() == "true"
 
+
+# Statistics calculation mode
+CALCULATION_MODE = str(os.getenv("CALCULATION_MODE","AUTO")).upper()
+# AUTO - automatic mode, only runs global calculations if any team being calculated doesn't already have global calculations, or if the last time global calcs was run is >30 days ago.
+# LOCAL - local mode, disables global (season-wide) calculations and only runs calcs on the currently running event.
+# GLOBAL - global mode, only runs global (all-season) calcs.
+# ALL - all mode, runs both local and global calculations every cycle.
+
 # Google Sheets stuff
-SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PATH_TO_FTCAPI[:-4] + "ServiceAccountKey.json") # Used in sheetsapi (the -4 removes the "/app" from the path to ftcapi)
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_KEY_PATH", PROJECT_PATH + "ServiceAccountKey.json") # Used in sheetsapi
 SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID", "<placeholder Google Sheets Spreadsheet ID>") # https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
 
 
 #region Joblib
 DO_JOBLIB_MEMORY = os.getenv("DO_JOBLIB_MEMORY", "True").lower() == "true"  # Used to be True
-PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PATH_TO_FTCAPI,"generatedfiles","joblibcache","joblib"))
+PATH_TO_JOBLIB_CACHE = os.getenv("JOBLIB_PATH", os.path.join(PROJECT_PATH,"app","generatedfiles","joblibcache","joblib"))
 
 # The following code was copied and modified from viniciusarrud on GitHub https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714
 # It is a fix for a bug in Windows where it throws errors if you try to access a path longer than ~250 chars.
@@ -97,8 +107,8 @@ if os.name == "nt":
 
 NUMBER_OF_DAYS_FOR_RECENT_OPR = 120 # 35 seemed to have weird problems (TODO: bug that needs fixing)
 
-# TODO: make this and its correspondant in jsonparse all caps
-accepted_match_types = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
+# The types of events to accept. All others will be filtered out (used in json_parse.py). See the FIRST API docs for more info on types.
+ACCEPTED_EVENT_TYPES = ["Qualifier", "Championship", "League Tournament", "League Meet", "Super Qualifier", "FIRST Championship"]
 
 # This is kind of dead code and needs to be replaced.
 # If using the windows machine (more powerful)
@@ -110,6 +120,22 @@ if "win" in sys.platform:
 else:
     CRAPPY_LAPTOP  = True
     # Whether or not to calculate OPR based on all matches globally
+
+def make_required_directories():
+    """
+    Make directories required for the program to run if they don't already exist
+    """
+    # Make required directories if they don't exist already
+    for dir in [
+        f"app/generatedfiles/{SEASON_YEAR}",
+        #f"app/generatedfiles/{SEASON_YEAR}/joblibcache",
+        f"app/generatedfiles/{SEASON_YEAR}/opr",
+        f"app/generatedfiles/{SEASON_YEAR}/opr/all_events",
+        #f"app/generatedfiles/{SEASON_YEAR}opr/all-teams",
+        f"app/generatedfiles/{SEASON_YEAR}/eventdata"
+    ]:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
 
 
 def get_json(path: str):
@@ -235,13 +261,13 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
         cons_h.setLevel(logging.INFO)
 
         # Create Error handler
-        err_h = logging.FileHandler(filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","errors.log"))
+        err_h = logging.FileHandler(filename=os.path.join(PROJECT_PATH,"app","generatedfiles","errors.log"))
         err_h.setLevel(logging.WARNING)
 
         # Create Debug handler if enabled
         if not(disable_debug):
             deb_h = logging.FileHandler(
-                    filename=os.path.join(PATH_TO_FTCAPI,"generatedfiles","debug.log"),
+                    filename=os.path.join(PROJECT_PATH,"app","generatedfiles","debug.log"),
                     mode=str("w" if flush_debug_log else "a")
                 )
             deb_h.setLevel(logging.DEBUG)
@@ -296,12 +322,13 @@ if __name__ == "__main__":
     logger.warning("common_resources.py was called as __main__, which should not happen!")
     logger.info("Displaying constants and their values:")
     a = {
-        "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
-        "EVENTCODE"       : EVENT_CODE,
-        "PATH_TO_FTCAPI"  : PATH_TO_FTCAPI,
+        "CALCULATION_MODE":CALCULATION_MODE,
         "CRAPPY_LAPTOP"   : CRAPPY_LAPTOP,
         "DO_JOBLIB_MEMORY": DO_JOBLIB_MEMORY,
+        "EVENTCODE"       : EVENT_CODE,
+        "NUMBER_OF_DAYS_FOR_RECENT_OPR" : NUMBER_OF_DAYS_FOR_RECENT_OPR,
         "PATH_TO_JOBLIB_CACHE"  : PATH_TO_JOBLIB_CACHE,
+        "PROJECT_PATH"  : PROJECT_PATH,
         "SERVICE_ACCOUNT_FILE"  : SERVICE_ACCOUNT_FILE,
         "SPREADSHEET_ID": SPREADSHEET_ID,
         "sys.path"    : sys.path,
