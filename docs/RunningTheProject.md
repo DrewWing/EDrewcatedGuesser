@@ -13,6 +13,17 @@ $ .\.venv\Scripts\activate # Activate the virtual environment.
 $ python3 .\app\__main__.py # Run the main script.
 ```
 
+The program will initialize, gather some data, then run cycles until it is stopped (unless `ONE_CYCLE_ONLY` is `True`), as seen in the below flowcharts:
+
+
+<table>
+    <tr>
+        <td> <img src="images/Flowchart_Main_Overview.svg" /> </td>
+        <td> <img src="images/Flowchart_Main_Cycle.svg" /> </td>
+    </tr>
+</table>
+<br>
+
 ## Configuring the Program
 <!-- TODO: Should this be put in it's own page? -->
 The program may be configured using variables in the `.env` file. Other than those in the [setup instructions](Setup.md), the only recommended modification is of `SEASON_YEAR`.
@@ -20,7 +31,7 @@ The program may be configured using variables in the `.env` file. Other than tho
 ### General Configuration Variables
 | Variable Name | Default Value | Description |
 | :------------ | :------------ | :---------- |
-| `DEBUG_LEVEL` | 0             | An integer starting at zero. Higher values print more information. |
+| `DEBUG_LEVEL` | 0             | A positive integer starting at zero. Higher values print more info and make execution slightly slower. |
 | `LOG_LEVEL`   | INFO          | The log level for logger to use. May be `DEBUG`, `INFO`, `WARN`, `ERROR`, or `CRITICAL`. |
 | `SEASON_YEAR` | 2023          | A string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." |
 | `EVENT_CODE`  | FTCCMP1FRAN   | The alphanumeric event code FIRST uses to keep track of their events, as a string. |

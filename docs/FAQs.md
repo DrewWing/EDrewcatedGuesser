@@ -53,9 +53,9 @@ Try running the `venvSetup` script with the `-replace` flag, which removes the c
 
 If that doesn't work, you may have to install the packages yourself. Installing from `requirements.txt` should work, but if it doesn't, try installing the specific versions found in [StablePackageVersions](StablePackageVersions.md).
 
-## Can I repurpose this project and use it commercially?
+## Can I repurpose this project and use it commercially/sell access to it?
 Absolutely not. See the project license at [`license.txt`](../LICENSE.txt).
-In addition, this project relies on the FIRST API (ruled by their [terms of service](https://frc-events.firstinspires.org/services/api/terms)), which clearly states:
+In addition, this project relies on data from the FIRST API (ruled by their [terms of service](https://frc-events.firstinspires.org/services/api/terms)), which clearly states:
 > You shall not do any of the following:
 > - make any commercial use (i.e. use that generates revenue) of the APIs, API Documentation or Events Data. This means that You may not:
 >   - sell the Events Data, or

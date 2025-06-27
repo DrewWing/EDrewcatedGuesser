@@ -27,23 +27,31 @@ Simply put, this software:
   - Runs on your computer or laptop, 
   - Fetches live team data, match data, and match schedules from the FIRST API, 
   - Calculates statistics such as OPR and CCWM, 
-  - Predicts match outcomes, and 
+  - Predicts match outcomes using machine learning, and 
   - Pushes the statistics and predictions to a Google Sheets spreadsheet.
 
 > [!Important]
 > This software is a CLI intended for advanced users. If you don't know you way around the command line or aren't willing to set up a Google Cloud project, this software is not suited for you. \
-> In a future update, a local spreadsheet option will be available.
+> In the near future, a local spreadsheet option will be available.
 
 You can find the license statement [here](LICENSE.txt) (The full GNU Affero General Public License is [here](COPYING)).
 The todo list is [here](docs/todos.md).
 Also see the [Updates](docs/Updates.md) page.
 
 
+## Why Use EDrewcated Guesser?
+This software runs on *your computer*. Apart from the [official FIRST API](https://ftc-events.firstinspires.org/services/API), it doesn't rely on internet connectivity or other web servers to function (connectivity to a Google Sheets spreadsheet is an optional feature).
+This means that **it won't crash when sites like FTCScout get busy** (*cough cough* during States and Worlds *cough cough*).
+
+It is (as far as I'm aware) one-of-a-kind, extremely accurate, and built to be efficient. It's also open-source, completely free to use, and student developed.
+
+EDrewcated Guesser **never** sends crash reports, analytics, or other data of any kind to the developer(s). All feedback is via email and the GitHub Issues page.
+
+
 ## Helpful Documentation Links
  - [How to Set Up the Project (Start Here!)](docs/Setup.md)
- - [Running the program](docs/RunningTheProject.md)
-   - During an event
-   - Outside of an event
+ - [Running the Project](docs/RunningTheProject.md)
+ - [Stats Calculation Docs (WIP)](docs/StatsCalculation.md)
  - [Machine Learning Guide (advanced)](docs/MachineLearningGuide.md)
 
 
@@ -51,7 +59,7 @@ Also see the [Updates](docs/Updates.md) page.
 See the [contributing guide](.github/CONTRIBUTING).
 
 ## Errors
-As always, EDrewcated Guesser is a work in progress and has some bugs. Errors are both printed to the terminal and appended to `app/generatedfiles/errors.log` with a timestamp.
+As always, EDrewcated Guesser is a work in progress and has some bugs. Errors are both printed to the terminal and appended to `app/generatedfiles/errors.log` with a timestamp. If `LOG_LEVEL` is `DEBUG`, debug info will be saved to `app/generatedfiles/debug.log`
 
 
 ## Language Stats:
@@ -80,7 +88,7 @@ The Google Sheets API was implemented with lots of help from [their sample progr
 
 Thanks to viniciusarrud on GitHub in [this Joblib issue](https://github.com/joblib/joblib/issues/1496#issuecomment-1788968714) for a solution to a particular bug involving pathing on Windows.
 
-The diagram `FTCAPI file diagram.drawio` (soon to be exported into an image and put in the docs) was generated using [Drawio](https://app.diagrams.net/) [24.7.7], made by JGraph, https://github.com/jgraph/drawio. \
+The diagrams `docs/FTCAPI file diagram.drawio`, `docs/EDrewcatedGuesser_Default_Flowchart.drawio`, `docs/images/Flowchart_Main_Cycle.svg`, `docs/images/Flowchart_Main_Overview.svg`, and all other files ending with the extension `.drawio` were generated using [Drawio](https://app.diagrams.net/) [24.7.7], made by JGraph, https://github.com/jgraph/drawio. \
 I am not JGraph, this project is not by JGraph, and JGraph neither endorses me nor this project.
 
 ### External libraries
