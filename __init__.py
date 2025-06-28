@@ -45,18 +45,18 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 
 import os
 
-def make_required_directories():
+def make_required_directories(SEASON_YEAR=2024):
     """
     Make directories required for the program to run if they don't already exist
     """
     # Make required directories if they don't exist already
     for dir in [
-        "app/generatedfiles",
-        #"app/generatedfiles/joblibcache",
-        "app/generatedfiles/opr",
-        "app/generatedfiles/opr/all-events",
-        #"app/generatedfiles/opr/all-teams",
-        "app/generatedfiles/eventdata"
+        f"app/generatedfiles/{SEASON_YEAR}",
+        #f"app/generatedfiles/{SEASON_YEAR}/joblibcache",
+        f"app/generatedfiles/{SEASON_YEAR}/opr",
+        f"app/generatedfiles/{SEASON_YEAR}/opr/all-events",
+        #f"app/generatedfiles/{SEASON_YEAR}opr/all-teams",
+        f"app/generatedfiles/{SEASON_YEAR}/eventdata"
     ]:
         if not os.path.exists(dir):
             os.makedirs(dir)

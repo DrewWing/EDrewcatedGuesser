@@ -2,10 +2,10 @@
 service-account-key-ftc-api-for-sheets-19d729dc80e8.json
 secrets.txt
 
-joblibcache/
 
 __pycache__/
 
+joblibcache/
 app/generatedfiles/
 
 .vscode/
@@ -13,6 +13,11 @@ app/generatedfiles/
 
 .venv/
 
+*.ignore.*
+.env
+
 venvSetup.log
 
-*.ignore.*
+# Scalene profile output
+profile.html
+profile.json

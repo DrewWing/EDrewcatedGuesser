@@ -80,12 +80,12 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
     - [ ] Create Issues
   - [ ] Set up PR template
   - [ ] Set up public permissions (PR permissions)
-  - [ ] Create release (December 24th)
-    - [ ] Switch all version references to new version
-    - [ ] Add to changelog
-    - [ ] Commit using new version tag
-  - [ ] Publication (December 25th)
-    - [ ] Make repo public
+  - [X] Create release (December 24th)
+    - [X] Switch all version references to new version
+    - [X] Add to changelog
+    - [X] Commit using new version tag
+  - [X] Publication (December 25th)
+    - [X] Make repo public
     - [ ] Update my website
     - [ ] Announce release on all channels
 
@@ -130,7 +130,9 @@ Finish features for release, flesh out docs, possibly get ML algorithm training 
   - [ ] `[Speed]` Convert more things to use numpy matrices instead of pandas dataframes (much faster)
     - prepare-machinelearningpy training_data_matches
   - [ ] `[Speed]` Maybe add GPU/NPU support?
-    - [ ] `[Code]` Switch to Pytorch?
+    - [ ] Switch to Pytorch?
+    - [ ] Use CUDA?
+  - [ ] `[Speed]` Convert project to C++ so it runs faster.
 
 
 ### Other
