@@ -49,7 +49,7 @@ __all__ = [
     "PROJECT_PATH", "PATH_TO_JOBLIB_CACHE", "SERVICE_ACCOUNT_FILE", 
     "SPREADSHEET_ID", "CALCULATION_MODE"
 ]
-__version__ = "49.1 Beta"
+__version__ = "50.0"
 __author__ = "Drew Wingfield"
 
 import sys

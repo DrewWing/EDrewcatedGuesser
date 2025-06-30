@@ -72,7 +72,7 @@ You should then modify `SERVICE_ACCOUNT_KEY_PATH` in the `.env` file, replacing 
 ---
 
 ### Set Up the Spreadsheet
-Copy [this spreadsheet](https://docs.google.com/spreadsheets/d/1VZYXmJQ7jPPnCTyCnhFSYAuuTAymZbRimxe0GQYx_L4/edit?usp=sharing) and share it with your newly created service account. This ensures that your Service Account can actually access the Google Sheets spreadsheet.
+Copy [this spreadsheet](https://docs.google.com/spreadsheets/d/1DAbqBJcS_PAFNDyCjkaspabKk5WrajsVhvibgZpWczc/edit?usp=sharing) and share it with your newly created service account. This ensures that your Service Account can actually access the Google Sheets spreadsheet.
 
 Then modify `GOOGLE_SPREADSHEET_ID` in your `.env` file to the Spreadsheet ID, found in the URL of the spreadsheet: 
 ```
