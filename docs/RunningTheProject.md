@@ -31,31 +31,39 @@ The program may be configured using variables in the `.env` file. Other than tho
 ### General Configuration Variables
 | Variable Name | Default Value | Description |
 | :------------ | :------------ | :---------- |
-| `DEBUG_LEVEL` | 0             | A positive integer starting at zero. Higher values print more info and make execution slightly slower. |
-| `LOG_LEVEL`   | INFO          | The log level for logger to use. May be `DEBUG`, `INFO`, `WARN`, `ERROR`, or `CRITICAL`. |
 | `SEASON_YEAR` | 2023          | A string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." |
 | `EVENT_CODE`  | FTCCMP1FRAN   | The alphanumeric event code FIRST uses to keep track of their events, as a string. |
-| `DO_JOBLIB_MEMORY` | True     | If True, enables caching of heavy functions. In general, you should leave this on unless joblib starts to throw errors. |
-| `PROJECT_PATH` | *(autodetected)* | The absolute path to the project directory. You shouldn't need to use this. |
-| `JOBLIB_PATH` | PROJECT_PATH/generatedfiles/joblibcache/joblib | The absolute path to the joblib cache, as a string. You shouldn't need to change this. |
+| `CALCULATION_MODE` | AUTO     | Controls which types of calculations are run and when. See [Stats Calculation](StatsCalculation.md) for more details.
 
 
 ### `__main__`-Specific Configuration Variables
 | Variable Name | Default Value | Description |
 | :------------ | :------------ | :---------- |
-| `DRY_RUN` | False | Boolean. If true, `__main__.py` does no operations, and just prints info. |
-| `DELAY_SECONDS` | 120 | Integer. Seconds to wait between each cycle. |
+| `DELAY_SECONDS` | 120 | Positive integer. Seconds to wait between each cycle. Does not include the time taken for the cycle itself. |
 | `ONE_CYCLE_ONLY` | False | Boolean. If True, `__main__.py` performs one cycle then exits. |
 
 
-### API configuration variables
+### API Configuration Variables
 | Variable Name | Default Value | Description |
 | :----------------------- | :----- | :---------- |
 | `DISABLE_API_CALLS`      | False  | If True, disables all FIRST API and Google Sheets API calls. |
+|`DISABLE_GOOGLE_API_CALLS`| False  | If True, disables all Google Sheets API calls. |
 | `DISABLE_FTC_API_CALLS`  | False  | If True, disables all FIRST API calls. |
 | `GOOGLE_SPREADSHEET_ID` | \<placeholder Google Sheets Spreadsheet ID\> | The Google Sheets spreadsheet ID. |
 | `PERSONAL_ACCESS_TOKEN` | \<placeholder personal access token\> | Your FIRST API access token. |
 | `SERVICE_ACCOUNT_KEY_PATH` | PROJECT_PATH/ServiceAccountKey.json | The path to your Google Cloud Service Worker account key. |
+
+
+### Advanced/Debug Configuration Variables
+| Variable Name | Default Value | Description |
+| :----------------------- | :----- | :---------- |
+| `LOG_LEVEL`   | INFO          | The log level for logger to use. May be `DEBUG`, `INFO`, `WARN`, `ERROR`, or `CRITICAL`. |
+| `DEBUG_LEVEL` | 0             | A positive integer starting at zero. Higher values print more info and make execution slightly slower. Only applicable if `LOG_LEVEL`=`DEBUG`. |
+| `FLUSH_DEBUG_LOG` | True      | Boolean. If True, flushes the file `debug.log` on initialization. Otherwise, only appends to the file. **Caution:** may lead to very large debug files. |
+| `DO_JOBLIB_MEMORY` | True     | If True, enables caching of heavy functions. In general, you should leave this on unless joblib starts to throw errors. |
+| `PROJECT_PATH` | *(autodetected)* | The absolute path to the project directory. You shouldn't need to use this. |
+| `JOBLIB_PATH` | PROJECT_PATH/generatedfiles/joblibcache/joblib | The absolute path to the joblib cache, as a string. You shouldn't need to change this. |
+| `DRY_RUN` | False | Boolean. If true, `__main__.py` does no operations, and just prints info. |
 
 
 ## Training Your Own Algorithm

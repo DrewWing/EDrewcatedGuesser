@@ -19,27 +19,59 @@ EDrewcated Guesser. If not, see <https://www.gnu.org/licenses/>.
 See the documentation in the README.md file. -->
 
 ## v50.0
-> [!Note]
-> v50.0 is a future update, and this changelog is a draft.
-
-The date of the release will go here
+June 30th, 2025.
 #### Overview
-The update overview will go here.
+First post-release update. Added and fixed lots of documentation, made configuration a *lot* easier, added much better logging, and created a more efficient statistics calculation system.
+
+#### Known Bugs:
+  - [#49](https://github.com/DrewWing/EDrewcatedGuesser/issues/49) In statistics ranking, Google Sheets template spreadsheet "ties" between two teams cuases it to show neither.
+  - [#1](https://github.com/DrewWing/EDrewcatedGuesser/issues/1) "Recent OPR" calculations sometimes show up as 0 due to the way that statistic is calculated.
+
 
 #### Bugs Fixed
-  - [#2](https://github.com/DrewWing/EDrewcatedGuesser/issues/5) Tests failed due to argparse usage.
+  - [#2](https://github.com/DrewWing/EDrewcatedGuesser/issues/2) Tests failed due to argparse usage.
   - [#30](https://github.com/DrewWing/EDrewcatedGuesser/issues/30) Global data from two or more seasons interacted with one another, causing incorrect season statistics.
+  - [2babbce](https://github.com/DrewWing/EDrewcatedGuesser/pull/34/commits/2babbceed24b52db140b0e30941586a95ecc4d8f) A FIRST API authentication bug.
+  - [2737b9f](https://github.com/DrewWing/EDrewcatedGuesser/pull/34/commits/2737b9f58bcd7ab9a7e48c04ae1ba60281cfa3ec) A tests file filter bug.
 
 
 #### Key changes
   - [#5](https://github.com/DrewWing/EDrewcatedGuesser/issues/5) Added configuration using environment variables!
+    - Completely redid the flow of operation.
+      - Added `app/__main__.py` as the main function (replaces BASH/PowerShell files)
+    - Added `.env.template`
+    - Removed old configuration (`app/init_settings.py`, `app/python_settings.py`).
   - [#20](https://github.com/DrewWing/EDrewcatedGuesser/issues/20) Scrapped the old manual logging system and replaced it with Python's builtin `logging` module.
-    - Added clearer debug logging levels.
+    - Removed functions `log_error`, `green_check`, `info_i`, and `red_x`.
+    - Added `create_logger`.
+    - Added clearer debug logging levels (configurable).
     - Added `debug.log` log file.
-  - [#23](https://github.com/DrewWing/EDrewcatedGuesser/issues/23) Renamed `PATH_TO_FTCAPI` to `PROJECT_PATH` and added automatic detection (`PROJECT_PATH` is no longer a required configuration variable).
+    - Added logging tests.
+    - `line_counter.py` now treats logging output lines as output lines.
+  - [#23](https://github.com/DrewWing/EDrewcatedGuesser/issues/23) and [#33](https://github.com/DrewWing/EDrewcatedGuesser/issues/33) Renamed `PATH_TO_FTCAPI` to `PROJECT_PATH` and added automatic detection (`PROJECT_PATH` is no longer a required configuration variable).
+    - Paths are now more resilient and can support both backslashes and forwardslashes (now using `os.path`).
+    - Added function to automatically create required directories, solving many `FilepathNotFoundError`.
+  - [#9](https://github.com/DrewWing/EDrewcatedGuesser/issues/9) Added option to disable Google Sheets api interaction.
+  - [#29](https://github.com/DrewWing/EDrewcatedGuesser/issues/29) Reworked statistics calculation (what calculations happen when).
+    - Added `CALCULATION_MODE` configuration variable.
+    - Added a time counter since last global calculation
+    - Added [documentation](StatsCalculation.md).
+    - Reworked various functions in json_parse, specifically:
+      -  prepare_opr_calculation, and
+      -  SeasonEvents.filter.
+   -  Separated caching heavy functions into its own function in opr.
+  - [#39](https://github.com/DrewWing/EDrewcatedGuesser/issues/39) Main program now warns the user when API data doesn't exist.
+  - Made [the GitHub Project](https://github.com/users/DrewWing/projects/1) management easier.
+  - [#3](https://github.com/DrewWing/EDrewcatedGuesser/issues/3) Added Google Sheets spreadsheet version validation (user is warned if version is too old).
+  - Updated the .gitignore (rearranged, added [Scalene](https://github.com/plasma-umass/scalene) profile output files)
+  - Cleaned up a lot of comments.
+  - Removed old code.
 
 #### Docs
   - Documentation was updated to be more clear and useful.
+  - Split Google Sheets setup into its own page.
+  - Added [statistics calculation information page](StatsCalculation.md).
+  - Added flowchart diagrams.
 
 
 ## 49.0 Beta

@@ -58,3 +58,7 @@ In the very near future, an option will be available to have a **local** spreads
 ## Run the program
 By this point, the project should be correctly set up. For instructions on how to use the software, go to [running the project](RunningTheProject.md).
 
+
+## Extra Info
+
+You may look at [Stats Calculation](StatsCalculation.md) for more info on how statistics are calculated and what the `CALCULATION_MODE` configuration variable does.
