@@ -19,8 +19,6 @@ See the documentation in the README.md file. -->
 Documentation on how statistics (OPR, AutoOPR, CCWM, etc.) calculation works, so I'm not forced
 to reverse-engineer my old code every time I make changes.
 
-> [!Warning]
-> This document is a draft and may contain incorrect, incomplete, or outdated information.
 
 ## Files and Directories
 Each season's data is separated into separate directories by season year (ex: `generatedfiles/2024`, `generatedfiles/2023`, etc.).
