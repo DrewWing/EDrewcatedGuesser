@@ -235,7 +235,7 @@ def seconds_to_time(seconds, roundto=3) -> str:
 # and https://stackoverflow.com/a/57205433/25598210
 # for logging
 
-def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False):
+def create_logger(name:str, disable_debug:bool|str="<None>", flush_debug_log:bool=False):
     """
     Creates a logger object for the given script name and adds the appropriate handles.
     Adds a console handler (INFO), error handler (WARNING, to generatedfiles/errors.log), 
@@ -246,6 +246,8 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
     # Set some settings for optimization and speed
     logging.logThreads = False
 
+    if disable_debug=="<None>":
+        disable_debug = os.getenv("LOG_LEVEL", "INFO").upper() != "DEBUG"
 
     # create logger
     logger = logging.getLogger(name)
@@ -258,7 +260,7 @@ def create_logger(name:str, disable_debug:bool=False, flush_debug_log:bool=False
     if not logger.handlers:
         # Create Console handler
         cons_h = logging.StreamHandler()
-        cons_h.setLevel(logging.INFO)
+        cons_h.setLevel(os.getenv("LOG_LEVEL","INFO"))
 
         # Create Error handler
         err_h = logging.FileHandler(filename=os.path.join(PROJECT_PATH,"app","generatedfiles","errors.log"))
