@@ -84,7 +84,11 @@ except ImportError as e:
 # Don't change scopes unless modifying this script to access a google service other than spreadsheets
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive"]
 
-# Write ranges
+MINIMUM_SPREADSHEET_VERSION = 2.01
+
+# Spreadsheet ranges
+SPREADSHEET_INFO_RANGE = "API Info!B1"
+
 MATCHES_WRITE_RANGE  = "API Stuff!B5:Y"
 MATCHES_WRITE_METADATA_RANGE  = "API Stuff!B1:G4"
 
@@ -194,6 +198,46 @@ def get_data(service, sheetid: str, range: str, credentials=build_credentials())
         logger.error("[get_data] HttpError while calling the Sheets API. Full Error: "+str(err))
         raise err
 
+
+def get_sheet_version(service, credentials):
+    """
+    Pulls the spreadsheet version.
+
+    Pulls the spreadsheet version from Google Sheets, and returns a float.
+    
+    Arguments:
+    service -- A service object built via build()
+    credentials -- Credentials built using the build_credentials() function
+    """
+    logger.debug("[get_sheet_version] Getting Google Sheets spreadsheet version.")
+    
+    elims_data_raw = get_data(service, sheetid=SPREADSHEET_ID, range=SPREADSHEET_INFO_RANGE, credentials=credentials)
+
+    if DEBUG_LEVEL>1:
+        logger.debug("[get_sheet_version] Data recieved. Processing data...")
+    
+    rtn = 0.0
+
+
+    for row in elims_data_raw:
+        #if debug:
+        #    logger.debug("\n"+"    "", end="")
+
+        #for col in row:
+            #if debug:
+            #    logger.debug(col, end=" | ")
+            
+        if type(row) != type(None) and len(row) > 0:
+            rtn = float(row[0])
+
+
+    if DEBUG_LEVEL>1:
+        logger.debug("[get_sheet_version] Data processed.")
+        logger.debug(f"[get_sheets_version] Sheets version is version '{rtn}'")
+    
+    return rtn
+
+
 def get_elims_matches(service, credentials):
     """
     Pulls elims match data.
@@ -231,7 +275,7 @@ def get_elims_matches(service, credentials):
     elims_match_teams = pd.DataFrame(elims_match_teams)
 
     if DEBUG_LEVEL>1:
-        logger.debug("[get_elims_matches] Data processed. and dataframed.")
+        logger.debug("[get_elims_matches] Data processed and dataframed.")
         #logger.debug(elims_match_teams)
     
     return elims_match_teams
@@ -707,6 +751,15 @@ def master_function(arguments:list):
     # Build the service
     service = build("sheets", "v4", credentials=credentials)
 
+    # Make sure that the spreadsheet is of a correct version
+    ver = get_sheet_version(service=service, credentials=credentials)
+
+    if (ver < MINIMUM_SPREADSHEET_VERSION):
+        logger.error(f"Google Sheets spreadsheet version is version {ver}, which is less than the minimum required {MINIMUM_SPREADSHEET_VERSION}.")
+        logger.info("Spreadsheet version is invalid. Execution will attempt to continue, but you have been warned!")
+    
+    else:
+        logger.debug(f"Spreadsheet version {ver} is acceptable (minimum is {MINIMUM_SPREADSHEET_VERSION}).")
 
     if ("matches" in arguments):
         push_matches(service)
