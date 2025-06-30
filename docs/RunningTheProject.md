@@ -1,42 +1,71 @@
 # How to Run the Project
 
-# <p style="color:orange"><u>**Note: This Documentation is currently a WORK IN PROGRESS**</u></p>
 
-## Windows
-Most of the time, you should be running the program `ftcapi.ps1`. \
-It is reccomended to use the `-h` argument to get familiar with the arguments. You may alternatively use 
+> [!Tip]
+> It is recommended to `cd` into the project folder before running scripts.
+
+
+## Running the Main Program
+To run the main program, call `__main__.py` while the virtual environment is activated. The workflow should look something similar to this:
+
 ```powershell
-Get-Help -Name 'YOUR_PATH_TO_THIS_PROJECT/app/ftcapi.ps1'
+$ .\.venv\Scripts\activate # Activate the virtual environment.
+$ python3 .\app\__main__.py # Run the main script.
 ```
 
-> Note: It is recommended to `cd` into the project folder.
+The program will initialize, gather some data, then run cycles until it is stopped (unless `ONE_CYCLE_ONLY` is `True`), as seen in the below flowcharts:
 
 
-### During Events
-During events, there are three really important parameters:
-   - `FieldMode`, a boolean which should be set to `True` during an event. See the below section for more info on what it does.
-   - `EventCode`, an alphanumeric code that FTC uses to keep track of their events. It is usually found in the URL of the [ftc-events website](https://ftc-events.firstinspires.org/#allevents).
-   - `SeasonYear`, a string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." Defaults to "`2023`"
+<table>
+    <tr>
+        <td> <img src="images/Flowchart_Main_Overview.svg" /> </td>
+        <td> <img src="images/Flowchart_Main_Cycle.svg" /> </td>
+    </tr>
+</table>
+<br>
 
-Your typical configuration during an event with an event code of `FTCCMPFRAN1` is going to look something like this:
-```powershell
-. 'app/ftcapi.ps1' -FieldMode $True -EventCode "FTCCMPFRAN1" -SeasonYear 2023
-```
+## Configuring the Program
+<!-- TODO: Should this be put in it's own page? -->
+The program may be configured using variables in the `.env` file. Other than those in the [setup instructions](Setup.md), the only recommended modification is of `SEASON_YEAR`.
 
-### Between Events
-Between events, it's a good idea to rerun the program at least once with `FieldMode` set to `False`. This will enable updating the *global calculations* (more CPU taxing), which will be saved and used during the next event. It is reccomended to do this a few days before the event (the `EventCode` doesn't matter for global statistics) to get the most up-to-date global statistics on the teams.
-> Note that the `FieldMode` feature might be slightly broken, and will be addressed in post-release updates.
+### General Configuration Variables
+| Variable Name | Default Value | Description |
+| :------------ | :------------ | :---------- |
+| `SEASON_YEAR` | 2023          | A string or integer describing the first year of the season. For instance, the 2023-2024 season is "`2023`." |
+| `EVENT_CODE`  | FTCCMP1FRAN   | The alphanumeric event code FIRST uses to keep track of their events, as a string. |
+| `CALCULATION_MODE` | AUTO     | Controls which types of calculations are run and when. See [Stats Calculation](StatsCalculation.md) for more details.
 
-You can also add the flag `-OneCycle` to only perform one cycle and then terminate.
 
-A configuration between events might look something like this:
-```powershell
-. 'app/ftcapi.ps1' -OneCycle -Fieldmode $False
-```
+### `__main__`-Specific Configuration Variables
+| Variable Name | Default Value | Description |
+| :------------ | :------------ | :---------- |
+| `DELAY_SECONDS` | 120 | Positive integer. Seconds to wait between each cycle. Does not include the time taken for the cycle itself. |
+| `ONE_CYCLE_ONLY` | False | Boolean. If True, `__main__.py` performs one cycle then exits. |
 
-## Linux
-**The current version of this program does not support Linux, don't use it right now. It will be fixed in a post-release update.**
-<!-- To run the program after setting up the correct variables (see below), run the `ftcapi.sh` program, which kind of calls everything else. If you want to do anything other than the basics, you're going to have to dig a little deeper into the code. Use the `h` modifier to get the help menu. -->
 
-### MacOS
-**The current version of this software does not support MacOS. There are currently no plans to implement support.**
+### API Configuration Variables
+| Variable Name | Default Value | Description |
+| :----------------------- | :----- | :---------- |
+| `DISABLE_API_CALLS`      | False  | If True, disables all FIRST API and Google Sheets API calls. |
+|`DISABLE_GOOGLE_API_CALLS`| False  | If True, disables all Google Sheets API calls. |
+| `DISABLE_FTC_API_CALLS`  | False  | If True, disables all FIRST API calls. |
+| `GOOGLE_SPREADSHEET_ID` | \<placeholder Google Sheets Spreadsheet ID\> | The Google Sheets spreadsheet ID. |
+| `PERSONAL_ACCESS_TOKEN` | \<placeholder personal access token\> | Your FIRST API access token. |
+| `SERVICE_ACCOUNT_KEY_PATH` | PROJECT_PATH/ServiceAccountKey.json | The path to your Google Cloud Service Worker account key. |
+
+
+### Advanced/Debug Configuration Variables
+| Variable Name | Default Value | Description |
+| :----------------------- | :----- | :---------- |
+| `LOG_LEVEL`   | INFO          | The log level for logger to use. May be `DEBUG`, `INFO`, `WARN`, `ERROR`, or `CRITICAL`. |
+| `DEBUG_LEVEL` | 0             | A positive integer starting at zero. Higher values print more info and make execution slightly slower. Only applicable if `LOG_LEVEL`=`DEBUG`. |
+| `FLUSH_DEBUG_LOG` | True      | Boolean. If True, flushes the file `debug.log` on initialization. Otherwise, only appends to the file. **Caution:** may lead to very large debug files. |
+| `DO_JOBLIB_MEMORY` | True     | If True, enables caching of heavy functions. In general, you should leave this on unless joblib starts to throw errors. |
+| `PROJECT_PATH` | *(autodetected)* | The absolute path to the project directory. You shouldn't need to use this. |
+| `JOBLIB_PATH` | PROJECT_PATH/generatedfiles/joblibcache/joblib | The absolute path to the joblib cache, as a string. You shouldn't need to change this. |
+| `DRY_RUN` | False | Boolean. If true, `__main__.py` does no operations, and just prints info. |
+
+
+## Training Your Own Algorithm
+Training your own algorithm is not officially supported at this time and will be addressed in a future update.
+

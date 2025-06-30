@@ -30,7 +30,10 @@ If applicable, add screenshots to help explain your problem.
  - OS: [e.g. Windows, Linux]
  - OS Version
  - Browser [e.g. Chrome, Safari]
- - EDrewcated Guesser Version and branch [e.g. main v49.0 Beta]
+ - EDrewcated Guesser Version and branch [e.g. main v49.0 Beta, main v50.0]
+
+**Errors.log**
+Please attach your errors.log file, found in app/generatedfiles.
 
 **Additional context**
 Add any other context about the problem here.

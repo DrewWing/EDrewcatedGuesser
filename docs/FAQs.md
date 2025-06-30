@@ -35,7 +35,8 @@ Currently this project is CLI only, but I'm considering adding a GUI in some lat
 ## I'm having trouble setting up and/or am getting errors while running.
 Please make sure you followed the documentation for each, and their respective troubleshooting sections.
 Most errors will be logged in the `app/generatedfiles/errors.log` file. You may also increase the debug level for more verbosity in the terminal.
-> Note: You may set the debug level by using the `DebugLevel` parameter. 0 produces no debug output, and each additional integer adds more debug print statements.
+> [!Tip]
+> You may set the debug level by using the `DebugLevel` parameter. 0 produces no debug output, and each additional integer adds more debug print statements.
 
 
 ## I followed all documentation and have troubleshooted, but still found a bug
@@ -52,9 +53,9 @@ Try running the `venvSetup` script with the `-replace` flag, which removes the c
 
 If that doesn't work, you may have to install the packages yourself. Installing from `requirements.txt` should work, but if it doesn't, try installing the specific versions found in [StablePackageVersions](StablePackageVersions.md).
 
-## Can I repurpose this project and use it commercially?
+## Can I repurpose this project and use it commercially/sell access to it?
 Absolutely not. See the project license at [`license.txt`](../LICENSE.txt).
-In addition, this project relies on the FIRST API (ruled by their [terms of service](https://frc-events.firstinspires.org/services/api/terms)), which clearly states:
+In addition, this project relies on data from the FIRST API (ruled by their [terms of service](https://frc-events.firstinspires.org/services/api/terms)), which clearly states:
 > You shall not do any of the following:
 > - make any commercial use (i.e. use that generates revenue) of the APIs, API Documentation or Events Data. This means that You may not:
 >   - sell the Events Data, or
@@ -64,5 +65,5 @@ In addition, this project relies on the FIRST API (ruled by their [terms of serv
 > >
 > ...
 
-(The Terms of Service was referenced December 16th, 2024, using the February 1, 2021 version of the Terms)
+(The Terms of Service was referenced December 16th, 2024, using the February 1, 2021 version of the Terms, which is the most current version at that time)
 
