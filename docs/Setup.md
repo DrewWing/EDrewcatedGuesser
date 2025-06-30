@@ -50,7 +50,7 @@ Now is the time to make a decision. You can either
  1) Set up the project to push its data to a Google Sheets spreadsheet. This requires creating a Google Cloud Service Worker using [these instructions](SetupGoogleSheets.md). Or, you could
  2) Set up the project to **not** push its data anywhere. You do this by setting `DISABLE_GOOGLE_API_CALLS=True` in the `.env` file you created.
 
-In the very near future, an option will be available to have a **local** spreadsheet (similar to the Google Sheets but without the Google Cloud mess, running locally on your computer). For now, you most likely want to choose option 1. I apologize in advance, it's kind of a pain.
+In the very near future, an option will be available to have a **local** excel spreadsheet (similar to the Google Sheets but without the Google Cloud mess). For now, you most likely want to choose option 1. I apologize in advance, it's kind of a pain.
 
 - - -
 <br>
